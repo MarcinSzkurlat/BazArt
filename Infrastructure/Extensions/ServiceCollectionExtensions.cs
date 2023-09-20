@@ -11,6 +11,7 @@ namespace Infrastructure.Extensions
         {
             service.AddDbContext<BazArtDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("BazArtDb")));
+            service.AddScoped<Seeder>();
         }
     }
 }
