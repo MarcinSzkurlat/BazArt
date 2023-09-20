@@ -1,13 +1,12 @@
 ﻿namespace Domain.Models.User
 {
-    public class UserOwnedProduct
+    public class UserCartProduct
     {
         public int Id { get; set; }
-
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public User User { get; set; }
 
-        public int ProductId { get; set; }
+        public Guid ProductId { get; set; }
         public Product Product { get; set; }
     }
 }
