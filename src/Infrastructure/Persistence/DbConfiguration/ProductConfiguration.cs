@@ -14,10 +14,11 @@ namespace Infrastructure.Persistence.DbConfiguration
             builder.Property(p => p.Description)
                 .HasMaxLength(1000);
             builder.Property(p => p.Price)
-                .HasPrecision(10, 2)
-                .IsRequired();
+                .HasPrecision(10, 2);
             builder.Property(p => p.IsForSell)
                 .IsRequired();
+            builder.Property(p => p.Quantity)
+                .HasDefaultValue(1);
             builder.Property(p => p.ImageUrl)
                 .HasMaxLength(500)
                 .IsRequired();

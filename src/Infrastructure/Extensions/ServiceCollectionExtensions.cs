@@ -15,6 +15,7 @@ namespace Infrastructure.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("BazArtDb")));
             service.AddScoped<Seeder>();
             service.AddScoped<IEventRepository, EventRepository>();
+            service.AddScoped<IProductRepository, ProductRepository>();
         }
     }
 }
