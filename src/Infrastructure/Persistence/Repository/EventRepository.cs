@@ -19,7 +19,7 @@ namespace Infrastructure.Persistence.Repository
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<Event>? GetEventByIdAsync(Guid id)
+        public async Task<Event?> GetEventByIdAsync(Guid id)
         {
             return await _dbContext.Events
                 .Include(e => e.Category)

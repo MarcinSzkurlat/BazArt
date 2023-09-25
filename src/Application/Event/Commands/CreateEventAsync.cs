@@ -73,7 +73,7 @@ namespace Application.Event.Commands
 
                 var eventToCreate = _mapper.Map<Domain.Models.Event.Event>(request.CreateEventDto);
 
-                if (eventToCreate.ImageUrl.Length == 0) eventToCreate.ImageUrl = EventImagePlaceHolder;
+                if (string.IsNullOrWhiteSpace(eventToCreate.ImageUrl)) eventToCreate.ImageUrl = EventImagePlaceHolder;
 
                 eventToCreate.CategoryId = (int)request.CreateEventDto.Category;
 

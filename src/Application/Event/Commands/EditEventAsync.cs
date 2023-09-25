@@ -11,6 +11,7 @@ namespace Application.Event.Commands
     {
         public class Command : IRequest
         {
+            public Guid Id { get; set; }
             public EditEventDto EditEventDto { get; set; }
         }
 
@@ -22,8 +23,6 @@ namespace Application.Event.Commands
 
                 int maxCategoryValue = (int)Enum.GetValues(typeof(Categories)).Cast<Categories>().Max();
 
-                RuleFor(x => x.Id)
-                    .NotEmpty().WithMessage("Name is a required field");
                 RuleFor(x => x.Name)
                     .Length(5, 100).WithMessage("Name must be between 5 and 100 characters long");
                 RuleFor(x => x.Description)
@@ -62,11 +61,11 @@ namespace Application.Event.Commands
 
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
-                var eventToEdit = await _eventRepository.GetEventByIdAsync(request.EditEventDto.Id);
+                var eventToEdit = await _eventRepository.GetEventByIdAsync(request.Id);
 
                 if (eventToEdit == null) throw new Exception(); //TODO ErrorHandlingMiddleware (NotFound)
 
-                if (request.EditEventDto.Category.HasValue) eventToEdit.CategoryId = (int)request.EditEventDto.Category;
+                if (!string.IsNullOrWhiteSpace(request.EditEventDto.Category.ToString())) eventToEdit.CategoryId = (int)request.EditEventDto.Category;
 
                 _mapper.Map(request.EditEventDto, eventToEdit);
                 
