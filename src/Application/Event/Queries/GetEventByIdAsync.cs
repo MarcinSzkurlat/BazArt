@@ -1,4 +1,5 @@
 ﻿using Application.Dtos.Event;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using MediatR;
@@ -27,7 +28,7 @@ namespace Application.Event.Queries
             {
                 var eventDetails = await _eventRepository.GetEventByIdAsync(request.Id);
 
-                if (eventDetails == null) throw new Exception();//TODO ErrorHandlingMiddleware (NotFound)
+                if (eventDetails == null) throw new NotFoundException("Event with this ID not exist");
 
                 var eventDetailsDto = _mapper.Map<EventDetailsDto>(eventDetails);
 

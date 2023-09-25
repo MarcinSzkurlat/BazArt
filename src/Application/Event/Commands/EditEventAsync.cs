@@ -1,9 +1,11 @@
 ﻿using Application.Dtos.Event;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
 using FluentValidation;
 using MediatR;
+using Serilog;
 
 namespace Application.Event.Commands
 {
@@ -63,15 +65,15 @@ namespace Application.Event.Commands
             {
                 var eventToEdit = await _eventRepository.GetEventByIdAsync(request.Id);
 
-                if (eventToEdit == null) throw new Exception(); //TODO ErrorHandlingMiddleware (NotFound)
+                if (eventToEdit == null) throw new NotFoundException("Event with this ID not exist");
 
                 if (!string.IsNullOrWhiteSpace(request.EditEventDto.Category.ToString())) eventToEdit.CategoryId = (int)request.EditEventDto.Category;
 
                 _mapper.Map(request.EditEventDto, eventToEdit);
                 
-                var result = await _eventRepository.SaveChangesAsync();
+                await _eventRepository.SaveChangesAsync();
 
-                if (result == 0) throw new Exception(); //TODO ErrorHandlingMiddleware (InternalError??)
+                Log.Information($"Event ({request.Id}) updated");
             }
         }
     }

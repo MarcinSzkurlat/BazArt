@@ -1,4 +1,5 @@
 ﻿using Application.Dtos.Event;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
@@ -32,7 +33,7 @@ namespace Application.Event.Queries
                     Categories.Sculpture => await _eventRepository.GetEventsByCategoryAsync(Categories.Sculpture),
                     Categories.Photography => await _eventRepository.GetEventsByCategoryAsync(Categories.Photography),
                     Categories.HandMade => await _eventRepository.GetEventsByCategoryAsync(Categories.HandMade),
-                    _ => new List<Domain.Models.Event.Event>() { }//TODO ErrorHandlingMiddleware (BadRequest)
+                    _ => throw new BadRequestException("This category not exist")
                 };
 
                 var eventsDto = _mapper.Map<List<EventDto>>(events);

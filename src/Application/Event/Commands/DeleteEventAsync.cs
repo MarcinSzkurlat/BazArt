@@ -1,5 +1,7 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
 using MediatR;
+using Serilog;
 
 namespace Application.Event.Commands
 {
@@ -23,13 +25,15 @@ namespace Application.Event.Commands
             {
                 var eventToDelete = await _eventRepository.GetEventByIdAsync(request.Id);
 
-                if (eventToDelete == null) throw new Exception(); //TODO ErrorHandlingMiddleware (NotFound)
+                if (eventToDelete == null) throw new NotFoundException("Event with this ID not exist");
 
                 _eventRepository.DeleteEvent(eventToDelete);
 
                 var result = await _eventRepository.SaveChangesAsync();
 
-                if (result == 0) throw new Exception(); //TODO ErrorHandlingMiddleware (InternalError??)
+                if (result == 0) throw new Exception();
+
+                Log.Information($"Event ({request.Id}) deleted");
             }
         }
     }

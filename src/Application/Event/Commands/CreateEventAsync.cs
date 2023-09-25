@@ -1,10 +1,12 @@
 ﻿using Application.Dtos.Event;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
 using Domain.Models.User;
 using FluentValidation;
 using MediatR;
+using Serilog;
 
 namespace Application.Event.Commands
 {
@@ -69,7 +71,7 @@ namespace Application.Event.Commands
             {
                 var eventFromDb = await _eventRepository.GetEventByIdAsync(request.CreateEventDto.Id);
 
-                if (eventFromDb != null) throw new Exception(); //TODO ErrorHandlingMiddleware (BadRequest)
+                if (eventFromDb != null) throw new BadRequestException("Event with this ID exist");
 
                 var eventToCreate = _mapper.Map<Domain.Models.Event.Event>(request.CreateEventDto);
 
@@ -83,7 +85,9 @@ namespace Application.Event.Commands
                 await _eventRepository.CreateEventAsync(eventToCreate);
                 var result = await _eventRepository.SaveChangesAsync();
 
-                if (result == 0) throw new Exception(); //TODO ErrorHandlingMiddleware (InternalError??)
+                if (result == 0) throw new Exception();
+
+                Log.Information($"Event ({eventToCreate.Id}) created");
             }
         }
     }

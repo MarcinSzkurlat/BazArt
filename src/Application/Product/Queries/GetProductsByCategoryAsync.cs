@@ -1,4 +1,5 @@
 ﻿using Application.Dtos.Product;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
@@ -33,7 +34,7 @@ namespace Application.Product.Queries
                     Categories.Photography => await _productRepository.GetProductsByCategoryAsync(
                         Categories.Photography),
                     Categories.HandMade => await _productRepository.GetProductsByCategoryAsync(Categories.HandMade),
-                    _ => new List<Domain.Models.Product>() //TODO ErrorHandlingMiddleware (BadRequest)
+                    _ => throw new BadRequestException("This category not exist")
                 };
 
                 var productsDto = _mapper.Map<IEnumerable<ProductDto>>(products);

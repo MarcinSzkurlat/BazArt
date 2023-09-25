@@ -1,10 +1,12 @@
 ﻿using Application.Dtos.Product;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
 using Domain.Models.User;
 using FluentValidation;
 using MediatR;
+using Serilog;
 
 namespace Application.Product.Command
 {
@@ -65,7 +67,7 @@ namespace Application.Product.Command
             {
                 var existProduct = await _productRepository.GetProductByIdAsync(request.ProductToCreate.Id);
 
-                if (existProduct != null) throw new Exception(); //TODO ErrorHandlingMiddleware (BadRequest)
+                if (existProduct != null) throw new BadRequestException("Product with this ID exist");
 
                 var productToCreate = _mapper.Map<Domain.Models.Product>(request.ProductToCreate);
 
@@ -89,7 +91,9 @@ namespace Application.Product.Command
                 await _productRepository.CreateProductAsync(productToCreate);
                 var result = await _productRepository.SaveChangesAsync();
 
-                if (result == 0) throw new Exception(); //TODO ErrorHandlingMiddleware (InternalError??)
+                if (result == 0) throw new Exception();
+
+                Log.Information($"Product ({productToCreate.Id}) created");
             }
         }
     }

@@ -1,5 +1,7 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
 using MediatR;
+using Serilog;
 
 namespace Application.Product.Command
 {
@@ -23,12 +25,14 @@ namespace Application.Product.Command
             {
                 var productToDelete = await _productRepository.GetProductByIdAsync(request.Id);
 
-                if (productToDelete == null) throw new Exception(); //TODO ErrorHandlingMiddleware (NotFound)
+                if (productToDelete == null) throw new NotFoundException("Product with this ID not exist");
 
                 _productRepository.DeleteProduct(productToDelete);
                 var result = await _productRepository.SaveChangesAsync();
 
-                if (result == 0) throw new Exception(); //TODO ErrorHandlingMiddleware (InternalError??)
+                if (result == 0) throw new Exception();
+
+                Log.Information($"Product ({request.Id}) deleted");
             }
         }
     }

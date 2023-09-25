@@ -1,4 +1,5 @@
 ﻿using Application.Dtos.Product;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using MediatR;
@@ -27,7 +28,7 @@ namespace Application.Product.Queries
             {
                 var product = await _productRepository.GetProductByIdAsync(request.Id);
 
-                if (product == null) throw new Exception(); //TODO ErrorHandlingMiddleware (NotFound)
+                if (product == null) throw new NotFoundException("Product with this ID not exist");
 
                 var productDetailDto = _mapper.Map<ProductDetailDto>(product);
 

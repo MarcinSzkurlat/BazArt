@@ -1,9 +1,11 @@
 ﻿using Application.Dtos.Product;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
 using FluentValidation;
 using MediatR;
+using Serilog;
 
 namespace Application.Product.Command
 {
@@ -52,15 +54,15 @@ namespace Application.Product.Command
             {
                 var productToEdit = await _productRepository.GetProductByIdAsync(request.Id);
 
-                if (productToEdit == null) throw new Exception(); //TODO ErrorHandlingMiddleware (NotFound)
+                if (productToEdit == null) throw new NotFoundException("Product with this ID not exist");
 
                 if (!string.IsNullOrWhiteSpace(request.ProductToEdit.Category.ToString())) productToEdit.CategoryId = (int)request.ProductToEdit.Category;
 
                 _mapper.Map(request.ProductToEdit, productToEdit);
 
-                var result = await _productRepository.SaveChangesAsync();
+                await _productRepository.SaveChangesAsync();
 
-                if (result == 0) throw new Exception(); //TODO ErrorHandlingMiddleware (InternalError??)
+                Log.Information($"Product ({request.Id}) updated");
             }
         }
     }
