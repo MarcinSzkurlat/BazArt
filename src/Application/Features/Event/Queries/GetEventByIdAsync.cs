@@ -4,7 +4,7 @@ using Application.Interfaces;
 using AutoMapper;
 using MediatR;
 
-namespace Application.Event.Queries
+namespace Application.Features.Event.Queries
 {
     public class GetEventByIdAsync
     {

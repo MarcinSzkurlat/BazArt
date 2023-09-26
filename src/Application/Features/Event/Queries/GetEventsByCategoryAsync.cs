@@ -5,7 +5,7 @@ using AutoMapper;
 using Domain.Models;
 using MediatR;
 
-namespace Application.Event.Queries
+namespace Application.Features.Event.Queries
 {
     public class GetEventsByCategoryAsync
     {

@@ -3,21 +3,21 @@ using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
-using Domain.Models.User;
 using FluentValidation;
 using MediatR;
 using Serilog;
 
-namespace Application.Event.Commands
+namespace Application.Features.Event.Commands
 {
-    public class CreateEventAsync
+    public class EditEventAsync
     {
         public class Command : IRequest
         {
-            public CreateEventDto CreateEventDto { get; set; }
+            public Guid Id { get; set; }
+            public EditEventDto EditEventDto { get; set; }
         }
 
-        public class CommandValidator : AbstractValidator<CreateEventDto>
+        public class CommandValidator : AbstractValidator<EditEventDto>
         {
             public CommandValidator()
             {
@@ -25,19 +25,14 @@ namespace Application.Event.Commands
 
                 int maxCategoryValue = (int)Enum.GetValues(typeof(Categories)).Cast<Categories>().Max();
 
-                RuleFor(x => x.Id)
-                    .NotEmpty().WithMessage("Id is a required field");
                 RuleFor(x => x.Name)
-                    .Length(5, 100).WithMessage("Name must be between 5 and 100 characters long")
-                    .NotEmpty().WithMessage("Name is a required field");
+                    .Length(5, 100).WithMessage("Name must be between 5 and 100 characters long");
                 RuleFor(x => x.Description)
-                    .Length(5, 1000).WithMessage("Description must be between 5 and 1000 characters long")
-                    .NotEmpty().WithMessage("Description is a required field");
+                    .Length(5, 1000).WithMessage("Description must be between 5 and 1000 characters long");
                 RuleFor(x => x.ImageUrl)
                     .MaximumLength(500).WithMessage("Maximum length for ImageUrl is 500");
                 RuleFor(x => (int)x.Category)
-                    .InclusiveBetween(minCategoryValue, maxCategoryValue).WithMessage($"Category must be between {minCategoryValue} and {maxCategoryValue}")
-                    .NotNull().WithMessage("Category is a required field");
+                    .InclusiveBetween(minCategoryValue, maxCategoryValue).WithMessage($"Category must be between {minCategoryValue} and {maxCategoryValue}");
                 RuleFor(x => x.Country)
                     .Length(2, 100).WithMessage("Country must be between 2 and 100 characters long");
                 RuleFor(x => x.City)
@@ -59,7 +54,6 @@ namespace Application.Event.Commands
         {
             private readonly IEventRepository _eventRepository;
             private readonly IMapper _mapper;
-            private const string EventImagePlaceHolder = "https://upload.wikimedia.org/wikipedia/commons/9/9b/Exposition_Richard_Prince%2C_American_Prayer_-_sc%C3%A9nographie_21.jpg";
 
             public Handler(IEventRepository eventRepository, IMapper mapper)
             {
@@ -69,25 +63,17 @@ namespace Application.Event.Commands
 
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
-                var eventFromDb = await _eventRepository.GetEventByIdAsync(request.CreateEventDto.Id);
+                var eventToEdit = await _eventRepository.GetEventByIdAsync(request.Id);
 
-                if (eventFromDb != null) throw new BadRequestException("Event with this ID exist");
+                if (eventToEdit == null) throw new NotFoundException("Event with this ID not exist");
 
-                var eventToCreate = _mapper.Map<Domain.Models.Event.Event>(request.CreateEventDto);
+                if (!string.IsNullOrWhiteSpace(request.EditEventDto.Category.ToString())) eventToEdit.CategoryId = (int)request.EditEventDto.Category;
 
-                if (string.IsNullOrWhiteSpace(eventToCreate.ImageUrl)) eventToCreate.ImageUrl = EventImagePlaceHolder;
+                _mapper.Map(request.EditEventDto, eventToEdit);
 
-                eventToCreate.CategoryId = (int)request.CreateEventDto.Category;
+                await _eventRepository.SaveChangesAsync();
 
-                //TODO Add User as event creator
-                eventToCreate.CreatedBy = new User();
-
-                await _eventRepository.CreateEventAsync(eventToCreate);
-                var result = await _eventRepository.SaveChangesAsync();
-
-                if (result == 0) throw new Exception();
-
-                Log.Information($"Event ({eventToCreate.Id}) created");
+                Log.Information($"Event ({request.Id}) updated");
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿using Application.Dtos.Product;
-using Application.Product.Command;
-using Application.Product.Queries;
+using Application.Features.Product.Command;
+using Application.Features.Product.Queries;
 using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

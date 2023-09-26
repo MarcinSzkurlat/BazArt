@@ -3,7 +3,7 @@ using Application.Interfaces;
 using MediatR;
 using Serilog;
 
-namespace Application.Product.Command
+namespace Application.Features.Product.Command
 {
     public class DeleteProductAsync
     {
@@ -20,7 +20,7 @@ namespace Application.Product.Command
             {
                 _productRepository = productRepository;
             }
-            
+
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
                 var productToDelete = await _productRepository.GetProductByIdAsync(request.Id);

@@ -5,7 +5,7 @@ using AutoMapper;
 using Domain.Models;
 using MediatR;
 
-namespace Application.Product.Queries
+namespace Application.Features.Product.Queries
 {
     public class GetProductsByCategoryAsync
     {

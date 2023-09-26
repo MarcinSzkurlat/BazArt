@@ -3,7 +3,7 @@ using Application.Interfaces;
 using MediatR;
 using Serilog;
 
-namespace Application.Event.Commands
+namespace Application.Features.Event.Commands
 {
     public class DeleteEventAsync
     {

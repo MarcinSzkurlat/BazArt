@@ -8,7 +8,7 @@ using FluentValidation;
 using MediatR;
 using Serilog;
 
-namespace Application.Product.Command
+namespace Application.Features.Product.Command
 {
     public class CreateProductAsync
     {

@@ -1,6 +1,6 @@
 ﻿using Application.Dtos.Event;
-using Application.Event.Commands;
-using Application.Event.Queries;
+using Application.Features.Event.Commands;
+using Application.Features.Event.Queries;
 using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

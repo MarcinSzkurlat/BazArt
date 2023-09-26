@@ -4,7 +4,7 @@ using Application.Interfaces;
 using AutoMapper;
 using MediatR;
 
-namespace Application.Product.Queries
+namespace Application.Features.Product.Queries
 {
     public class GetProductByIdAsync
     {
