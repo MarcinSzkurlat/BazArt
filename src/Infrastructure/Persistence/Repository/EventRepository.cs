@@ -46,5 +46,15 @@ namespace Infrastructure.Persistence.Repository
         {
             _dbContext.Events.Remove(eventToDelete);
         }
+
+        public async Task<IEnumerable<Event>> GetEventsByCreatedDate(int amount)
+        {
+            return await _dbContext.Events
+                .AsNoTracking()
+                .Include(x => x.Category)
+                .OrderByDescending(x => x.EventDetail.Created)
+                .Take(amount)
+                .ToListAsync();
+        }
     }
 }

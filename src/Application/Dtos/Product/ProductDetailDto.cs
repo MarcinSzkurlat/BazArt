@@ -9,6 +9,7 @@
         string ImageUrl,
         string CreatorName,
         Guid CreatorId,
-        string CategoryName
+        string CategoryName,
+        DateTime Created
     );
 }

@@ -44,5 +44,15 @@ namespace Infrastructure.Persistence.Repository
         {
             _dbContext.Products.Remove(productToDelete);
         }
+
+        public async Task<IEnumerable<Product>> GetProductsByCreatedDate(int amount)
+        {
+            return await _dbContext.Products
+                .AsNoTracking()
+                .Include(x => x.Category)
+                .OrderByDescending(x => x.Created)
+                .Take(amount)
+                .ToListAsync();
+        }
     }
 }

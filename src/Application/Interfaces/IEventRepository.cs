@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Domain.Models.Event;
 
 namespace Application.Interfaces
 {
@@ -9,5 +10,6 @@ namespace Application.Interfaces
         public Task<List<Domain.Models.Event.Event>> GetEventsByCategoryAsync(Categories categories);
         public Task CreateEventAsync(Domain.Models.Event.Event eventToCreate);
         public void DeleteEvent(Domain.Models.Event.Event eventToDelete);
+        public Task<IEnumerable<Event>> GetEventsByCreatedDate(int amount);
     }
 }

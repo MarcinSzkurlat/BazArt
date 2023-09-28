@@ -57,5 +57,13 @@ namespace BazArtAPI.Controllers
 
             return Ok();
         }
+
+        [HttpGet("/api/[Controller]/latest")]
+        public async Task<ActionResult<List<ProductDto>>> GetProductsByCreatedDate()
+        {
+            var products = await _mediator.Send(new GetProductsByCreatedDate.Query());
+
+            return Ok(products);
+        }
     }
 }

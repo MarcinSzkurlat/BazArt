@@ -9,5 +9,6 @@ namespace Application.Interfaces
         public Task<IEnumerable<Domain.Models.Product>> GetProductsByCategoryAsync(Categories category);
         public Task CreateProductAsync(Domain.Models.Product productToCreate);
         public void DeleteProduct(Domain.Models.Product productToDelete);
+        public Task<IEnumerable<Product>> GetProductsByCreatedDate(int amount);
     }
 }

@@ -14,7 +14,7 @@ namespace Application.Mappings
                 .ConstructUsing(src => new EventDetailsDto(src.Name, src.Description, src.ImageUrl, src.Category.Name,
                     src.CreatedBy.StageName, src.CreatedById, src.EventDetail.Country, src.EventDetail.City,
                     src.EventDetail.Street, src.EventDetail.HouseNumber, src.EventDetail.PostalCode,
-                    src.EventDetail.StartingDate, src.EventDetail.EndingDate));
+                    src.EventDetail.StartingDate, src.EventDetail.EndingDate, src.EventDetail.Created));
 
             CreateMap<CreateEventDto, Domain.Models.Event.Event>()
                 .ForMember(dest => dest.Category, opt => opt.Ignore())
