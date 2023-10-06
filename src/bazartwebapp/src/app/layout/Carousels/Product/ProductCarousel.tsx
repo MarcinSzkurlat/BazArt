@@ -1,15 +1,40 @@
 import { Product } from "../../../models/Product/product";
 import ReactSimplyCarousel from 'react-simply-carousel';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductItemCarousel from "./ProductItemCarousel";
 import { Icon } from "semantic-ui-react";
+import { useStore } from "../../../stores/store";
+import LoadingComponent from "../../LoadingComponent";
+import { observer } from "mobx-react-lite";
 
 interface Props {
-    products: Product[];
+    page: string;
+    categoryName?: string;
 }
 
-export default function ProductCarousel({ products }: Props) {
+export default observer(function ProductCarousel({ page, categoryName }: Props) {
+    const { productStore } = useStore();
+    const { loadingInitial, latestProductRegistry, loadLatestProducts, loadProducts, productsRegistry } = productStore;
+
     const [activeSliderIndex, setActiveSliderIndex] = useState(0);
+    const [productItems, setProductItems] = useState<Product[]>();
+
+    useEffect(() => {
+        switch (page) {
+            case 'home':
+                loadLatestProducts().then(() => {
+                    setProductItems(Array.from(latestProductRegistry.values()));
+                })
+                break;
+            case 'category':
+                loadProducts(categoryName!).then(() => {
+                    setProductItems(Array.from(productsRegistry.values()));
+                })
+                break;
+        }
+    }, [])
+
+    if (loadingInitial) return <LoadingComponent />
 
     return (
         <div>
@@ -49,11 +74,11 @@ export default function ProductCarousel({ products }: Props) {
             ]}
             speed={1200}
             easing='linear'
-        >
-            {products.map((product: Product) => (
+            >
+                {productItems?.map((product: Product) => (
                 <ProductItemCarousel key={product.id} product={product} />
             ))}
             </ReactSimplyCarousel>
         </div>
     )
-}
+})

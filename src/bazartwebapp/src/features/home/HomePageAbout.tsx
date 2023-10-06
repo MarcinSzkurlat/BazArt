@@ -80,7 +80,7 @@ export default function HomePageAbout() {
                     </Grid.Column>
                 </Grid.Row>
                 <div className='homepage-about-div' >
-                    <Header size='large' textAlign='center' style={{marginBottom:'100px'}}>
+                    <Header size='large' textAlign='center' style={{ marginBottom: '80px' }}>
                         Join BazArt today and become part of a dynamic online marketplace that celebrates the beauty of handcrafted art. Unleash your creativity, discover unique treasures, and connect with fellow art enthusiasts.
                     </Header>
                     <Header size='huge' textAlign='center' >

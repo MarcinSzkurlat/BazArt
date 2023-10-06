@@ -6,6 +6,7 @@ export default class CategoryStore {
     categories: Category[] = [];
     categoriesRegistry = new Map<string, Category>();
     loadingInitial: boolean = false;
+    selectedCategory: Category | undefined = undefined;
 
     constructor() {
         makeAutoObservable(this);
@@ -22,6 +23,14 @@ export default class CategoryStore {
         } catch (error) {
             console.log(error);
             this.setLoadingInitial(false);
+        }
+    }
+
+    loadCategory = async (name: string) => {
+        try {
+            this.selectedCategory = await agent.Categories.details(name);
+        } catch (error) {
+            console.log(error);
         }
     }
 

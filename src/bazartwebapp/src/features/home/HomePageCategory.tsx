@@ -11,24 +11,24 @@ export default observer(function HomePageCategory() {
 
     useEffect(() => {
         loadCategories();
-    }, [])
+    },[])
 
     if (loadingInitial) return <LoadingComponent />
 
     return (
         <Card.Group itemsPerRow={2} stackable centered>
             {Array.from(categoriesRegistry.values()).map((category: Category) => (
-                <Card as='a' href='/' key={category.id} style={{ width: '35%', height: '350px' }}> {/* TODO change href to appropriate category page */}
+                <Card as='a' href={`category/${category.name}`} key = { category.id } style = {{ width: '35%', height: '350px' }}>
                     <Reveal animated='small fade'>
-                        <Reveal.Content visible style={{ width: '100%', height: '350px' }}>
-                            <Image src={category.imageUrl} alt={category.name} style={{ width: '100%', height: '100%' }} />
-                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', width: '100%' }}>
+                        <Reveal.Content visible style={{ width:'100%', height: '350px' }}>
+                            <Image src={category.imageUrl} alt={category.name} style={{ width: '100%', height: '350px' }} />
+                            <div className={'category-div-text'}>
                                 <Card.Header className='category-header'>{category.name}</Card.Header>
                             </div>
                         </Reveal.Content>
-                        <Reveal.Content hidden style={{ width: '100%', height: '350px' }}>
-                            <Image src={category.imageUrl} alt={category.name} style={{ width: '100%', height: '100%', filter:'blur(8px)' }} />
-                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', width: '100%' }}>
+                        <Reveal.Content hidden style={{ width:'100%', height: '350px' }}>
+                            <Image src={category.imageUrl} alt={category.name} style={{ width: '100%', height: '350px', filter: 'blur(8px)' }} />
+                            <div className={'category-div-text'}>
                                 <Card.Description className='category-description'>{category.description}</Card.Description>
                             </div>
                         </Reveal.Content>

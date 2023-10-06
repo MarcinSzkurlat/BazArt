@@ -7,13 +7,14 @@ export default class EventStore {
     events: Event[] = [];
     eventsRegistry = new Map<string, Event>();
     latestEventsRegistry = new Map<string, Event>();
+    loadingInitial: boolean = false;
     selectedEvent: EventDetails | undefined = undefined;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    loadEvents = async (category: number) => {
+    loadEvents = async (category: string) => {
         try {
             const events = await agent.Events.list(category);
             events.forEach(event => {
@@ -34,13 +35,20 @@ export default class EventStore {
     }
 
     loadLatestEvents = async () => {
+        this.setLoadingInitial(true);
         try {
             const events = await agent.Events.latest();
             events.forEach(event => {
                 this.latestEventsRegistry.set(event.id, event);
             })
+            this.setLoadingInitial(false);
         } catch (error) {
             console.log(error);
+            this.setLoadingInitial(false);
         }
+    }
+
+    setLoadingInitial = (state: boolean) => {
+        this.loadingInitial = state;
     }
 }

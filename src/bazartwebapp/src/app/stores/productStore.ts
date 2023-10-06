@@ -8,12 +8,13 @@ export default class ProductStore {
     productsRegistry = new Map<string, Product>();
     latestProductRegistry = new Map<string, Product>();
     selectedProduct: ProductDetails | undefined = undefined;
+    loadingInitial: boolean = false;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    loadProducts = async (category: number) => {
+    loadProducts = async (category: string) => {
         try {
             const products = await agent.Products.list(category);
             products.forEach(product => {
@@ -34,13 +35,20 @@ export default class ProductStore {
     }
 
     loadLatestProducts = async () => {
+        this.setLoadingInitial(true);
         try {
             const products = await agent.Products.latest();
             products.forEach(product => {
                 this.latestProductRegistry.set(product.id, product);
             })
+            this.setLoadingInitial(false);
         } catch (error) {
             console.log(error);
+            this.setLoadingInitial(false);
         }
+    }
+
+    setLoadingInitial = (state: boolean) => {
+        this.loadingInitial = state;
     }
 }

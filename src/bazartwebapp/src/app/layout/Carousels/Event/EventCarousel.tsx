@@ -1,15 +1,40 @@
-import { useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useEffect, useState } from "react";
 import ReactSimplyCarousel from 'react-simply-carousel';
 import { Icon } from "semantic-ui-react";
 import { Event } from "../../../models/Event/event";
+import { useStore } from "../../../stores/store";
+import LoadingComponent from "../../LoadingComponent";
 import EventItemCarousel from "./EventItemCarousel";
 
 interface Props {
-    events: Event[];
+    page: string;
+    categoryName?: string;
 }
 
-export default function EventCarousel({ events }: Props) {
+export default observer(function EventCarousel({ page, categoryName }: Props) {
+    const { eventStore } = useStore();
+    const { loadingInitial, latestEventsRegistry, loadLatestEvents, loadEvents, eventsRegistry } = eventStore;
+
     const [activeSliderIndex, setActiveSliderIndex] = useState(0);
+    const [eventItems, setEventItems] = useState<Event[]>();
+
+    useEffect(() => {
+        switch (page) {
+            case 'home':
+                loadLatestEvents().then(() => {
+                    setEventItems(Array.from(latestEventsRegistry.values()));
+                })
+                break;
+            case 'category':
+                loadEvents(categoryName!).then(() => {
+                    setEventItems(Array.from(eventsRegistry.values()));
+                })
+                break;
+        }
+    }, [])
+
+    if (loadingInitial) return <LoadingComponent />
 
     return (
         <div>
@@ -50,10 +75,10 @@ export default function EventCarousel({ events }: Props) {
                 speed={1200}
                 easing='linear'
             >
-                {events.map((event: Event) => (
+                {eventItems?.map((event: Event) => (
                     <EventItemCarousel key={event.id} event={event} />
                 ))}
             </ReactSimplyCarousel>
         </div>
     )
-}
+})

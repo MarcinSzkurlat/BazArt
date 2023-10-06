@@ -16,6 +16,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
+    "react-router-hash-link": "^2.4.3",
     "react-scripts": "5.0.1",
     "react-simply-carousel": "^9.0.4",
     "semantic-ui-css": "^2.5.0",
@@ -48,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-router-hash-link": "^2.4.7",
     "eslint-config-react-app": "^7.0.1",
     "jest-editor-support": "^31.1.1"
   }

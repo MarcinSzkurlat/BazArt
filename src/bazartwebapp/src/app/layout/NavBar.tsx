@@ -1,14 +1,16 @@
 import { observer } from "mobx-react-lite";
+import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import { Icon, Menu } from "semantic-ui-react";
 
 interface Props {
-    scrollToAbout: Function;
+    className?: string;
 }
 
-export default observer(function HomePageNavBar({ scrollToAbout}: Props) {
+export default observer(function NavBar({ className }: Props) {
     return (
-        <Menu borderless compact fixed='top' icon='labeled' widths='3' >
-            <Menu.Item as='a' onClick={() => { scrollToAbout() }} name='about'>
+        <Menu borderless compact secondary className={className} icon='labeled' widths='3' >
+            <Menu.Item as={HashLink} smooth to='/#about' name='about'>
                 <Icon name='info' />
                     About
             </Menu.Item>
@@ -16,7 +18,7 @@ export default observer(function HomePageNavBar({ scrollToAbout}: Props) {
                 <Icon name='user' />
                     Login / Register
             </Menu.Item>
-            <Menu.Item as='a' to='/' name='search'>
+            <Menu.Item as={Link} to='/' name='search'>
                 <Icon name='search' />
                     Search
             </Menu.Item>

@@ -19,7 +19,7 @@ const requests = {
 }
 
 const Events = {
-    list: (category: number) => requests.get<Event[]>(`/event?categoryName=${category}`),
+    list: (category: string) => requests.get<Event[]>(`/event?categoryName=${category}`),
     details: (id: string) => requests.get<EventDetails>(`/event/${id}`),
     create: (event: CreateEvent) => requests.post<void>('/event', event),
     update: (event: EventDetails, id: string) => requests.put<EventDetails>(`/event/${id}`, event),
@@ -28,7 +28,7 @@ const Events = {
 }
 
 const Products = {
-    list: (category: number) => requests.get<Product[]>(`/product?categoryName=${category}`),
+    list: (category: string) => requests.get<Product[]>(`/product?categoryName=${category}`),
     details: (id: string) => requests.get<ProductDetails>(`/product/${id}`),
     create: (product: CreateProduct) => requests.post<void>('/product', product),
     update: (product: ProductDetails, id: string) => requests.put<ProductDetails>(`/product/${id}`, product),
@@ -37,7 +37,8 @@ const Products = {
 }
 
 const Categories = {
-    list: () => requests.get<Category[]>('/category')
+    list: () => requests.get<Category[]>('/category'),
+    details: (name: string) => requests.get <Category>(`/category/${name}`)
 }
 
 const agent = {
