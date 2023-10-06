@@ -19,5 +19,11 @@ namespace Infrastructure.Persistence.Repository
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<Category?> GetCategoryByNameAsync(string name)
+        {
+            return await _dbContext.Categories
+                .FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
+        }
     }
 }

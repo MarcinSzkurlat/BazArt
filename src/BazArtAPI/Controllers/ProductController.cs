@@ -1,7 +1,6 @@
 ﻿using Application.Dtos.Product;
 using Application.Features.Product.Command;
 using Application.Features.Product.Queries;
-using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,10 +25,9 @@ namespace BazArtAPI.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<ProductDto>>> GetProductsByCategoryAsync(
-            [FromQuery]Categories categoryName)
+            [FromQuery]string categoryName)
         {
-            var productsDto = await _mediator.Send(new GetProductsByCategoryAsync.Query
-                { CategoryName = categoryName });
+            var productsDto = await _mediator.Send(new GetProductsByCategoryAsync.Query { CategoryName = categoryName });
 
             return Ok(productsDto);
         }
@@ -62,7 +60,7 @@ namespace BazArtAPI.Controllers
         public async Task<ActionResult<List<ProductDto>>> GetProductsByCreatedDate()
         {
             var products = await _mediator.Send(new GetProductsByCreatedDate.Query());
-
+            
             return Ok(products);
         }
     }

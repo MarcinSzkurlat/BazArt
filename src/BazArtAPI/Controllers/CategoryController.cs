@@ -21,5 +21,13 @@ namespace BazArtAPI.Controllers
 
             return Ok(categories);
         }
+
+        [HttpGet("/api/[Controller]/{name}")]
+        public async Task<ActionResult<CategoryDto>> GetCategoryByNameAsync([FromRoute] string name)
+        {
+            var category = await _mediator.Send(new GetCategoryByNameAsync.Query { Name = name });
+
+            return Ok(category);
+        }
     }
 }

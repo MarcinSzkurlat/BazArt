@@ -1,7 +1,6 @@
 ﻿using Application.Dtos.Event;
 using Application.Features.Event.Commands;
 using Application.Features.Event.Queries;
-using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +24,7 @@ namespace BazArtAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<EventDto>>> GetEventsByCategoryAsync([FromQuery]Categories categoryName)
+        public async Task<ActionResult<List<EventDto>>> GetEventsByCategoryAsync([FromQuery]string categoryName)
         {
             var events = await _mediator.Send(new GetEventsByCategoryAsync.Query { CategoryName = categoryName });
 
@@ -60,7 +59,7 @@ namespace BazArtAPI.Controllers
         public async Task<ActionResult<IEnumerable<EventDto>>> GetEventsByCreatedDate()
         {
             var events = await _mediator.Send(new GetEventsByCreateDate.Query());
-
+            
             return Ok(events);
         }
     }

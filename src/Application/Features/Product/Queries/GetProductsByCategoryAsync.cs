@@ -11,7 +11,7 @@ namespace Application.Features.Product.Queries
     {
         public class Query : IRequest<IEnumerable<ProductDto>>
         {
-            public Categories CategoryName { get; set; }
+            public string CategoryName { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, IEnumerable<ProductDto>>
@@ -27,15 +27,16 @@ namespace Application.Features.Product.Queries
 
             public async Task<IEnumerable<ProductDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var products = request.CategoryName switch
+                IEnumerable<Domain.Models.Product>? products;
+
+                if (Enum.TryParse<Categories>(request.CategoryName, true, out _))
                 {
-                    Categories.Painting => await _productRepository.GetProductsByCategoryAsync(Categories.Painting),
-                    Categories.Sculpture => await _productRepository.GetProductsByCategoryAsync(Categories.Sculpture),
-                    Categories.Photography => await _productRepository.GetProductsByCategoryAsync(
-                        Categories.Photography),
-                    Categories.HandMade => await _productRepository.GetProductsByCategoryAsync(Categories.HandMade),
-                    _ => throw new BadRequestException("This category not exist")
-                };
+                    products = await _productRepository.GetProductsByCategoryAsync(request.CategoryName);
+                }
+                else
+                {
+                    throw new BadRequestException("This category not exist");
+                }
 
                 var productsDto = _mapper.Map<IEnumerable<ProductDto>>(products);
 

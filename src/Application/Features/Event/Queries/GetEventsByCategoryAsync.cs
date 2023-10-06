@@ -11,7 +11,7 @@ namespace Application.Features.Event.Queries
     {
         public class Query : IRequest<IEnumerable<EventDto>>
         {
-            public Categories CategoryName { get; set; }
+            public string CategoryName { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, IEnumerable<EventDto>>
@@ -27,14 +27,16 @@ namespace Application.Features.Event.Queries
 
             public async Task<IEnumerable<EventDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var events = request.CategoryName switch
+                IEnumerable<Domain.Models.Event.Event>? events;
+
+                if (Enum.TryParse<Categories>(request.CategoryName, true, out _))
                 {
-                    Categories.Painting => await _eventRepository.GetEventsByCategoryAsync(Categories.Painting),
-                    Categories.Sculpture => await _eventRepository.GetEventsByCategoryAsync(Categories.Sculpture),
-                    Categories.Photography => await _eventRepository.GetEventsByCategoryAsync(Categories.Photography),
-                    Categories.HandMade => await _eventRepository.GetEventsByCategoryAsync(Categories.HandMade),
-                    _ => throw new BadRequestException("This category not exist")
-                };
+                    events = await _eventRepository.GetEventsByCategoryAsync(request.CategoryName);
+                }
+                else
+                {
+                    throw new BadRequestException("This category not exist");
+                }
 
                 var eventsDto = _mapper.Map<List<EventDto>>(events);
 

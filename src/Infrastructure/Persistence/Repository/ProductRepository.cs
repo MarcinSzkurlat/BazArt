@@ -26,12 +26,12 @@ namespace Infrastructure.Persistence.Repository
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(Categories category)
+        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(string categoryName)
         {
             return await _dbContext.Products
                 .AsNoTracking()
                 .Include(x => x.Category)
-                .Where(x => x.Category.Name == category.ToString())
+                .Where(x => x.Category.Name.ToLower() == categoryName.ToLower())
                 .ToListAsync();
         }
 

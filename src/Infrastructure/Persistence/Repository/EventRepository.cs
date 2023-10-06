@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Domain.Models;
 using Domain.Models.Event;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,12 +27,12 @@ namespace Infrastructure.Persistence.Repository
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
         
-        public async Task<List<Event>> GetEventsByCategoryAsync(Categories categories)
+        public async Task<List<Event>> GetEventsByCategoryAsync(string categoryName)
         {
             return await _dbContext.Events
                 .AsNoTracking()
                 .Include(e => e.Category)
-                .Where(e => e.Category.Name == categories.ToString())
+                .Where(e => e.Category.Name.ToLower() == categoryName.ToLower())
                 .ToListAsync();
         }
 
