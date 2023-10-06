@@ -35,7 +35,7 @@ namespace Application.Features.Product.Queries
                 }
                 else
                 {
-                    throw new BadRequestException("This category not exist");
+                    throw new NotFoundException("This category not exist");
                 }
 
                 var productsDto = _mapper.Map<IEnumerable<ProductDto>>(products);

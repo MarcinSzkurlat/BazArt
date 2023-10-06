@@ -35,7 +35,7 @@ namespace Application.Features.Event.Queries
                 }
                 else
                 {
-                    throw new BadRequestException("This category not exist");
+                    throw new NotFoundException("This category not exist");
                 }
 
                 var eventsDto = _mapper.Map<List<EventDto>>(events);
