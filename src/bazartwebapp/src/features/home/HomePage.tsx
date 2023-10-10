@@ -8,7 +8,7 @@ import HomePageAbout from "./HomePageAbout";
 
 export default observer(function HomePage() {
     return (
-        <>
+        <div className='content'>
             <NavBar className='navbar-homepage' />
             <Image src="/assets/BazArt_logo_Theme_Light.jpeg" alt="logo" size="large" centered />
             <HomePageCategory />
@@ -27,6 +27,6 @@ export default observer(function HomePage() {
                 <Header as='h1'>About</Header>
             </Divider>
             <HomePageAbout />
-        </>
+        </div>
     )
 })
