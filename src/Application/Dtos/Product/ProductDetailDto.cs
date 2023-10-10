@@ -8,6 +8,8 @@
         int Quantity,
         string ImageUrl,
         string CreatorName,
-        string CategoryName
+        Guid CreatorId,
+        string CategoryName,
+        DateTime Created
     );
 }

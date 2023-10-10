@@ -16,6 +16,7 @@ namespace Infrastructure.Extensions
             service.AddScoped<Seeder>();
             service.AddScoped<IEventRepository, EventRepository>();
             service.AddScoped<IProductRepository, ProductRepository>();
+            service.AddScoped<ICategoryRepository, CategoryRepository>();
         }
     }
 }

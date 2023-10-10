@@ -30,6 +30,16 @@ builder.Services.AddApi();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("FrontendClient", policy =>
+    {
+        policy.AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithOrigins(builder.Configuration["AllowedOrigin"]);
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -51,6 +61,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("FrontendClient");
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 

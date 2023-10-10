@@ -10,6 +10,7 @@
         public string? PostalCode { get; set; }
         public DateTime StartingDate { get; set; }
         public DateTime EndingDate { get; set; }
+        public DateTime Created { get; set; } = DateTime.Now;
 
         public Guid EventId { get; set; }
         public Event Event { get; set; }
