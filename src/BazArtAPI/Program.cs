@@ -26,19 +26,9 @@ Log.Logger = new LoggerConfiguration()
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddApi();
+builder.Services.AddApi(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
-
-builder.Services.AddCors(opt =>
-{
-    opt.AddPolicy("FrontendClient", policy =>
-    {
-        policy.AllowAnyMethod()
-            .AllowAnyHeader()
-            .WithOrigins(builder.Configuration["AllowedOrigin"]);
-    });
-});
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@
 using Application.Features.Event.Commands;
 using Application.Features.Event.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BazArtAPI.Controllers
@@ -15,6 +16,7 @@ namespace BazArtAPI.Controllers
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<EventDetailsDto>> GetEventByIdAsync([FromRoute]Guid id)
         {
@@ -23,6 +25,7 @@ namespace BazArtAPI.Controllers
             return Ok(eventDto);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<EventDto>>> GetEventsByCategoryAsync([FromQuery]string categoryName)
         {
@@ -55,6 +58,7 @@ namespace BazArtAPI.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpGet("/api/[Controller]/latest")]
         public async Task<ActionResult<IEnumerable<EventDto>>> GetEventsByCreatedDate()
         {

@@ -1,6 +1,7 @@
 ﻿using Application.Dtos.Category;
 using Application.Features.Category.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BazArtAPI.Controllers
@@ -14,6 +15,7 @@ namespace BazArtAPI.Controllers
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategoriesAsync()
         {
@@ -22,6 +24,7 @@ namespace BazArtAPI.Controllers
             return Ok(categories);
         }
 
+        [AllowAnonymous]
         [HttpGet("/api/[Controller]/{name}")]
         public async Task<ActionResult<CategoryDto>> GetCategoryByNameAsync([FromRoute] string name)
         {

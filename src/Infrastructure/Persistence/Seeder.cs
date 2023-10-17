@@ -2,6 +2,7 @@
 using Domain.Models;
 using Domain.Models.Event;
 using Domain.Models.User;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence
@@ -10,12 +11,14 @@ namespace Infrastructure.Persistence
     {
         private const int RecordsAmount = 15;
         private readonly BazArtDbContext _dbContext;
+        private readonly UserManager<User> _userManager;
         private readonly int _minCategoryValue = (int)Enum.GetValues(typeof(Categories)).Cast<Categories>().Min();
         private readonly int _maxCategoryValue = (int)Enum.GetValues(typeof(Categories)).Cast<Categories>().Max();
 
-        public Seeder(BazArtDbContext dbContext)
+        public Seeder(BazArtDbContext dbContext, UserManager<User> userManager)
         {
             _dbContext = dbContext;
+            _userManager = userManager;
         }
 
         public async Task SeedAsync()
@@ -24,21 +27,23 @@ namespace Infrastructure.Persistence
 
             if (_dbContext.Events.Any()) return;
             
-            var users = GetUsers();
+            var fakeUsers = GetFakeUsers();
             var events = GetEvents();
             var products = GetProducts();
 
-            for (int i = 0; i < users.Count; i++)
+            for (int i = 0; i < fakeUsers.Count; i++)
             {
-                users[i].CreatedEvents.Add(events[i]);
-                users[i].OwnedProducts.Add(products[i]);
+                fakeUsers[i].CreatedEvents.Add(events[i]);
+                fakeUsers[i].OwnedProducts.Add(products[i]);
             }
 
-            await _dbContext.AddRangeAsync(users);
+            await CreateAdmin();
+            await CreateUser();
+            await _dbContext.AddRangeAsync(fakeUsers);
             await _dbContext.SaveChangesAsync();
         }
 
-        private List<User> GetUsers()
+        private List<User> GetFakeUsers()
         {
             var userAddressFaker = new Faker<UserAddress>()
                 .RuleFor(p => p.Country, f => f.Address.Country())
@@ -107,6 +112,30 @@ namespace Infrastructure.Persistence
             var products = productFaker.Generate(RecordsAmount);
 
             return products;
+        }
+
+        private async Task CreateAdmin()
+        {
+            var admin = new User()
+            {
+                UserName = "Admin",
+                Email = "admin@test.com"
+            };
+
+            await _userManager.CreateAsync(admin, "BA_Admin123");
+            await _userManager.AddToRoleAsync(admin, "Admin");
+        }
+
+        private async Task CreateUser()
+        {
+            var user = new User()
+            {
+                UserName = "TestUser",
+                Email = "user@test.com"
+            };
+
+            await _userManager.CreateAsync(user, "User123,");
+            await _userManager.AddToRoleAsync(user, "User");
         }
     }
 }
