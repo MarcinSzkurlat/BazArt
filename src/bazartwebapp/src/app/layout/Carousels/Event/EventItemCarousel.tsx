@@ -12,7 +12,7 @@ export default function EventItemCarousel({ event }: Props) {
                 <Label as='a' href={`/category/${event.categoryName}`} ribbon='right' color='black'>{event.categoryName}</Label>
             </div>
             <Image as='a' href={`/event/${event.id}`} src={event.imageUrl} alt={event.name} size='medium' style={{ zIndex: '0' }} />
-            <Card.Header as='h3' style={{ margin: '10px' }}><b>{event.name}</b></Card.Header>
+            <Card.Header as='h3' textAlign='center' style={{ margin: '10px' }}><b>{event.name}</b></Card.Header>
             <Card.Description style={{ height: '70px' }}>
                 <i>{event.description.length > 100
                     ? event.description.substring(0, 100) + "..."

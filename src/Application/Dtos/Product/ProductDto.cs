@@ -6,6 +6,7 @@
         string Description,
         decimal Price,
         string ImageUrl,
-        string CategoryName
-        );
+        string CategoryName,
+        bool IsForSell
+    );
 }
