@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BazArtAPI.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
         private readonly AccountService _accountService;
@@ -21,7 +21,7 @@ namespace BazArtAPI.Controllers
         public async Task<ActionResult<UserDto>> LoginAsync([FromBody] LoginDto loginDto)
         {
             var userDto = await _accountService.LoginAsync(loginDto);
-
+            
             return Ok(userDto);
         }
 
@@ -30,6 +30,14 @@ namespace BazArtAPI.Controllers
         public async Task<ActionResult<UserDto>> RegistrationAsync([FromBody] RegistrationDto registrationDto)
         {
             var userDto = await _accountService.RegistrationAsync(registrationDto);
+
+            return Ok(userDto);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<UserDto>> GetCurrentUserAsync()
+        {
+            var userDto = await _accountService.GetCurrentUserAsync(User);
 
             return Ok(userDto);
         }
