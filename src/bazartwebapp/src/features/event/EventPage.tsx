@@ -20,7 +20,7 @@ export default observer(function EventPage() {
         <Grid container>
             <Grid.Column width={6}>
                 <div style={{ position: 'absolute', top: '30px', right: '28px', zIndex: '1' }}>
-                    <Label as='a' href={`/category/${selectedEvent?.categoryName}`} ribbon='right' color='black'>{selectedEvent?.categoryName}</Label>
+                    <Label as={Link} to={`/category/${selectedEvent?.categoryName}`} ribbon='right' color='black'>{selectedEvent?.categoryName}</Label>
                 </div>
                 <Image src={selectedEvent?.imageUrl} rounded style={{ width: '100%', zIndex:'0' }} />
                 <Grid columns={'equal'} container>

@@ -5,11 +5,18 @@ import { observer } from "mobx-react-lite";
 import ProductCarousel from "../../app/layout/Carousels/Product/ProductCarousel";
 import EventCarousel from "../../app/layout/Carousels/Event/EventCarousel";
 import HomePageAbout from "./HomePageAbout";
+import { useStore } from "../../app/stores/store";
+import LoggedUserNavBar from "../user/LoggedUserNavBar";
 
 export default observer(function HomePage() {
+    const { accountStore } = useStore();
+
     return (
         <div className='content'>
-            <NavBar className='navbar-homepage' />
+            {accountStore.isLoggedIn
+                ? <LoggedUserNavBar className='navbar' />
+                : <NavBar className="navbar-homepage" />
+            }
             <Image src="/assets/BazArt_logo_Theme_Light.jpeg" alt="logo" size="large" centered />
             <HomePageCategory />
             <br/><br/>

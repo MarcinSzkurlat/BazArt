@@ -23,7 +23,6 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 // Add services to the container.
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApi(builder.Configuration);
@@ -55,6 +54,7 @@ app.UseCors("FrontendClient");
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

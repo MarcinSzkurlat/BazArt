@@ -15,13 +15,14 @@ namespace BazArtAPI.Services
             _config = config;
         }
 
-        public string CreateToken(User user)
+        public string CreateToken(User user, string role)
         {
             var claims = new List<Claim>()
             {
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new(ClaimTypes.Email, user.Email!),
-                new(ClaimTypes.Name, user.StageName ?? "")
+                new(ClaimTypes.Name, user.StageName ?? ""),
+                new(ClaimTypes.Role, role)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"]));

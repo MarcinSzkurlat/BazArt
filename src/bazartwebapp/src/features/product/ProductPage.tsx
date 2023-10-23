@@ -20,7 +20,7 @@ export default observer(function ProductPage() {
         <Grid container>
             <Grid.Column width={10}>
                 <div style={{ position: 'absolute', top: '30px', right: '28px', zIndex: '1' }}>
-                    <Label as='a' href={`/category/${selectedProduct?.categoryName}`} ribbon='right' color='black'>{selectedProduct?.categoryName}</Label>
+                    <Label as={Link} to={`/category/${selectedProduct?.categoryName}`} ribbon='right' color='black'>{selectedProduct?.categoryName}</Label>
                 </div>
                 <Image src={selectedProduct?.imageUrl} rounded style={{ width: '100%', zIndex: '0' }} />
                 <Grid columns={'equal'} container>

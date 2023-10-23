@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Product } from "../models/Product/product";
 import { ProductDetails } from "../models/Product/productDetails";
@@ -18,6 +18,7 @@ export default class ProductStore {
         this.setLoadingInitial(true);
         try {
             const products = await agent.Products.list(category);
+            this.productsRegistry.clear();
             products.forEach(product => {
                 this.productsRegistry.set(product.id, product);
             })
@@ -32,7 +33,7 @@ export default class ProductStore {
         this.setLoadingInitial(true);
         try {
             const product = await agent.Products.details(id);
-            this.selectedProduct = product;
+            runInAction(() => this.selectedProduct = product);
             this.setLoadingInitial(false);
         } catch (error) {
             console.log(error);
@@ -44,6 +45,7 @@ export default class ProductStore {
         this.setLoadingInitial(true);
         try {
             const products = await agent.Products.latest();
+            this.latestProductRegistry.clear();
             products.forEach(product => {
                 this.latestProductRegistry.set(product.id, product);
             })

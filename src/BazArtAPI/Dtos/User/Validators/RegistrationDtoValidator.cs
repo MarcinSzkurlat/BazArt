@@ -13,7 +13,8 @@ namespace BazArtAPI.Dtos.User.Validators
 
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email is a required field")
-                .EmailAddress().WithMessage("Invalid email format");
+                .EmailAddress().WithMessage("Invalid email format")
+                .MaximumLength(50);
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Password is a required field")
