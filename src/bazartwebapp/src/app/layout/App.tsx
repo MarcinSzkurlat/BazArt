@@ -3,11 +3,11 @@ import { useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Grid, Image } from "semantic-ui-react";
 import HomePage from "../../features/home/HomePage";
-import LoggedUserNavBar from "../../features/user/LoggedUserNavBar";
+import LoggedUserNavBar from "./NavBars/LoggedUserNavBar";
 import { useStore } from "../stores/store";
 import Footer from "./Footer";
 import ModalContainer from "./Modals/ModalContainer";
-import NavBar from "./NavBar";
+import NavBar from "./NavBars/NavBar";
 
 function App() {
     const { accountStore } = useStore();

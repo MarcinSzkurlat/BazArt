@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BazArtAPI.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseApiController
     {
         private readonly AccountService _accountService;
 

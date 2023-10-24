@@ -2,8 +2,8 @@ import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { Icon, Menu } from "semantic-ui-react";
-import AccountContainer from "../../features/user/AccountContainer";
-import { useStore } from "../stores/store";
+import AccountContainer from "../../../features/account/AccountContainer";
+import { useStore } from "../../stores/store";
 
 interface Props {
     className?: string;

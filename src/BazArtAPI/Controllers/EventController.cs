@@ -59,7 +59,7 @@ namespace BazArtAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("/api/[Controller]/latest")]
+        [HttpGet("latest")]
         public async Task<ActionResult<IEnumerable<EventDto>>> GetEventsByCreatedDate()
         {
             var events = await _mediator.Send(new GetEventsByCreateDate.Query());

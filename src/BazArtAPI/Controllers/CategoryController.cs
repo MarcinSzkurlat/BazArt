@@ -25,7 +25,7 @@ namespace BazArtAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("/api/[Controller]/{name}")]
+        [HttpGet("{name}")]
         public async Task<ActionResult<CategoryDto>> GetCategoryByNameAsync([FromRoute] string name)
         {
             var category = await _mediator.Send(new GetCategoryByNameAsync.Query { Name = name });

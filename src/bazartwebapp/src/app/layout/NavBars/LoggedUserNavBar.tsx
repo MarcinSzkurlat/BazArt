@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon, Menu, Sidebar } from "semantic-ui-react";
-import { useStore } from "../../app/stores/store";
+import { useStore } from "../../stores/store";
 
 interface Props {
     className?: string;
