@@ -86,7 +86,7 @@ namespace Application.Features.Product.Command
                 productToCreate.CategoryId = (int)request.ProductToCreate.Category;
 
                 //TODO Add User as product creator
-                productToCreate.CreatedBy = new User();
+                productToCreate.CreatedBy = new Domain.Models.User.User();
 
                 await _productRepository.CreateProductAsync(productToCreate);
                 var result = await _productRepository.SaveChangesAsync();

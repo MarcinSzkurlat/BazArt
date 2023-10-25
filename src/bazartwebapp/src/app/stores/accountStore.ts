@@ -4,6 +4,7 @@ import { User } from "../models/User/user";
 import { AccountLogin } from "../models/Account/accountLogin";
 import { router } from "../router/Routes";
 import { AccountRegistration } from "../models/Account/accountRegistration";
+import { store } from "./store";
 
 export default class AccountStore {
     user: User | null = null;
@@ -36,6 +37,7 @@ export default class AccountStore {
             this.setUser(user);
             })
             router.navigate(`/user/${user.id}`);
+            store.modalStore.closeModal();
         } catch (error) {
             throw error;
         }
@@ -47,6 +49,7 @@ export default class AccountStore {
             this.setToken(user.token);
             runInAction(() => this.setUser(user));
             router.navigate(`/user/${user.id}`);
+            store.modalStore.closeModal();
         } catch (error) {
             throw error;
         }

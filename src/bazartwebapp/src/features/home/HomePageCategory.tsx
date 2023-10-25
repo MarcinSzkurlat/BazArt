@@ -23,13 +23,13 @@ export default observer(function HomePageCategory() {
                     <Reveal animated='small fade'>
                         <Reveal.Content visible style={{ width:'100%', height: '350px' }}>
                             <Image src={category.imageUrl} alt={category.name} style={{ width: '100%', height: '350px' }} />
-                            <div className={'category-div-text'}>
+                            <div className={'center-element-to-its-container'}>
                                 <Card.Header className='category-header'>{category.name}</Card.Header>
                             </div>
                         </Reveal.Content>
                         <Reveal.Content hidden style={{ width:'100%', height: '350px' }}>
                             <Image src={category.imageUrl} alt={category.name} style={{ width: '100%', height: '350px', filter: 'blur(8px)' }} />
-                            <div className={'category-div-text'}>
+                            <div className={'center-element-to-its-container'} style={{width:'100%'}}>
                                 <Card.Description className='category-description'>{category.description}</Card.Description>
                             </div>
                         </Reveal.Content>

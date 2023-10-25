@@ -6,7 +6,8 @@ export interface ProductDetails {
     quantity: number;
     imageUrl: string;
     categoryName: string;
-    creatorName: string;
+    creatorStageName: string;
+    creatorEmail: string;
     creatorId: string;
     created: string;
 }

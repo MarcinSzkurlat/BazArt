@@ -7,7 +7,8 @@
         bool IsForSell,
         int Quantity,
         string ImageUrl,
-        string CreatorName,
+        string? CreatorStageName,
+        string CreatorEmail,
         Guid CreatorId,
         string CategoryName,
         DateTime Created

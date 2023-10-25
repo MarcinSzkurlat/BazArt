@@ -6,6 +6,7 @@
         string ImageUrl,
         string CategoryName,
         string? OrganizerName,
+        string OrganizerEmail,
         Guid OrganizerId,
         string? Country,
         string? City,

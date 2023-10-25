@@ -10,10 +10,11 @@ import EventItem from "../../../../features/event/EventItem";
 interface Props {
     page: string;
     categoryName?: string;
+    userId?: string;
 }
 
-export default observer(function EventCarousel({ page, categoryName }: Props) {
-    const { eventStore } = useStore();
+export default observer(function EventCarousel({ page, categoryName, userId }: Props) {
+    const { eventStore, userStore, accountStore } = useStore();
     const { loadingInitial, latestEventsRegistry, loadLatestEvents, loadEvents, eventsRegistry } = eventStore;
 
     const [activeSliderIndex, setActiveSliderIndex] = useState(0);
@@ -30,6 +31,13 @@ export default observer(function EventCarousel({ page, categoryName }: Props) {
                 loadEvents(categoryName!).then(() => {
                     setEventItems(Array.from(eventsRegistry.values()));
                 })
+                break;
+            case 'user':
+                if (accountStore.isLoggedIn) {
+                    userStore.loadUserEvents(userId!).then(() => {
+                        setEventItems(Array.from(userStore.userEventsRegistry.values()));
+                    })
+                }
                 break;
         }
     }, [])

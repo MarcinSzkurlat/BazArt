@@ -10,5 +10,6 @@ namespace Application.Interfaces
         public Task CreateEventAsync(Event eventToCreate);
         public void DeleteEvent(Event eventToDelete);
         public Task<IEnumerable<Event>> GetEventsByCreatedDate(int amount);
+        public Task<IEnumerable<Event>> GetEventsByUserIdAsync(Guid id);
     }
 }

@@ -10,5 +10,6 @@ namespace Application.Interfaces
         public Task CreateProductAsync(Product productToCreate);
         public void DeleteProduct(Product productToDelete);
         public Task<IEnumerable<Product>> GetProductsByCreatedDate(int amount);
+        public Task<IEnumerable<Product>> GetProductsByUserIdAsync(Guid id);
     }
 }

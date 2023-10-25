@@ -12,7 +12,7 @@ export default observer(function EventPage() {
 
     useEffect(() => {
         if (id) loadEvent(id)
-    }, [])
+    }, [id])
 
     if (loadingInitial) return <LoadingComponent />
 
@@ -37,7 +37,7 @@ export default observer(function EventPage() {
                             {selectedEvent?.created.split('T')[0]}
                         </Grid.Column>
                         <Grid.Column floated='right' textAlign='right'>
-                            <Link to={`/user/${selectedEvent?.organizerId}`}>{selectedEvent?.organizerName}</Link>
+                            <Link to={`/user/${selectedEvent?.organizerId}`}>{selectedEvent?.organizerName ?? selectedEvent?.organizerEmail.split('@')[0]}</Link>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

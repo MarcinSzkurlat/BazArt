@@ -37,6 +37,7 @@ export default observer(function LoggedUserNavBar({ className }: Props) {
                 </Menu.Item>
             </Menu>
             <Sidebar as={Menu}
+                onHide={() => setVisible(false)}
                 animation='push'
                 direction='right'
                 vertical
@@ -44,7 +45,7 @@ export default observer(function LoggedUserNavBar({ className }: Props) {
                 compact
                 width='thin'
                 visible={visible}
-                className='sidebar-style'>
+                className='background-color-gold'>
                 <Menu.Item as={Link} to={`/user/${user?.id}`}>
                     <Icon name='user' />
                     My profile

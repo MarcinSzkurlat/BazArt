@@ -10,6 +10,8 @@ import { User } from "../models/User/user";
 import { AccountRegistration } from "../models/Account/accountRegistration";
 import { AccountLogin } from "../models/Account/accountLogin";
 import { store } from "../stores/store";
+import { UserDetails } from "../models/User/userDetails";
+import { router } from "../router/Routes";
 
 axios.defaults.baseURL = 'https:localhost:5050/api';
 
@@ -40,7 +42,7 @@ axios.interceptors.response.use(async respone => {
             }
             break;
         case 401:
-            console.log('unathorized');
+            router.navigate('/authorize');
             break;
         case 403:
             console.log('forbidden');
@@ -92,11 +94,18 @@ const Account = {
     currentUser: () => requests.get<User>('/account')
 }
 
+const Users = {
+    details: (id: string) => requests.get<UserDetails>(`/user/${id}`),
+    userProducts: (id: string) => requests.get<Product[]>(`/user/${id}/products`),
+    userEvents: (id: string) => requests.get<Event[]>(`/user/${id}/events`)
+}
+
 const agent = {
     Events,
     Products,
     Categories,
-    Account
+    Account,
+    Users
 }
 
 export default agent;

@@ -10,10 +10,11 @@ import { observer } from "mobx-react-lite";
 interface Props {
     page: string;
     categoryName?: string;
+    userId?: string;
 }
 
-export default observer(function ProductCarousel({ page, categoryName }: Props) {
-    const { productStore } = useStore();
+export default observer(function ProductCarousel({ page, categoryName, userId }: Props) {
+    const { productStore, userStore, accountStore } = useStore();
     const { loadingInitial, latestProductRegistry, loadLatestProducts, loadProducts, productsRegistry } = productStore;
 
     const [activeSliderIndex, setActiveSliderIndex] = useState(0);
@@ -30,6 +31,13 @@ export default observer(function ProductCarousel({ page, categoryName }: Props) 
                 loadProducts(categoryName!).then(() => {
                     setProductItems(Array.from(productsRegistry.values()));
                 })
+                break;
+            case 'user':
+                if (accountStore.isLoggedIn) {
+                    userStore.loadUserProducts(userId!).then(() => {
+                        setProductItems(Array.from(userStore.userProductsRegistry.values()));
+                    })
+                }
                 break;
         }
     }, [])

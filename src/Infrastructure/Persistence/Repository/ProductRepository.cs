@@ -54,5 +54,14 @@ namespace Infrastructure.Persistence.Repository
                 .Take(amount)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Product>> GetProductsByUserIdAsync(Guid id)
+        {
+            return await _dbContext.Products
+                .AsNoTracking()
+                .Include(x => x.Category)
+                .Where(x => x.CreatedById == id)
+                .ToListAsync();
+        }
     }
 }

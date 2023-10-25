@@ -12,7 +12,7 @@ namespace Application.Mappings
 
             CreateMap<Domain.Models.Product, ProductDetailDto>()
                 .ConstructUsing(src => new ProductDetailDto(src.Name, src.Description, src.Price, src.IsForSell,
-                    src.Quantity, src.ImageUrl, src.CreatedBy.StageName, src.CreatedById, src.Category.Name, src.Created));
+                    src.Quantity, src.ImageUrl, src.CreatedBy.StageName, src.CreatedBy.Email!, src.CreatedById, src.Category.Name, src.Created));
 
             CreateMap<CreateProductDto, Domain.Models.Product>()
                 .ForMember(dest => dest.Category, opt => opt.Ignore());

@@ -25,7 +25,7 @@ body {
 }
 
 .content {
-    padding-bottom: 170px;
+    padding-bottom: 200px;
 }
 
 .category-header {
@@ -41,13 +41,12 @@ body {
     text-shadow: 0px 0px 30px rgba(0, 0, 0, 1);
 }
 
-.category-div-text {
+.center-element-to-its-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    width: 100%;
 }
 
 .homepage-about-grid-column {
@@ -79,10 +78,20 @@ body {
     height: 100%;
 }
 
-.sidebar-style {
+.background-color-gold {
     background-color: #ffc70d !important;
+}
+
+.background-color-creme {
+    background-color: #fff6e5 !important;
 }
 
 .modal-background {
     background: #fff6e5 !important;
+}
+
+.image-fit-container {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
