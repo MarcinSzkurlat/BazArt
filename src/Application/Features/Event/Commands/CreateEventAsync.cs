@@ -80,7 +80,7 @@ namespace Application.Features.Event.Commands
                 eventToCreate.CategoryId = (int)request.CreateEventDto.Category;
 
                 //TODO Add User as event creator
-                eventToCreate.CreatedBy = new User();
+                eventToCreate.CreatedBy = new Domain.Models.User.User();
 
                 await _eventRepository.CreateEventAsync(eventToCreate);
                 var result = await _eventRepository.SaveChangesAsync();

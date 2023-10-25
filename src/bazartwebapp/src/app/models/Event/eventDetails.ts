@@ -4,6 +4,7 @@ export interface EventDetails {
     imageUrl: string;
     categoryName: string;
     organizerName: string;
+    organizerEmail: string;
     organizerId: string;
     country: string;
     city: string;

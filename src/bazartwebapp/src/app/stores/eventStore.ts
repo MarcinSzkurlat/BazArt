@@ -18,6 +18,7 @@ export default class EventStore {
         this.setLoadingInitial(true);
         try {
             const events = await agent.Events.list(category);
+            this.eventsRegistry.clear();
             events.forEach(event => {
                 this.eventsRegistry.set(event.id, event);
             })
@@ -44,6 +45,7 @@ export default class EventStore {
         this.setLoadingInitial(true);
         try {
             const events = await agent.Events.latest();
+            this.latestEventsRegistry.clear();
             events.forEach(event => {
                 this.latestEventsRegistry.set(event.id, event);
             })

@@ -20,7 +20,7 @@ export default observer(function CategoryPage() {
         <>
             <div style={{ position: 'relative' }}>
                 <Image centered src={selectedCategory?.imageUrl} alt={selectedCategory?.name} style={{ width: '70%', height: '350px', borderRadius:'15px' }} />
-                <div className={'category-div-text'}>
+                <div className={'center-element-to-its-container'}>
                     <p className='category-header'>{selectedCategory?.name}</p>
                 </div>
             </div>

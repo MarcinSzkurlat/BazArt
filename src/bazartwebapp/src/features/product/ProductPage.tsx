@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite"
 import { useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
-import { Button, Divider, Grid, Header, Icon, Image, Label, Segment } from "semantic-ui-react"
+import { Button, Divider, Grid, Header, Icon, Image, Label, Popup, Segment } from "semantic-ui-react"
 import LoadingComponent from "../../app/layout/LoadingComponent"
 import { useStore } from "../../app/stores/store"
 
@@ -12,7 +12,7 @@ export default observer(function ProductPage() {
 
     useEffect(() => {
         if (id) loadProduct(id)
-    }, [])
+    }, [id])
 
     if (loadingInitial) return <LoadingComponent />
 
@@ -20,7 +20,7 @@ export default observer(function ProductPage() {
         <Grid container>
             <Grid.Column width={10}>
                 <div style={{ position: 'absolute', top: '30px', right: '28px', zIndex: '1' }}>
-                    <Label as='a' href={`/category/${selectedProduct?.categoryName}`} ribbon='right' color='black'>{selectedProduct?.categoryName}</Label>
+                    <Label as={Link} to={`/category/${selectedProduct?.categoryName}`} ribbon='right' color='black'>{selectedProduct?.categoryName}</Label>
                 </div>
                 <Image src={selectedProduct?.imageUrl} rounded style={{ width: '100%', zIndex: '0' }} />
                 <Grid columns={'equal'} container>
@@ -37,7 +37,7 @@ export default observer(function ProductPage() {
                             {selectedProduct?.created.split('T')[0]}
                         </Grid.Column>
                         <Grid.Column floated='right' textAlign='right'>
-                            <Link to={`/user/${selectedProduct?.creatorId}`}>{selectedProduct?.creatorName}</Link>
+                            <Link to={`/user/${selectedProduct?.creatorId}`}>{selectedProduct?.creatorStageName ?? selectedProduct?.creatorEmail.split('@')[0]}</Link>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -74,9 +74,12 @@ export default observer(function ProductPage() {
                     <Button floated='left' disabled={!selectedProduct?.isForSell}>
                         Add to cart
                     </Button>
-                    <Button icon floated='right' color='red' circular>
-                        <Icon name='heart' />
-                    </Button>
+                    <Popup pinned trigger={
+                        <Button size='large' icon floated='right' color='red' circular>
+                            <Icon name='heart' />
+                        </Button>}>
+                        Add product to favorite
+                    </Popup>
                 </Segment>
             </Grid.Column>
         </Grid>

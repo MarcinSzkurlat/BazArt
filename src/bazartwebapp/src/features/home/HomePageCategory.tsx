@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Card, Reveal, Image } from "semantic-ui-react";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { Category } from "../../app/models/Category/category";
@@ -18,17 +19,17 @@ export default observer(function HomePageCategory() {
     return (
         <Card.Group itemsPerRow={2} stackable centered>
             {Array.from(categoriesRegistry.values()).map((category: Category) => (
-                <Card as='a' href={`category/${category.name}`} key = { category.id } style = {{ width: '35%', height: '350px' }}>
+                <Card as={Link} to={`category/${category.name}`} key = { category.id } style = {{ width: '35%', height: '350px' }}>
                     <Reveal animated='small fade'>
                         <Reveal.Content visible style={{ width:'100%', height: '350px' }}>
                             <Image src={category.imageUrl} alt={category.name} style={{ width: '100%', height: '350px' }} />
-                            <div className={'category-div-text'}>
+                            <div className={'center-element-to-its-container'}>
                                 <Card.Header className='category-header'>{category.name}</Card.Header>
                             </div>
                         </Reveal.Content>
                         <Reveal.Content hidden style={{ width:'100%', height: '350px' }}>
                             <Image src={category.imageUrl} alt={category.name} style={{ width: '100%', height: '350px', filter: 'blur(8px)' }} />
-                            <div className={'category-div-text'}>
+                            <div className={'center-element-to-its-container'} style={{width:'100%'}}>
                                 <Card.Description className='category-description'>{category.description}</Card.Description>
                             </div>
                         </Reveal.Content>

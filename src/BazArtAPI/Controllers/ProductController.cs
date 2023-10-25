@@ -2,6 +2,7 @@
 using Application.Features.Product.Command;
 using Application.Features.Product.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BazArtAPI.Controllers
@@ -15,6 +16,7 @@ namespace BazArtAPI.Controllers
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<ProductDetailDto>> GetProductByIdAsync([FromRoute]Guid id)
         {
@@ -23,6 +25,7 @@ namespace BazArtAPI.Controllers
             return Ok(productDto);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<ProductDto>>> GetProductsByCategoryAsync(
             [FromQuery]string categoryName)
@@ -56,7 +59,8 @@ namespace BazArtAPI.Controllers
             return Ok();
         }
 
-        [HttpGet("/api/[Controller]/latest")]
+        [AllowAnonymous]
+        [HttpGet("latest")]
         public async Task<ActionResult<List<ProductDto>>> GetProductsByCreatedDate()
         {
             var products = await _mediator.Send(new GetProductsByCreatedDate.Query());

@@ -5,10 +5,12 @@ using Infrastructure.Persistence.DbConfiguration;
 using Infrastructure.Persistence.DbConfiguration.Event;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Persistence.DbConfiguration.User;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence
 {
-    public class BazArtDbContext : DbContext
+    public class BazArtDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public BazArtDbContext(DbContextOptions options) : base(options)
         {
@@ -36,6 +38,7 @@ namespace Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new EventConfiguration());
             modelBuilder.ApplyConfiguration(new EventDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
         }
     }
 }

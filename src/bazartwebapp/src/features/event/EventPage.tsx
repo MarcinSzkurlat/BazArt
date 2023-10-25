@@ -12,7 +12,7 @@ export default observer(function EventPage() {
 
     useEffect(() => {
         if (id) loadEvent(id)
-    }, [])
+    }, [id])
 
     if (loadingInitial) return <LoadingComponent />
 
@@ -20,7 +20,7 @@ export default observer(function EventPage() {
         <Grid container>
             <Grid.Column width={6}>
                 <div style={{ position: 'absolute', top: '30px', right: '28px', zIndex: '1' }}>
-                    <Label as='a' href={`/category/${selectedEvent?.categoryName}`} ribbon='right' color='black'>{selectedEvent?.categoryName}</Label>
+                    <Label as={Link} to={`/category/${selectedEvent?.categoryName}`} ribbon='right' color='black'>{selectedEvent?.categoryName}</Label>
                 </div>
                 <Image src={selectedEvent?.imageUrl} rounded style={{ width: '100%', zIndex:'0' }} />
                 <Grid columns={'equal'} container>
@@ -37,7 +37,7 @@ export default observer(function EventPage() {
                             {selectedEvent?.created.split('T')[0]}
                         </Grid.Column>
                         <Grid.Column floated='right' textAlign='right'>
-                            <Link to={`/user/${selectedEvent?.organizerId}`}>{selectedEvent?.organizerName}</Link>
+                            <Link to={`/user/${selectedEvent?.organizerId}`}>{selectedEvent?.organizerName ?? selectedEvent?.organizerEmail.split('@')[0]}</Link>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

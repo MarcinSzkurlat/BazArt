@@ -55,5 +55,14 @@ namespace Infrastructure.Persistence.Repository
                 .Take(amount)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Event>> GetEventsByUserIdAsync(Guid id)
+        {
+            return await _dbContext.Events
+                .AsNoTracking()
+                .Include(x => x.Category)
+                .Where(x => x.CreatedById == id)
+                .ToListAsync();
+        }
     }
 }

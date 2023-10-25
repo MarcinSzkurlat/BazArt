@@ -12,7 +12,7 @@ namespace Application.Mappings
 
             CreateMap<Domain.Models.Event.Event, EventDetailsDto>()
                 .ConstructUsing(src => new EventDetailsDto(src.Name, src.Description, src.ImageUrl, src.Category.Name,
-                    src.CreatedBy.StageName, src.CreatedById, src.EventDetail.Country, src.EventDetail.City,
+                    src.CreatedBy.StageName, src.CreatedBy.Email!, src.CreatedById, src.EventDetail.Country, src.EventDetail.City,
                     src.EventDetail.Street, src.EventDetail.HouseNumber, src.EventDetail.PostalCode,
                     src.EventDetail.StartingDate, src.EventDetail.EndingDate, src.EventDetail.Created));
 

@@ -9,7 +9,7 @@ export default function Footer() {
     };
 
     return (
-        <Grid columns={3} centered stackable className='footer' >
+        <Grid columns={3} centered className='footer' >
             <Grid.Row stretched>
                 <Grid.Column textAlign='center'>
                     <Header as='h3'>Help</Header>

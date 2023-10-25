@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text;
 using Application.Exceptions;
 using Serilog;
 
@@ -25,6 +26,24 @@ namespace BazArtAPI.Middleware
 
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 await context.Response.WriteAsync(badRequestException.Message);
+            }
+            catch (ValidationException validationException)
+            {
+                var message = new StringBuilder();
+                message.Append("Validation errors:\n");
+
+                foreach (var (errorKey, errorValue) in validationException.Errors["errors"])
+                {
+                    foreach (var error in errorValue)
+                    {
+                        message.Append($"{errorKey} - {error} \n");
+                    }
+                }
+
+                Log.Warning(message.ToString());
+
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await context.Response.WriteAsJsonAsync(validationException.Errors);
             }
             catch (Exception exception)
             {
