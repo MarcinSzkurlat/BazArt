@@ -5,13 +5,15 @@ using AutoMapper;
 using Domain.Models;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Serilog;
+using System.Security.Claims;
 
 namespace Application.Features.Product.Command
 {
     public class EditProductAsync
     {
-        public class Command : IRequest
+        public class Command : IRequest<ProductDetailDto>
         {
             public Guid Id { get; set; }
             public EditProductDto ProductToEdit { get; set; }
@@ -39,30 +41,52 @@ namespace Application.Features.Product.Command
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, ProductDetailDto>
         {
             private readonly IProductRepository _productRepository;
             private readonly IMapper _mapper;
+            private readonly ICategoryRepository _categoryRepository;
+            private readonly IHttpContextAccessor _contextAccessor;
 
-            public Handler(IProductRepository productRepository, IMapper mapper)
+            public Handler(IProductRepository productRepository, IMapper mapper, ICategoryRepository categoryRepository, IHttpContextAccessor contextAccessor)
             {
                 _productRepository = productRepository;
                 _mapper = mapper;
+                _categoryRepository = categoryRepository;
+                _contextAccessor = contextAccessor;
             }
 
-            public async Task Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ProductDetailDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var productToEdit = await _productRepository.GetProductByIdAsync(request.Id);
 
                 if (productToEdit == null) throw new NotFoundException("Product with this ID not exist");
 
-                if (!string.IsNullOrWhiteSpace(request.ProductToEdit.Category.ToString())) productToEdit.CategoryId = (int)request.ProductToEdit.Category;
+                if (productToEdit.CreatedById !=
+                    Guid.Parse(_contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                    && !_contextAccessor.HttpContext.User.IsInRole("Admin"))
+                    throw new ForbiddenAccessException("You cannot edit this product");
+
+                if (!string.IsNullOrWhiteSpace(request.ProductToEdit.Category.ToString()))
+                {
+                    productToEdit.CategoryId = (int)request.ProductToEdit.Category;
+                    productToEdit.Category =
+                        await _categoryRepository.GetCategoryByNameAsync(request.ProductToEdit.Category.ToString());
+                }
+
+                string imageUrl = productToEdit.ImageUrl!;
 
                 _mapper.Map(request.ProductToEdit, productToEdit);
 
+                if(request.ProductToEdit.ImageUrl == null) productToEdit.ImageUrl = imageUrl;
+
                 await _productRepository.SaveChangesAsync();
 
+                var productDto = _mapper.Map<ProductDetailDto>(productToEdit);
+
                 Log.Information($"Product ({request.Id}) updated");
+
+                return productDto;
             }
         }
     }

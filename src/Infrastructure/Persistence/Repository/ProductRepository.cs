@@ -37,6 +37,9 @@ namespace Infrastructure.Persistence.Repository
 
         public async Task CreateProductAsync(Product productToCreate)
         {
+            productToCreate.Category = await _dbContext.Categories.FindAsync(productToCreate.CategoryId);
+            productToCreate.CreatedBy = await _dbContext.Users.FindAsync(productToCreate.CreatedById);
+
             await _dbContext.Products.AddAsync(productToCreate);
         }
 

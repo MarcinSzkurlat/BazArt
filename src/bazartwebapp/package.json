@@ -22,6 +22,7 @@
     "semantic-ui-css": "^2.5.0",
     "semantic-ui-react": "^2.1.4",
     "typescript": "^4.9.5",
+    "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@types/react-router-hash-link": "^2.4.7",
+    "@types/uuid": "^9.0.6",
     "eslint-config-react-app": "^7.0.1",
     "jest-editor-support": "^31.1.1"
   }

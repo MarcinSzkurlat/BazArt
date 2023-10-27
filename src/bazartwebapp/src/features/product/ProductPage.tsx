@@ -3,12 +3,19 @@ import { useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
 import { Button, Divider, Grid, Header, Icon, Image, Label, Popup, Segment } from "semantic-ui-react"
 import LoadingComponent from "../../app/layout/LoadingComponent"
+import { ProductActionTypes } from "../../app/models/Product/productActionTypes"
 import { useStore } from "../../app/stores/store"
+import ProductForm from "./ProductForm"
 
 export default observer(function ProductPage() {
     const { id } = useParams();
-    const { productStore } = useStore();
+    const { productStore, accountStore, modalStore } = useStore();
     const { loadingInitial, loadProduct, selectedProduct } = productStore;
+
+
+    const handleDeleteButton = () => {
+        productStore.deleteProduct(id!);
+    }
 
     useEffect(() => {
         if (id) loadProduct(id)
@@ -69,17 +76,30 @@ export default observer(function ProductPage() {
                             </i>
                         </span>
                     </>
-                    : <Header size='medium' textAlign='center'>This product is not for sell</Header>}
+                    : <Header size='medium' textAlign='center'>This product is not for sell</Header>
+                }
                 <Segment basic style={{ position: 'absolute', bottom: '0', width: '100%' }}>
-                    <Button floated='left' disabled={!selectedProduct?.isForSell}>
-                        Add to cart
-                    </Button>
-                    <Popup pinned trigger={
-                        <Button size='large' icon floated='right' color='red' circular>
-                            <Icon name='heart' />
-                        </Button>}>
-                        Add product to favorite
-                    </Popup>
+                    {selectedProduct?.creatorId === accountStore.user?.id || accountStore.user?.role === "Admin"
+                        ? <>
+                            <Button floated='left' onClick={() => modalStore.openModal(<ProductForm action={ProductActionTypes.Edit} id={id} />)}>
+                                Edit
+                            </Button>
+                            <Button color='red' floated='right' onClick={handleDeleteButton}>
+                                Delete
+                            </Button>
+                        </>
+                        : <>
+                            <Button floated='left' disabled={!selectedProduct?.isForSell}>
+                                Add to cart
+                            </Button>
+                            <Popup pinned trigger={
+                                <Button size='large' icon floated='right' color='red' circular>
+                                    <Icon name='heart' />
+                                </Button>}>
+                                Add product to favorite
+                            </Popup>
+                        </>
+                    }
                 </Segment>
             </Grid.Column>
         </Grid>

@@ -6,6 +6,7 @@ import { useStore } from "../../app/stores/store";
 import { Button, Container, Divider, Grid, Header, Icon, Image, Popup, Segment } from "semantic-ui-react";
 import ProductCarousel from "../../app/layout/Carousels/Product/ProductCarousel";
 import EventCarousel from "../../app/layout/Carousels/Event/EventCarousel";
+import { PageTypes } from "../../app/layout/Carousels/pageTypes";
 
 export default observer(function UserPage() {
     const { id } = useParams();
@@ -41,11 +42,11 @@ export default observer(function UserPage() {
             <Divider horizontal>
                 <Header as='h1'>Products</Header>
             </Divider>
-            <ProductCarousel page='user' userId={id} />
+            <ProductCarousel page={PageTypes.User} userId={id} />
             <Divider horizontal>
                 <Header as='h1'>Events</Header>
             </Divider>
-            <EventCarousel page='user' userId={id} />
+            <EventCarousel page={PageTypes.User} userId={id} />
             <Divider horizontal />
             <Grid columns={2}>
                 <Grid.Column>

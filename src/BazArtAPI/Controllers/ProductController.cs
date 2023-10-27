@@ -36,19 +36,19 @@ namespace BazArtAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateProductAsync([FromBody]CreateProductDto productToCreate)
+        public async Task<ActionResult<ProductDetailDto>> CreateProductAsync([FromBody]CreateProductDto productToCreate)
         {
-            await _mediator.Send(new CreateProductAsync.Command { ProductToCreate = productToCreate });
+            var productDto = await _mediator.Send(new CreateProductAsync.Command { ProductToCreate = productToCreate });
 
-            return Created($"api/product/{productToCreate.Id}", null);
+            return Created($"api/product/{productToCreate.Id}", productDto);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult> EditProductAsync([FromRoute]Guid id, [FromBody]EditProductDto productToEdit)
+        public async Task<ActionResult<ProductDetailDto>> EditProductAsync([FromRoute]Guid id, [FromBody]EditProductDto productToEdit)
         {
-            await _mediator.Send(new EditProductAsync.Command { Id = id, ProductToEdit = productToEdit });
+            var productDto = await _mediator.Send(new EditProductAsync.Command { Id = id, ProductToEdit = productToEdit });
 
-            return Ok();
+            return Ok(productDto);
         }
 
         [HttpDelete("{id:guid}")]

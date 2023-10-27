@@ -6,9 +6,10 @@ import { Card, Header, Icon } from "semantic-ui-react";
 import { useStore } from "../../../stores/store";
 import LoadingComponent from "../../LoadingComponent";
 import { observer } from "mobx-react-lite";
+import { PageTypes } from "../pageTypes";
 
 interface Props {
-    page: string;
+    page: PageTypes;
     categoryName?: string;
     userId?: string;
 }
@@ -22,17 +23,17 @@ export default observer(function ProductCarousel({ page, categoryName, userId }:
 
     useEffect(() => {
         switch (page) {
-            case 'home':
+            case PageTypes.Home:
                 loadLatestProducts().then(() => {
                     setProductItems(Array.from(latestProductRegistry.values()));
                 })
                 break;
-            case 'category':
+            case PageTypes.Category:
                 loadProducts(categoryName!).then(() => {
                     setProductItems(Array.from(productsRegistry.values()));
                 })
                 break;
-            case 'user':
+            case PageTypes.User:
                 if (accountStore.isLoggedIn) {
                     userStore.loadUserProducts(userId!).then(() => {
                         setProductItems(Array.from(userStore.userProductsRegistry.values()));

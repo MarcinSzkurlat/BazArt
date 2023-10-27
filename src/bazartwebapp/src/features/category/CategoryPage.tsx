@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Divider, Header, Image } from "semantic-ui-react";
 import EventCarousel from "../../app/layout/Carousels/Event/EventCarousel";
+import { PageTypes } from "../../app/layout/Carousels/pageTypes";
 import ProductCarousel from "../../app/layout/Carousels/Product/ProductCarousel";
 import { useStore } from "../../app/stores/store";
 
@@ -27,11 +28,11 @@ export default observer(function CategoryPage() {
             <Divider horizontal>
                 <Header as='h1'>Products</Header>
             </Divider>
-            <ProductCarousel page='category' categoryName={`${categoryName}`} />
+            <ProductCarousel page={PageTypes.Category} categoryName={`${categoryName}`} />
             <Divider horizontal>
                 <Header as='h1'>Events</Header>
             </Divider>
-            <EventCarousel page='category' categoryName={`${categoryName}`} />
+            <EventCarousel page={PageTypes.Category} categoryName={`${categoryName}`} />
         </>
     )
 })

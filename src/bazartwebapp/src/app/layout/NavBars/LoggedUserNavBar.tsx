@@ -2,6 +2,8 @@ import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon, Menu, Sidebar } from "semantic-ui-react";
+import ProductForm from "../../../features/product/ProductForm";
+import { ProductActionTypes } from "../../models/Product/productActionTypes";
 import { useStore } from "../../stores/store";
 
 interface Props {
@@ -9,7 +11,7 @@ interface Props {
 }
 
 export default observer(function LoggedUserNavBar({ className }: Props) {
-    const { accountStore: { user, logout } } = useStore();
+    const { accountStore: { user, logout }, modalStore } = useStore();
     const [visible, setVisible] = useState(false);
 
     const handleMenuButton = () => {
@@ -50,7 +52,7 @@ export default observer(function LoggedUserNavBar({ className }: Props) {
                     <Icon name='user' />
                     My profile
                 </Menu.Item>
-                <Menu.Item as={Link} to={'/'}>
+                <Menu.Item as='a' onClick={() => modalStore.openModal(<ProductForm action={ProductActionTypes.Create} />)}>
                     <Icon name='money bill alternate outline' />
                     Sell work
                 </Menu.Item>
