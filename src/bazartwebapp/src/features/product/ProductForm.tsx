@@ -2,13 +2,13 @@ import { observer } from "mobx-react-lite";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Checkbox, CheckboxProps, Form, Header, Segment } from "semantic-ui-react";
 import { ManipulateProduct } from "../../app/models/Product/manipulateProduct";
-import { ProductActionTypes } from "../../app/models/Product/productActionTypes";
+import { ActionTypes } from "../../app/models/actionTypes";
 import { useStore } from "../../app/stores/store";
 import ErrorMessageBox from "../errors/ErrorMessageBox";
 
 interface Props {
     id?: string;
-    action: ProductActionTypes;
+    action: ActionTypes;
 }
 
 export default observer(function ProductForm({ id, action }: Props) {
@@ -57,10 +57,10 @@ export default observer(function ProductForm({ id, action }: Props) {
 
     const handleButton = () => {
         switch (action) {
-            case ProductActionTypes.Create:
+            case ActionTypes.Create:
                 productStore.createProduct(formData).catch(errors => setErrors(errors));
                 break;
-            case ProductActionTypes.Edit:
+            case ActionTypes.Edit:
                 productStore.editProduct(formData).catch(errors => setErrors(errors));
                 break;
         }
@@ -141,7 +141,7 @@ export default observer(function ProductForm({ id, action }: Props) {
                     </>
                     : <></>}
                 <Form.Field required>
-                    <label>Category name</label>
+                    <label>Category</label>
                     <select
                         value={formData.category}
                         onChange={handleCategoryChange}>

@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { Category } from "../models/Category/category";
-import { CreateEvent } from "../models/Event/createEvent";
 import { Event } from "../models/Event/event";
 import { EventDetails } from "../models/Event/eventDetails";
 import { Product } from "../models/Product/product";
@@ -12,6 +11,7 @@ import { store } from "../stores/store";
 import { UserDetails } from "../models/User/userDetails";
 import { router } from "../router/Routes";
 import { ManipulateProduct } from "../models/Product/manipulateProduct";
+import { ManipulateEvent } from "../models/Event/manupulateEvent";
 
 axios.defaults.baseURL = 'https:localhost:5050/api';
 
@@ -70,8 +70,8 @@ const requests = {
 const Events = {
     list: (category: string) => requests.get<Event[]>(`/event?categoryName=${category}`),
     details: (id: string) => requests.get<EventDetails>(`/event/${id}`),
-    create: (event: CreateEvent) => requests.post<void>('/event', event),
-    update: (event: EventDetails, id: string) => requests.put<EventDetails>(`/event/${id}`, event),
+    create: (event: ManipulateEvent) => requests.post<EventDetails>('/event', event),
+    update: (event: ManipulateEvent, id: string) => requests.put<EventDetails>(`/event/${id}`, event),
     delete: (id: string) => requests.delete<void>(`/event/${id}`),
     latest: () => requests.get<Event[]>('/event/latest')
 }

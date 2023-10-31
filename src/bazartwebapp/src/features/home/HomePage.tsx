@@ -13,12 +13,14 @@ export default observer(function HomePage() {
     const { accountStore } = useStore();
 
     return (
-        <div className='content'>
+        <div className='content-style'>
+            <div className='sticky-navbar'>
             {accountStore.isLoggedIn
-                ? <LoggedUserNavBar className='navbar' />
-                : <NavBar className="navbar-homepage" />
+                ? <LoggedUserNavBar />
+                : <NavBar />
             }
-            <Image src="/assets/BazArt_logo_Theme_Light.jpeg" alt="logo" size="large" centered />
+            </div>
+            <Image src="/assets/BazArt_logo_Theme_Light.jpeg" alt="logo" size="large" centered style={{marginBottom:'30px'}} />
             <HomePageCategory />
             <br/><br/>
             <Divider horizontal>

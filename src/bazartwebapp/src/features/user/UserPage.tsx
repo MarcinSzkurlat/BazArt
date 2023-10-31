@@ -74,7 +74,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>Country</b>
                                     <br />
-                                    <i>{userDetails?.country}</i>
+                                    <i>{userDetails?.country ? userDetails?.country : '-'}</i>
                                 </span>
                             </Grid.Column>
                             <Grid.Column>
@@ -82,7 +82,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>City</b>
                                     <br />
-                                    <i>{userDetails?.city}</i>
+                                    <i>{userDetails?.city ? userDetails?.city : '-'}</i>
                                 </span>
                             </Grid.Column>
                             <Grid.Column floated='right'>
@@ -90,7 +90,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>Postal code</b>
                                     <br />
-                                    <i>{userDetails?.postalCode}</i>
+                                    <i>{userDetails?.postalCode ? userDetails?.postalCode : '-'}</i>
                                 </span>
                             </Grid.Column>
                         </Grid.Row>
@@ -100,7 +100,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>Street</b>
                                     <br />
-                                    <i>{userDetails?.street}</i>
+                                    <i>{userDetails?.street ? userDetails?.street : '-'}</i>
                                 </span>
                             </Grid.Column>
                             <Grid.Column>
@@ -113,7 +113,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>Number</b>
                                     <br />
-                                    <i>{userDetails?.houseNumber}</i>
+                                    <i>{userDetails?.houseNumber ? userDetails?.houseNumber : '-'}</i>
                                 </span>
                             </Grid.Column>
                         </Grid.Row>

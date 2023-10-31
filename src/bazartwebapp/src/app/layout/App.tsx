@@ -8,6 +8,7 @@ import { useStore } from "../stores/store";
 import Footer from "./Footer";
 import ModalContainer from "./Modals/ModalContainer";
 import NavBar from "./NavBars/NavBar";
+import 'react-datepicker/dist/react-datepicker.css'
 
 function App() {
     const { accountStore } = useStore();
@@ -25,20 +26,20 @@ function App() {
             {location.pathname === '/'
                 ? <HomePage />
                 : <>
-                    <Grid>
+                    <Grid className='sticky-navbar'>
                         <Grid.Row>
                             <Grid.Column width={6} textAlign='center'>
-                                <Image as={Link} to='/' src="/assets/BazArt_logo_Theme_Light.jpeg" alt="logo" size="medium" verticalAlign='middle' />
+                                <Image as={Link} to='/' src="/assets/BazArt_logo_Theme_Light.jpeg" alt="logo" size="small" verticalAlign='middle' />
                             </Grid.Column>
-                            <Grid.Column width={10}>
+                            <Grid.Column width={10} verticalAlign='middle'>
                                 {accountStore.isLoggedIn
-                                    ? <LoggedUserNavBar className='navbar' />
-                                    : <NavBar className="navbar" />
+                                    ? <LoggedUserNavBar />
+                                    : <NavBar />
                                 }
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
-                    <div className='content'>
+                    <div className='content-style'>
                         <Outlet />
                     </div>
                 </>

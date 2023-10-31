@@ -11,7 +11,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
 
             CreateMap<Domain.Models.Event.Event, EventDetailsDto>()
-                .ConstructUsing(src => new EventDetailsDto(src.Name, src.Description, src.ImageUrl, src.Category.Name,
+                .ConstructUsing(src => new EventDetailsDto(src.Name, src.Description, src.ImageUrl, src.Category.Name, src.CategoryId,
                     src.CreatedBy.StageName, src.CreatedBy.Email!, src.CreatedById, src.EventDetail.Country, src.EventDetail.City,
                     src.EventDetail.Street, src.EventDetail.HouseNumber, src.EventDetail.PostalCode,
                     src.EventDetail.StartingDate, src.EventDetail.EndingDate, src.EventDetail.Created));

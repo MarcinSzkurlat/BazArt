@@ -19,9 +19,9 @@ export default function EventItem({ event }: Props) {
             <Image as={Link} to={`/event/${event.id}`} src={event.imageUrl} alt={event.name} size='medium' style={{ zIndex: '0' }} />
             <Card.Header as='h3' textAlign='center' style={{ margin: '10px' }}><b>{event.name}</b></Card.Header>
             <Card.Description style={{ height: '70px' }}>
-                <i>{event.description.length > 100
+                <p><i>{event.description.length > 100
                     ? event.description.substring(0, 100) + "..."
-                    : event.description}</i>
+                    : event.description}</i></p>
             </Card.Description>
         </Card>
     )

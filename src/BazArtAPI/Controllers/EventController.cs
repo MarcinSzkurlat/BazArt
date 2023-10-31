@@ -35,19 +35,19 @@ namespace BazArtAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateEventAsync([FromBody]CreateEventDto eventToCreate)
+        public async Task<ActionResult<EventDetailsDto>> CreateEventAsync([FromBody]CreateEventDto eventToCreate)
         {
-            await _mediator.Send(new CreateEventAsync.Command { CreateEventDto = eventToCreate });
+            var eventDto = await _mediator.Send(new CreateEventAsync.Command { CreateEventDto = eventToCreate });
 
-            return Created($"api/event/{eventToCreate.Id}", null);
+            return Created($"api/event/{eventToCreate.Id}", eventDto);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult> EditEventAsync([FromRoute]Guid id, [FromBody]EditEventDto eventToEdit)
+        public async Task<ActionResult<EventDetailsDto>> EditEventAsync([FromRoute]Guid id, [FromBody]EditEventDto eventToEdit)
         {
-            await _mediator.Send(new EditEventAsync.Command {Id = id, EditEventDto = eventToEdit });
+            var eventDto = await _mediator.Send(new EditEventAsync.Command {Id = id, EditEventDto = eventToEdit });
 
-            return Ok();
+            return Ok(eventDto);
         }
 
         [HttpDelete("{id:guid}")]

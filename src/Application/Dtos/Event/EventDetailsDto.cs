@@ -5,6 +5,7 @@
         string Description,
         string ImageUrl,
         string CategoryName,
+        int CategoryId,
         string? OrganizerName,
         string OrganizerEmail,
         Guid OrganizerId,

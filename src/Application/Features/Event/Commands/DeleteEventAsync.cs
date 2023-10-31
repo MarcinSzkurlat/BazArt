@@ -1,6 +1,8 @@
-﻿using Application.Exceptions;
+﻿using System.Security.Claims;
+using Application.Exceptions;
 using Application.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Serilog;
 
 namespace Application.Features.Event.Commands
@@ -15,10 +17,12 @@ namespace Application.Features.Event.Commands
         public class Handler : IRequestHandler<Command>
         {
             private readonly IEventRepository _eventRepository;
+            private readonly IHttpContextAccessor _contextAccessor;
 
-            public Handler(IEventRepository eventRepository)
+            public Handler(IEventRepository eventRepository, IHttpContextAccessor contextAccessor)
             {
                 _eventRepository = eventRepository;
+                _contextAccessor = contextAccessor;
             }
 
             public async Task Handle(Command request, CancellationToken cancellationToken)
@@ -26,6 +30,11 @@ namespace Application.Features.Event.Commands
                 var eventToDelete = await _eventRepository.GetEventByIdAsync(request.Id);
 
                 if (eventToDelete == null) throw new NotFoundException("Event with this ID not exist");
+
+                if (eventToDelete.CreatedById !=
+                    Guid.Parse(_contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                    && !_contextAccessor.HttpContext.User.IsInRole("Admin"))
+                    throw new ForbiddenAccessException("You cannot edit this product");
 
                 _eventRepository.DeleteEvent(eventToDelete);
 

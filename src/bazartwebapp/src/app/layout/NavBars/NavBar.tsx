@@ -5,15 +5,11 @@ import { Icon, Menu } from "semantic-ui-react";
 import AccountContainer from "../../../features/account/AccountContainer";
 import { useStore } from "../../stores/store";
 
-interface Props {
-    className?: string;
-}
-
-export default observer(function NavBar({ className }: Props) {
+export default observer(function NavBar() {
     const { modalStore } = useStore();
 
     return (
-        <Menu borderless compact secondary className={className} icon='labeled' widths='3' >
+        <Menu borderless compact secondary icon='labeled' widths='3' >
             <Menu.Item as={HashLink} smooth to='/#about' name='about'>
                 <Icon name='info' />
                     About

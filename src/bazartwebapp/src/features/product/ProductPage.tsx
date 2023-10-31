@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
 import { Button, Divider, Grid, Header, Icon, Image, Label, Popup, Segment } from "semantic-ui-react"
 import LoadingComponent from "../../app/layout/LoadingComponent"
-import { ProductActionTypes } from "../../app/models/Product/productActionTypes"
+import { ActionTypes } from "../../app/models/actionTypes"
 import { useStore } from "../../app/stores/store"
 import ProductForm from "./ProductForm"
 
@@ -50,38 +50,40 @@ export default observer(function ProductPage() {
                 </Grid>
             </Grid.Column>
             <Grid.Column width={6}>
-                <Header textAlign='center' size='large'>{selectedProduct?.name}</Header>
-                <Divider horizontal>
-                    <Header as='h6'>Description</Header>
-                </Divider>
-                <p>{selectedProduct?.description}</p>
-                <Divider horizontal>
-                    <Header as='h6'>Details</Header>
-                </Divider>
-                {selectedProduct?.isForSell
-                    ? <>
-                        {selectedProduct.quantity > 1
-                            ? <>
-                                <span><b>Quantity: </b> <i>{selectedProduct.quantity}</i></span>
-                                <br />
-                            </>
-                            : <></>}
-                        <span>
-                            <b>Price: </b>
-                            <i>
-                                ${selectedProduct.price}
-                                {selectedProduct.quantity > 1
-                                    ? <> each</>
-                                    : ''}
-                            </i>
-                        </span>
-                    </>
-                    : <Header size='medium' textAlign='center'>This product is not for sell</Header>
-                }
-                <Segment basic style={{ position: 'absolute', bottom: '0', width: '100%' }}>
+                <div>
+                    <Header textAlign='center' size='large'>{selectedProduct?.name}</Header>
+                    <Divider horizontal>
+                        <Header as='h6'>Description</Header>
+                    </Divider>
+                    <p>{selectedProduct?.description}</p>
+                    <Divider horizontal>
+                        <Header as='h6'>Details</Header>
+                    </Divider>
+                    {selectedProduct?.isForSell
+                        ? <>
+                            {selectedProduct.quantity > 1
+                                ? <>
+                                    <span><b>Quantity: </b> <i>{selectedProduct.quantity}</i></span>
+                                    <br />
+                                </>
+                                : <></>}
+                            <span>
+                                <b>Price: </b>
+                                <i>
+                                    ${selectedProduct.price}
+                                    {selectedProduct.quantity > 1
+                                        ? <> each</>
+                                        : ''}
+                                </i>
+                            </span>
+                        </>
+                        : <Header size='medium' textAlign='center'>This product is not for sell</Header>
+                    }
+                </div>
+                <Segment basic style={{ position: 'absolute', bottom: '-50px', width: '100%' }}>
                     {selectedProduct?.creatorId === accountStore.user?.id || accountStore.user?.role === "Admin"
                         ? <>
-                            <Button floated='left' onClick={() => modalStore.openModal(<ProductForm action={ProductActionTypes.Edit} id={id} />)}>
+                            <Button floated='left' onClick={() => modalStore.openModal(<ProductForm action={ActionTypes.Edit} id={id} />)}>
                                 Edit
                             </Button>
                             <Button color='red' floated='right' onClick={handleDeleteButton}>
