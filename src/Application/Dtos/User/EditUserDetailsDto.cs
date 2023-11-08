@@ -1,8 +1,6 @@
 ﻿namespace Application.Dtos.User
 {
-    public record UserDetailDto(
-        Guid Id,
-        string Email,
+    public record EditUserDetailsDto(
         string? StageName,
         string? Description,
         string? Country,
@@ -10,6 +8,5 @@
         string? Street,
         int? HouseNumber,
         string? PostalCode,
-        int? CategoryId
-    );
+        int? CategoryId);
 }

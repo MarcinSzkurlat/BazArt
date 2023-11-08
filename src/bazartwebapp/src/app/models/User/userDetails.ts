@@ -1,4 +1,5 @@
 export interface UserDetails {
+    id: string;
     email: string;
     stageName: string;
     description: string;
@@ -7,4 +8,5 @@ export interface UserDetails {
     street: string;
     houseNumber: number;
     postalCode: string;
+    categoryId: number;
 }

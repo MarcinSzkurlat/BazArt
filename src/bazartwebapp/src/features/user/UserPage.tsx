@@ -1,9 +1,9 @@
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useStore } from "../../app/stores/store";
-import { Button, Container, Divider, Grid, Header, Icon, Image, Popup, Segment } from "semantic-ui-react";
+import { Button, Confirm, Container, Divider, Grid, Header, Icon, Image, Popup, Segment } from "semantic-ui-react";
 import ProductCarousel from "../../app/layout/Carousels/Product/ProductCarousel";
 import EventCarousel from "../../app/layout/Carousels/Event/EventCarousel";
 import { PageTypes } from "../../app/layout/Carousels/pageTypes";
@@ -13,11 +13,18 @@ export default observer(function UserPage() {
     const { userStore, accountStore } = useStore();
     const { userDetails } = userStore;
 
+    const [confirmDelete, setConfirmDelete] = useState(false);
+
+    const handleDeleteUser = () => {
+        if (userDetails) accountStore.deleteAccount(userDetails?.id);
+        setConfirmDelete(false);
+    }
+
     useEffect(() => {
         if (id) {
             userStore.loadUserDetails(id);
         }
-    }, [id])
+    }, [id, userStore.currentUserDetails])
 
     if (userStore.loadingInitial) return <LoadingComponent />
 
@@ -30,6 +37,20 @@ export default observer(function UserPage() {
                     <Image avatar src="/assets/user-image-placeholder.png" size='small' />
                     <Header className='background-color-creme' block size='huge' style={{border:'none'} }>{userDetails?.stageName ?? userDetails?.email.split('@')[0]}</Header>
                 </div>
+                {accountStore.user?.role === "Admin" && accountStore.user.id !== userDetails?.id
+                    ? <>
+                        <Button onClick={() => setConfirmDelete(true)} size='medium' floated='left' color='red' style={{ position: 'absolute', bottom: '50px', left: '60px' }}>
+                        Delete this user
+                        </Button>
+                        <Confirm
+                            open={confirmDelete}
+                            cancelButton='Cancel'
+                            confirmButton="Yes, delete account"
+                            onCancel={() => setConfirmDelete(false)}
+                            onConfirm={handleDeleteUser}
+                        />
+                    </>
+                    : <></>}
                 {accountStore.user?.id === id
                     ? <></>
                     : <Popup pinned trigger={

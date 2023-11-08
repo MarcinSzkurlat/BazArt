@@ -48,7 +48,9 @@ export default observer(function AccountContainer() {
                 </Grid>
             </Segment>
             {isLoginForm
-                ? <Segment className='modal-background' padded='very'><LoginForm /></Segment>
+                ? <Segment className='modal-background' padded='very'>
+                    <LoginForm />
+                </Segment>
                 : <Segment className='modal-background' padded='very'>
                     <Grid centered columns={2}>
                         <Grid.Column textAlign='center'>

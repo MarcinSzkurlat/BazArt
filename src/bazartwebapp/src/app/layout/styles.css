@@ -9,7 +9,7 @@ p {
     overflow-wrap: break-word;
 }
 
-.ui.button {
+.ui.button, .ui.button:focus {
     background: #be9400;
 }
 

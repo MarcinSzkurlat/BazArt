@@ -39,5 +39,13 @@ namespace BazArtAPI.Controllers
 
             return Ok(userDto);
         }
+
+        [HttpPut("password")]
+        public async Task<ActionResult<UserDto>> ChangeCurrentUserPasswordAsync([FromBody] ChangeUserPasswordDto changeUserPasswordDto)
+        {
+            var userDto = await _accountService.ChangeCurrentUserPasswordAsync(User, changeUserPasswordDto);
+
+            return Ok(userDto);
+        }
     }
 }

@@ -12,6 +12,8 @@ import { UserDetails } from "../models/User/userDetails";
 import { router } from "../router/Routes";
 import { ManipulateProduct } from "../models/Product/manipulateProduct";
 import { ManipulateEvent } from "../models/Event/manupulateEvent";
+import { AccountChangePassword } from "../models/Account/accountChangePassword";
+import { EditUser } from "../models/User/editUser";
 
 axios.defaults.baseURL = 'https:localhost:5050/api';
 
@@ -93,13 +95,16 @@ const Categories = {
 const Account = {
     login: (data: AccountLogin) => requests.post<User>('/account/login', data),
     registration: (data: AccountRegistration) => requests.post<User>('/account/registration', data),
-    currentUser: () => requests.get<User>('/account')
+    currentUser: () => requests.get<User>('/account'),
+    changePassword: (data: AccountChangePassword) => requests.put<User>('/account/password', data)
 }
 
 const Users = {
     details: (id: string) => requests.get<UserDetails>(`/user/${id}`),
     userProducts: (id: string) => requests.get<Product[]>(`/user/${id}/products`),
-    userEvents: (id: string) => requests.get<Event[]>(`/user/${id}/events`)
+    userEvents: (id: string) => requests.get<Event[]>(`/user/${id}/events`),
+    editUser: (data: EditUser) => requests.put<UserDetails>('/user', data),
+    deleteUser: (id: string) => requests.delete<void>(`/user/${id}`)
 }
 
 const agent = {
