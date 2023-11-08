@@ -19,9 +19,9 @@ export default function ProductItem({ product }: Props) {
             <Image as={Link} to={`/product/${product.id}`} src={product.imageUrl} alt={product.name} size='medium' style={{ zIndex: '0' }} />
             <Card.Header as='h3' textAlign='center' style={{ margin: '10px' }}><b>{product.name}</b></Card.Header>
             <Card.Description style={{ height: '70px' }}>
-                <i>{product.description.length > 100
+                <p><i>{product.description.length > 100
                     ? product.description.substring(0, 100) + "..."
-                    : product.description}</i>
+                    : product.description}</i></p>
             </Card.Description>
             <Card.Content extra>
                 {product.isForSell

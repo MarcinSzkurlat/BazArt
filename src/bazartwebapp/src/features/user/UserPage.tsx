@@ -1,22 +1,30 @@
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useStore } from "../../app/stores/store";
-import { Button, Container, Divider, Grid, Header, Icon, Image, Popup, Segment } from "semantic-ui-react";
+import { Button, Confirm, Container, Divider, Grid, Header, Icon, Image, Popup, Segment } from "semantic-ui-react";
 import ProductCarousel from "../../app/layout/Carousels/Product/ProductCarousel";
 import EventCarousel from "../../app/layout/Carousels/Event/EventCarousel";
+import { PageTypes } from "../../app/layout/Carousels/pageTypes";
 
 export default observer(function UserPage() {
     const { id } = useParams();
     const { userStore, accountStore } = useStore();
     const { userDetails } = userStore;
 
+    const [confirmDelete, setConfirmDelete] = useState(false);
+
+    const handleDeleteUser = () => {
+        if (userDetails) accountStore.deleteAccount(userDetails?.id);
+        setConfirmDelete(false);
+    }
+
     useEffect(() => {
         if (id) {
             userStore.loadUserDetails(id);
         }
-    }, [id])
+    }, [id, userStore.currentUserDetails])
 
     if (userStore.loadingInitial) return <LoadingComponent />
 
@@ -29,6 +37,20 @@ export default observer(function UserPage() {
                     <Image avatar src="/assets/user-image-placeholder.png" size='small' />
                     <Header className='background-color-creme' block size='huge' style={{border:'none'} }>{userDetails?.stageName ?? userDetails?.email.split('@')[0]}</Header>
                 </div>
+                {accountStore.user?.role === "Admin" && accountStore.user.id !== userDetails?.id
+                    ? <>
+                        <Button onClick={() => setConfirmDelete(true)} size='medium' floated='left' color='red' style={{ position: 'absolute', bottom: '50px', left: '60px' }}>
+                        Delete this user
+                        </Button>
+                        <Confirm
+                            open={confirmDelete}
+                            cancelButton='Cancel'
+                            confirmButton="Yes, delete account"
+                            onCancel={() => setConfirmDelete(false)}
+                            onConfirm={handleDeleteUser}
+                        />
+                    </>
+                    : <></>}
                 {accountStore.user?.id === id
                     ? <></>
                     : <Popup pinned trigger={
@@ -41,11 +63,11 @@ export default observer(function UserPage() {
             <Divider horizontal>
                 <Header as='h1'>Products</Header>
             </Divider>
-            <ProductCarousel page='user' userId={id} />
+            <ProductCarousel page={PageTypes.User} userId={id} />
             <Divider horizontal>
                 <Header as='h1'>Events</Header>
             </Divider>
-            <EventCarousel page='user' userId={id} />
+            <EventCarousel page={PageTypes.User} userId={id} />
             <Divider horizontal />
             <Grid columns={2}>
                 <Grid.Column>
@@ -73,7 +95,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>Country</b>
                                     <br />
-                                    <i>{userDetails?.country}</i>
+                                    <i>{userDetails?.country ? userDetails?.country : '-'}</i>
                                 </span>
                             </Grid.Column>
                             <Grid.Column>
@@ -81,7 +103,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>City</b>
                                     <br />
-                                    <i>{userDetails?.city}</i>
+                                    <i>{userDetails?.city ? userDetails?.city : '-'}</i>
                                 </span>
                             </Grid.Column>
                             <Grid.Column floated='right'>
@@ -89,7 +111,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>Postal code</b>
                                     <br />
-                                    <i>{userDetails?.postalCode}</i>
+                                    <i>{userDetails?.postalCode ? userDetails?.postalCode : '-'}</i>
                                 </span>
                             </Grid.Column>
                         </Grid.Row>
@@ -99,7 +121,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>Street</b>
                                     <br />
-                                    <i>{userDetails?.street}</i>
+                                    <i>{userDetails?.street ? userDetails?.street : '-'}</i>
                                 </span>
                             </Grid.Column>
                             <Grid.Column>
@@ -112,7 +134,7 @@ export default observer(function UserPage() {
                                 <span>
                                     <b>Number</b>
                                     <br />
-                                    <i>{userDetails?.houseNumber}</i>
+                                    <i>{userDetails?.houseNumber ? userDetails?.houseNumber : '-'}</i>
                                 </span>
                             </Grid.Column>
                         </Grid.Row>

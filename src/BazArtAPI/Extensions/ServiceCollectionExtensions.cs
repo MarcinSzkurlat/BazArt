@@ -34,6 +34,7 @@ namespace BazArtAPI.Extensions
             services.AddScoped<AccountService>();
             services.AddScoped<TokenService>();
             services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
+            services.AddHttpContextAccessor();
         }
 
         private static void AddIdentity(IServiceCollection services, IConfiguration configuration)

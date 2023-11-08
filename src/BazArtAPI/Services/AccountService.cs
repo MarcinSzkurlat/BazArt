@@ -69,6 +69,29 @@ namespace BazArtAPI.Services
             return CreateUserDto(user!);
         }
 
+        public async Task<UserDto> ChangeCurrentUserPasswordAsync(ClaimsPrincipal claimsPrincipal, ChangeUserPasswordDto changeUserPasswordDto)
+        {
+            var user = await _userManager.FindByEmailAsync(claimsPrincipal.FindFirstValue((ClaimTypes.Email))!);
+
+            if (user == null)
+                throw new ValidationException(new() { { "User", new[] { "User not found" } } });
+
+            var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, changeUserPasswordDto.OldPassword);
+
+            if (!isPasswordCorrect)
+                throw new ValidationException(new() { { "Password", new[] { "Wrong old password" } } });
+
+            var result = await _userManager.ChangePasswordAsync(user, changeUserPasswordDto.OldPassword, changeUserPasswordDto.NewPassword);
+
+            if (!result.Succeeded)
+                throw new ValidationException(new()
+                {
+                    { "Password", result.Errors.Select(error => error.Description).ToArray() }
+                });
+
+            return CreateUserDto(user);
+        }
+
         private UserDto CreateUserDto(User user)
         {
             var role = _userManager.GetRolesAsync(user).Result.FirstOrDefault()!;

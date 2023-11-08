@@ -7,7 +7,7 @@ namespace Application.Dtos.Product
         string Name,
         string Description,
         decimal? Price,
-        bool IsForSell,
+        bool? IsForSell,
         int? Quantity,
         string? ImageUrl,
         Categories Category

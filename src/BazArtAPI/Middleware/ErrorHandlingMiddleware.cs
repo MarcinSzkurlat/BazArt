@@ -27,6 +27,13 @@ namespace BazArtAPI.Middleware
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 await context.Response.WriteAsync(badRequestException.Message);
             }
+            catch (ForbiddenAccessException forbiddenAccessException)
+            {
+                Log.Warning(forbiddenAccessException.Message);
+
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                await context.Response.WriteAsync(forbiddenAccessException.Message);
+            }
             catch (ValidationException validationException)
             {
                 var message = new StringBuilder();

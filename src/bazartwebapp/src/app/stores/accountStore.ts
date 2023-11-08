@@ -5,6 +5,7 @@ import { AccountLogin } from "../models/Account/accountLogin";
 import { router } from "../router/Routes";
 import { AccountRegistration } from "../models/Account/accountRegistration";
 import { store } from "./store";
+import { AccountChangePassword } from "../models/Account/accountChangePassword";
 
 export default class AccountStore {
     user: User | null = null;
@@ -33,8 +34,9 @@ export default class AccountStore {
         try {
             const user = await agent.Account.login(data);
             runInAction(() => {
-            this.setToken(user.token);
-            this.setUser(user);
+                this.setToken(user.token);
+                this.setUser(user);
+                store.userStore.loadCurrentUserDetails();
             })
             router.navigate(`/user/${user.id}`);
             store.modalStore.closeModal();
@@ -68,6 +70,34 @@ export default class AccountStore {
                 this.setToken(user.token);
                 this.setUser(user);
             })
+        } catch (error) {
+            console.log(error);
+            this.logout();
+        }
+    }
+
+    changePassword = async (data: AccountChangePassword) => {
+        try {
+            const user = await agent.Account.changePassword(data);
+            runInAction(() => {
+                this.setToken(user.token);
+                this.setUser(user);
+            })
+            router.navigate(`/user/${user.id}`);
+            store.modalStore.closeModal();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    deleteAccount = async (id: string) => {
+        try {
+            await agent.Users.deleteUser(id);
+            if (this.user?.id === id) {
+                this.logout();
+                store.modalStore.closeModal();
+            }
+            router.navigate('/');
         } catch (error) {
             console.log(error);
         }

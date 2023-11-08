@@ -3,6 +3,7 @@ export interface EventDetails {
     description: string;
     imageUrl: string;
     categoryName: string;
+    categoryId: number;
     organizerName: string;
     organizerEmail: string;
     organizerId: string;
@@ -11,7 +12,7 @@ export interface EventDetails {
     street: string;
     houseNumber: number;
     postalCode: string;
-    startingDate: string;
-    endingDate: string;
+    startingDate: Date;
+    endingDate: Date;
     created: string;
 }

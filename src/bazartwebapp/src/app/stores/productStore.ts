@@ -2,6 +2,10 @@ import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Product } from "../models/Product/product";
 import { ProductDetails } from "../models/Product/productDetails";
+import { v4 as uuid } from 'uuid';
+import { router } from "../router/Routes";
+import { ManipulateProduct } from "../models/Product/manipulateProduct";
+import { store } from "./store";
 
 export default class ProductStore {
     products: Product[] = [];
@@ -53,6 +57,38 @@ export default class ProductStore {
         } catch (error) {
             console.log(error);
             this.setLoadingInitial(false);
+        }
+    }
+
+    createProduct = async (product: ManipulateProduct) => {
+        product.id = uuid();
+        try {
+            const createdProduct = await agent.Products.create(product);
+            runInAction(() => this.selectedProduct = createdProduct);
+            router.navigate(`/product/${product.id}`);
+            store.modalStore.closeModal();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    editProduct = async (product: ManipulateProduct) => {
+        try {
+            const editedProduct = await agent.Products.update(product, product.id);
+            runInAction(() => this.selectedProduct = editedProduct);
+            router.navigate(`/product/${product.id}`);
+            store.modalStore.closeModal();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    deleteProduct = async (id: string) => {
+        try {
+            await agent.Products.delete(id);
+            router.navigate('/');
+        } catch (error) {
+            console.log(error);
         }
     }
 

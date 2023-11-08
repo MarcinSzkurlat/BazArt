@@ -3,6 +3,7 @@ using Application.Dtos.Product;
 using Application.Dtos.User;
 using Application.Features.Event.Queries;
 using Application.Features.Product.Queries;
+using Application.Features.User.Command;
 using Application.Features.User.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,24 @@ namespace BazArtAPI.Controllers
             var events = await _mediator.Send(new GetEventsByUserIdAsync.Query{Id = id});
 
             return Ok(events);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<UserDetailDto>> EditCurrentUserDetailsAsync(
+            [FromBody] EditUserDetailsDto editUserDetailsDto)
+        {
+            var userDto = await _mediator.Send(new EditUserDetailsAsync.Command{EditUserDetailsDto = editUserDetailsDto});
+
+            return Ok(userDto);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult> DeleteUserByIdAsync([FromRoute]Guid id)
+        {
+            await _mediator.Send(new DeleteUserByIdAsync.Command
+                { Id = id });
+
+            return Ok();
         }
     }
 }

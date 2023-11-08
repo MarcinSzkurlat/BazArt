@@ -7,28 +7,31 @@ import EventCarousel from "../../app/layout/Carousels/Event/EventCarousel";
 import HomePageAbout from "./HomePageAbout";
 import { useStore } from "../../app/stores/store";
 import LoggedUserNavBar from "../../app/layout/NavBars/LoggedUserNavBar";
+import { PageTypes } from "../../app/layout/Carousels/pageTypes";
 
 export default observer(function HomePage() {
     const { accountStore } = useStore();
 
     return (
-        <div className='content'>
+        <div className='content-style'>
+            <div className='sticky-navbar'>
             {accountStore.isLoggedIn
-                ? <LoggedUserNavBar className='navbar' />
-                : <NavBar className="navbar-homepage" />
+                ? <LoggedUserNavBar />
+                : <NavBar />
             }
-            <Image src="/assets/BazArt_logo_Theme_Light.jpeg" alt="logo" size="large" centered />
+            </div>
+            <Image src="/assets/BazArt_logo_Theme_Light.jpeg" alt="logo" size="large" centered style={{marginBottom:'30px'}} />
             <HomePageCategory />
             <br/><br/>
             <Divider horizontal>
                 <Header as='h1'>Latest works</Header>
             </Divider>
-            <ProductCarousel page='home' />
+            <ProductCarousel page={PageTypes.Home} />
             <br/><br/>
             <Divider horizontal>
                 <Header as='h1'>Latest events</Header>
             </Divider>
-            <EventCarousel page='home' />
+            <EventCarousel page={PageTypes.Home} />
             <br/><br/>
             <Divider horizontal id='about'>
                 <Header as='h1'>About</Header>

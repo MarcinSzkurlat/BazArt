@@ -13,11 +13,22 @@ namespace Infrastructure.Persistence.Repository
             _dbContext = dbContext;
         }
 
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<User?> GetUserByIdAsync(Guid id)
         {
             return await _dbContext.Users
                 .Include(x => x.Address)
+                .Include(x => x.Category)
                 .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public void DeleteUserById(User user)
+        {
+            _dbContext.Users.Remove(user);
         }
     }
 }

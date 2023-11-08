@@ -38,6 +38,9 @@ namespace Infrastructure.Persistence.Repository
 
         public async Task CreateEventAsync(Event eventToCreate)
         {
+            eventToCreate.Category = await _dbContext.Categories.FindAsync(eventToCreate.CategoryId);
+            eventToCreate.CreatedBy = await _dbContext.Users.FindAsync(eventToCreate.CreatedById);
+
             await _dbContext.Events.AddAsync(eventToCreate);
         }
 

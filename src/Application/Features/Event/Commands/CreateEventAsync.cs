@@ -3,16 +3,17 @@ using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
-using Domain.Models.User;
 using FluentValidation;
 using MediatR;
 using Serilog;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Features.Event.Commands
 {
     public class CreateEventAsync
     {
-        public class Command : IRequest
+        public class Command : IRequest<EventDetailsDto>
         {
             public CreateEventDto CreateEventDto { get; set; }
         }
@@ -55,19 +56,21 @@ namespace Application.Features.Event.Commands
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, EventDetailsDto>
         {
             private readonly IEventRepository _eventRepository;
             private readonly IMapper _mapper;
+            private readonly IHttpContextAccessor _contextAccessor;
             private const string EventImagePlaceHolder = "https://upload.wikimedia.org/wikipedia/commons/9/9b/Exposition_Richard_Prince%2C_American_Prayer_-_sc%C3%A9nographie_21.jpg";
 
-            public Handler(IEventRepository eventRepository, IMapper mapper)
+            public Handler(IEventRepository eventRepository, IMapper mapper, IHttpContextAccessor contextAccessor)
             {
                 _eventRepository = eventRepository;
                 _mapper = mapper;
+                _contextAccessor = contextAccessor;
             }
 
-            public async Task Handle(Command request, CancellationToken cancellationToken)
+            public async Task<EventDetailsDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var eventFromDb = await _eventRepository.GetEventByIdAsync(request.CreateEventDto.Id);
 
@@ -79,15 +82,18 @@ namespace Application.Features.Event.Commands
 
                 eventToCreate.CategoryId = (int)request.CreateEventDto.Category;
 
-                //TODO Add User as event creator
-                eventToCreate.CreatedBy = new Domain.Models.User.User();
+                eventToCreate.CreatedById = Guid.Parse(_contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                 await _eventRepository.CreateEventAsync(eventToCreate);
                 var result = await _eventRepository.SaveChangesAsync();
 
                 if (result == 0) throw new Exception();
 
+                var eventDto = _mapper.Map<EventDetailsDto>(eventToCreate);
+
                 Log.Information($"Event ({eventToCreate.Id}) created");
+
+                return eventDto;
             }
         }
     }

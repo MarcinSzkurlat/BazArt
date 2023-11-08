@@ -9,9 +9,16 @@ namespace Application.Mappings
         public UserMappingProfile()
         {
             CreateMap<User, UserDetailDto>()
-                .ConstructUsing(src => new UserDetailDto(src.Email!, src.StageName, src.Description, src.Address.Country,
+                .ConstructUsing(src => new UserDetailDto(src.Id, src.Email!, src.StageName, src.Description, src.Address.Country,
                     src.Address.City, src.Address.Street,
-                    src.Address.HouseNumber, src.Address.PostalCode));
+                    src.Address.HouseNumber, src.Address.PostalCode, src.CategoryId));
+
+            CreateMap<EditUserDetailsDto, User>()
+                .ForPath(dest => dest.Address.Country, opt => opt.MapFrom(src => src.Country))
+                .ForPath(dest => dest.Address.City, opt => opt.MapFrom(src => src.City))
+                .ForPath(dest => dest.Address.Street, opt => opt.MapFrom(src => src.Street))
+                .ForPath(dest => dest.Address.HouseNumber, opt => opt.MapFrom(src => src.HouseNumber))
+                .ForPath(dest => dest.Address.PostalCode, opt => opt.MapFrom(src => src.PostalCode));
         }
     }
 }

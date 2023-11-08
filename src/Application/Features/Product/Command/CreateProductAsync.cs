@@ -3,16 +3,17 @@ using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
-using Domain.Models.User;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Serilog;
+using System.Security.Claims;
 
 namespace Application.Features.Product.Command
 {
     public class CreateProductAsync
     {
-        public class Command : IRequest
+        public class Command : IRequest<ProductDetailDto>
         {
             public CreateProductDto ProductToCreate { get; set; }
         }
@@ -44,10 +45,11 @@ namespace Application.Features.Product.Command
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, ProductDetailDto>
         {
             private readonly IProductRepository _productRepository;
             private readonly IMapper _mapper;
+            private readonly IHttpContextAccessor _contextAccessor;
 
             private const string PlaceHolderPainting =
                 "https://img.freepik.com/free-photo/close-up-oil-paints-brushes-palette_176420-2835.jpg?w=1380&t=st=1695635072~exp=1695635672~hmac=8633b9d82a1b0fc1d69e43572fdd05dc8036594b8ca05999f28264f5367db1c7";
@@ -57,13 +59,14 @@ namespace Application.Features.Product.Command
             private const string PlaceHolderHandMade = "https://img.freepik.com/free-photo/young-woman-using-macrame-technique_23-2149064470.jpg?w=1380&t=st=1695635983~exp=1695636583~hmac=5c6d0be0cf9c8851b78363f60d3b7caf03239c5b2c1a22016eb76645b204129a";
             private const string PlaceHolderNoCategory = "https://img.freepik.com/free-vector/abstract-watercolor-squared-frame_23-2149090424.jpg?w=826&t=st=1695636939~exp=1695637539~hmac=36515d62294093d9b1def0d3068780cdc06858d00d47ead805d5ceb0ac6dd82f";
 
-            public Handler(IProductRepository productRepository, IMapper mapper)
+            public Handler(IProductRepository productRepository, IMapper mapper, IHttpContextAccessor contextAccessor)
             {
                 _productRepository = productRepository;
                 _mapper = mapper;
+                _contextAccessor = contextAccessor;
             }
 
-            public async Task Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ProductDetailDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var existProduct = await _productRepository.GetProductByIdAsync(request.ProductToCreate.Id);
 
@@ -84,16 +87,18 @@ namespace Application.Features.Product.Command
                 }
 
                 productToCreate.CategoryId = (int)request.ProductToCreate.Category;
-
-                //TODO Add User as product creator
-                productToCreate.CreatedBy = new Domain.Models.User.User();
+                productToCreate.CreatedById = Guid.Parse(_contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                 await _productRepository.CreateProductAsync(productToCreate);
                 var result = await _productRepository.SaveChangesAsync();
 
                 if (result == 0) throw new Exception();
 
+                var productDto = _mapper.Map<ProductDetailDto>(productToCreate);
+
                 Log.Information($"Product ({productToCreate.Id}) created");
+
+                return productDto;
             }
         }
     }

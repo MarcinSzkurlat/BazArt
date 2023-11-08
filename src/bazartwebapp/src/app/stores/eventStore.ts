@@ -2,6 +2,10 @@ import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Event } from "../models/Event/event";
 import { EventDetails } from "../models/Event/eventDetails";
+import { v4 as uuid } from 'uuid';
+import { router } from "../router/Routes";
+import { ManipulateEvent } from "../models/Event/manupulateEvent";
+import { store } from "./store";
 
 export default class EventStore {
     events: Event[] = [];
@@ -53,6 +57,43 @@ export default class EventStore {
         } catch (error) {
             console.log(error);
             this.setLoadingInitial(false);
+        }
+    }
+
+    createEvent = async (event: ManipulateEvent) => {
+        event.id = uuid();
+        try {
+            const createdEvent = await agent.Events.create(event);
+            runInAction(() => this.selectedEvent = createdEvent);
+            router.navigate(`/event/${event.id}`);
+            store.modalStore.closeModal();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    editEvent = async (event: ManipulateEvent) => {
+        if (event.country === '') event.country = null;
+        if (event.city === '') event.city = null;
+        if (event.street === '') event.street = null;
+        if (event.postalCode === '') event.postalCode = null;
+
+        try {
+            const editedEvent = await agent.Events.update(event, event.id);
+            runInAction(() => this.selectedEvent = editedEvent);
+            router.navigate(`/event/${event.id}`);
+            store.modalStore.closeModal();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    deleteEvent = async (id: string) => {
+        try {
+            await agent.Events.delete(id);
+            router.navigate('/');
+        } catch (error) {
+            console.log(error);
         }
     }
 

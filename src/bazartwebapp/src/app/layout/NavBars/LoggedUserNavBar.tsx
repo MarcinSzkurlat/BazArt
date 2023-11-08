@@ -2,14 +2,14 @@ import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon, Menu, Sidebar } from "semantic-ui-react";
+import SettingsContainer from "../../../features/account/SettingsContainer";
+import EventForm from "../../../features/event/EventForm";
+import ProductForm from "../../../features/product/ProductForm";
+import { ActionTypes } from "../../models/actionTypes";
 import { useStore } from "../../stores/store";
 
-interface Props {
-    className?: string;
-}
-
-export default observer(function LoggedUserNavBar({ className }: Props) {
-    const { accountStore: { user, logout } } = useStore();
+export default observer(function LoggedUserNavBar() {
+    const { accountStore: { user, logout }, modalStore } = useStore();
     const [visible, setVisible] = useState(false);
 
     const handleMenuButton = () => {
@@ -18,7 +18,7 @@ export default observer(function LoggedUserNavBar({ className }: Props) {
 
     return (
         <>
-            <Menu borderless compact secondary className={className} icon='labeled' widths='4' >
+            <Menu borderless compact secondary icon='labeled' widths='4' >
                 <Menu.Item as={Link} to='/' name='search'>
                     <Icon name='search' />
                     Search
@@ -50,15 +50,15 @@ export default observer(function LoggedUserNavBar({ className }: Props) {
                     <Icon name='user' />
                     My profile
                 </Menu.Item>
-                <Menu.Item as={Link} to={'/'}>
+                <Menu.Item as='a' onClick={() => modalStore.openModal(<ProductForm action={ActionTypes.Create} />)}>
                     <Icon name='money bill alternate outline' />
                     Sell work
                 </Menu.Item>
-                <Menu.Item as={Link} to={'/'}>
+                <Menu.Item as='a' onClick={() => modalStore.openModal(<EventForm action={ActionTypes.Create} />)}>
                     <Icon name='calendar plus outline' />
                     Create event
                 </Menu.Item>
-                <Menu.Item as={Link} to={'/'}>
+                <Menu.Item as='a' onClick={() => modalStore.openModal(<SettingsContainer />)}>
                     <Icon name='settings' />
                     Settings
                 </Menu.Item>

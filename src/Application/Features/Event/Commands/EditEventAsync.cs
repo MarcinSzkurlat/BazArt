@@ -1,17 +1,19 @@
-﻿using Application.Dtos.Event;
+﻿using System.Security.Claims;
+using Application.Dtos.Event;
 using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Models;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Serilog;
 
 namespace Application.Features.Event.Commands
 {
     public class EditEventAsync
     {
-        public class Command : IRequest
+        public class Command : IRequest<EventDetailsDto>
         {
             public Guid Id { get; set; }
             public EditEventDto EditEventDto { get; set; }
@@ -50,30 +52,48 @@ namespace Application.Features.Event.Commands
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, EventDetailsDto>
         {
             private readonly IEventRepository _eventRepository;
             private readonly IMapper _mapper;
+            private readonly ICategoryRepository _categoryRepository;
+            private readonly IHttpContextAccessor _contextAccessor;
 
-            public Handler(IEventRepository eventRepository, IMapper mapper)
+            public Handler(IEventRepository eventRepository, IMapper mapper, ICategoryRepository categoryRepository, IHttpContextAccessor contextAccessor)
             {
                 _eventRepository = eventRepository;
                 _mapper = mapper;
+                _categoryRepository = categoryRepository;
+                _contextAccessor = contextAccessor;
             }
 
-            public async Task Handle(Command request, CancellationToken cancellationToken)
+            public async Task<EventDetailsDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var eventToEdit = await _eventRepository.GetEventByIdAsync(request.Id);
 
                 if (eventToEdit == null) throw new NotFoundException("Event with this ID not exist");
 
-                if (!string.IsNullOrWhiteSpace(request.EditEventDto.Category.ToString())) eventToEdit.CategoryId = (int)request.EditEventDto.Category;
+                if (eventToEdit.CreatedById !=
+                    Guid.Parse(_contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                    && !_contextAccessor.HttpContext.User.IsInRole("Admin"))
+                    throw new ForbiddenAccessException("You cannot edit this product");
+
+                if (!string.IsNullOrWhiteSpace(request.EditEventDto.Category.ToString()))
+                {
+                    eventToEdit.CategoryId = (int)request.EditEventDto.Category;
+                    eventToEdit.Category =
+                        await _categoryRepository.GetCategoryByNameAsync(request.EditEventDto.Category.ToString());
+                }
 
                 _mapper.Map(request.EditEventDto, eventToEdit);
 
                 await _eventRepository.SaveChangesAsync();
 
+                var eventDto = _mapper.Map<EventDetailsDto>(eventToEdit);
+
                 Log.Information($"Event ({request.Id}) updated");
+
+                return eventDto;
             }
         }
     }

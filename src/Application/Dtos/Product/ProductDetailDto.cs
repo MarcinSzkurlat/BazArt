@@ -10,6 +10,7 @@
         string? CreatorStageName,
         string CreatorEmail,
         Guid CreatorId,
+        int CategoryId,
         string CategoryName,
         DateTime Created
     );

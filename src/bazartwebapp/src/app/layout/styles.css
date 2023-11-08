@@ -5,7 +5,11 @@ body {
     font-family: sans-serif;
 }
 
-.ui.button {
+p {
+    overflow-wrap: break-word;
+}
+
+.ui.button, .ui.button:focus {
     background: #be9400;
 }
 
@@ -24,7 +28,8 @@ body {
     min-height: 100vh;
 }
 
-.content {
+.content-style {
+    margin-top: 100px;
     padding-bottom: 200px;
 }
 
@@ -70,14 +75,6 @@ body {
     bottom: 0;
 }
 
-.navbar-homepage {
-    top: 0;
-}
-
-.navbar {
-    height: 100%;
-}
-
 .background-color-gold {
     background-color: #ffc70d !important;
 }
@@ -94,4 +91,13 @@ body {
     object-fit: cover;
     width: 100%;
     height: 100%;
+}
+
+.sticky-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff6e5;
+    z-index: 1000;
 }

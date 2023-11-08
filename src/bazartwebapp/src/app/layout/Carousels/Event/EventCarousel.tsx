@@ -6,9 +6,10 @@ import { Event } from "../../../models/Event/event";
 import { useStore } from "../../../stores/store";
 import LoadingComponent from "../../LoadingComponent";
 import EventItem from "../../../../features/event/EventItem";
+import { PageTypes } from "../pageTypes";
 
 interface Props {
-    page: string;
+    page: PageTypes;
     categoryName?: string;
     userId?: string;
 }
@@ -22,17 +23,17 @@ export default observer(function EventCarousel({ page, categoryName, userId }: P
 
     useEffect(() => {
         switch (page) {
-            case 'home':
+            case PageTypes.Home:
                 loadLatestEvents().then(() => {
                     setEventItems(Array.from(latestEventsRegistry.values()));
                 })
                 break;
-            case 'category':
+            case PageTypes.Category:
                 loadEvents(categoryName!).then(() => {
                     setEventItems(Array.from(eventsRegistry.values()));
                 })
                 break;
-            case 'user':
+            case PageTypes.User:
                 if (accountStore.isLoggedIn) {
                     userStore.loadUserEvents(userId!).then(() => {
                         setEventItems(Array.from(userStore.userEventsRegistry.values()));
