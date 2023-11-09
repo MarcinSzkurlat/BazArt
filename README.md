@@ -14,9 +14,9 @@ The application will be developed using C# and ASP.NET Core, employing Clean Arc
 - Integrated database
 - Seeder with fake data
 - Login and registration system with JWT
+- Dockerized app
 
 ### In progress
-- Dockerize app
 - User favorite products and items
 - User cart
 - Searching products, events and users
@@ -41,3 +41,26 @@ The application will be developed using C# and ASP.NET Core, employing Clean Arc
 ![BazArt_Create_event_modal](https://github.com/MarcinSzkurlat/BazArt/assets/94744112/f765faa3-62c9-46c4-8e86-74fff33f7bcc)
 
 ![BazArt_Event](https://github.com/MarcinSzkurlat/BazArt/assets/94744112/58610402-b65c-4081-bd9e-c7bf4cb2482d)
+
+# Getting Started
+
+Clone this repository.
+```
+git clone https://github.com/MarcinSzkurlat/BazArt.git
+```
+
+Make sure you have installed Docker on your computer. After that, you can run the below command from the `/src/` directory and get started with the `BazArt` immediately.
+```gitbash
+docker compose up
+```
+
+You should be able to browse the application by using the below URL:
+```
+http://localhost:3000
+```
+
+You can test the application as `user` or `admin`.
+| | USER | ADMIN |
+| -------- | -------- | -------- |
+| Login | ```user@test.com``` | ```admin@test.com``` |
+| Password | ```Test123?``` | ```BA_Admin123``` |
