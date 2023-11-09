@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  db:
+   image: mcr.microsoft.com/mssql/server:2019-latest
+   ports:
+    - 1433:1433
+  bazart_api:
+    image: ${DOCKER_REGISTRY-}bazart_api
+    build:
+      context: .
+      dockerfile: BazArtAPI/Dockerfile
+  bazart_ui:
+   image: ${DOCKER_REGISTRY-}bazart_ui
+   build:
+    context: .
+    dockerfile: bazartwebapp/Dockerfile
