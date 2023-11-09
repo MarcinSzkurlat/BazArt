@@ -54,7 +54,7 @@ namespace BazArtAPI.Middleware
             }
             catch (Exception exception)
             {
-                Log.Fatal(exception.Message);
+                Log.Fatal($"| MESSAGE: {exception.Message} |\n| STACK TRACE: {exception.StackTrace} |");
 
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 await context.Response.WriteAsync("Something went wrong");

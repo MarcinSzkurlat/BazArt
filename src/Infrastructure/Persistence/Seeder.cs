@@ -57,7 +57,7 @@ namespace Infrastructure.Persistence
             var userFaker = new Faker<User>()
                 .RuleFor(p => p.Email, f => f.Internet.Email())
                 .RuleFor(p => p.StageName, f => f.Name.FindName())
-                .RuleFor(p => p.Description, f => f.Name.JobDescriptor())
+                .RuleFor(p => p.Description, f => f.Lorem.Sentences(4))
                 .RuleFor(p => p.CategoryId, f => f.Random.Int(_minCategoryValue, _maxCategoryValue));
 
             var users = userFaker.Generate(RecordsAmount);

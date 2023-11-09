@@ -15,7 +15,7 @@ import { ManipulateEvent } from "../models/Event/manupulateEvent";
 import { AccountChangePassword } from "../models/Account/accountChangePassword";
 import { EditUser } from "../models/User/editUser";
 
-axios.defaults.baseURL = 'https:localhost:5050/api';
+axios.defaults.baseURL = 'http://localhost:5000/api';
 
 axios.interceptors.request.use(config => {
     const token = store.accountStore.token;

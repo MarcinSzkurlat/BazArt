@@ -52,7 +52,11 @@ namespace BazArtAPI.Extensions
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<BazArtDbContext>();
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]));
+            var tokenKey = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
+                ? configuration["TokenKey"]
+                : "super_extra_long_sample_sixty_four_character_token_key_for_docker";
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
             services.AddAuthentication(opt =>
                 {
