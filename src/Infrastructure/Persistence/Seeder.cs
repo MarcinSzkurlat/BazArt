@@ -135,7 +135,7 @@ namespace Infrastructure.Persistence
                 Email = "user@test.com"
             };
 
-            await _userManager.CreateAsync(user, "User123,");
+            await _userManager.CreateAsync(user, "BA_User123,");
             await _userManager.AddToRoleAsync(user, "User");
         }
     }
