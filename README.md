@@ -63,4 +63,4 @@ You can test the application as `user` or `admin`.
 | | USER | ADMIN |
 | -------- | -------- | -------- |
 | Login | ```user@test.com``` | ```admin@test.com``` |
-| Password | ```Test123?``` | ```BA_Admin123``` |
+| Password | ```BA_User123``` | ```BA_Admin123``` |
