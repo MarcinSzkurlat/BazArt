@@ -3,6 +3,7 @@ import agent from "../api/agent";
 import { Searching } from "../models/Search/Searching";
 
 export default class SearchStore {
+    visibleSearchBar: boolean = false;
     results: Searching = {
         items: {},
         value: ''
@@ -22,5 +23,9 @@ export default class SearchStore {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    setVisibleSearchBar = (state: boolean) => {
+        this.visibleSearchBar = state;
     }
 }
