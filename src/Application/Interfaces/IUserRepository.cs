@@ -7,5 +7,6 @@ namespace Application.Interfaces
         public Task<int> SaveChangesAsync();
         public Task<User?> GetUserByIdAsync(Guid id);
         public void DeleteUserById(User user);
+        public Task<IEnumerable<User>> GetUsersBySearchQueryAsync(string searchQuery);
     }
 }

@@ -67,5 +67,14 @@ namespace Infrastructure.Persistence.Repository
                 .Where(x => x.CreatedById == id)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Event>> GetEventsBySearchQueryAsync(string searchQuery)
+        {
+            return await _dbContext.Events
+                .AsNoTracking()
+                .Where(x => x.Name.ToUpper().Contains(searchQuery.ToUpper()) ||
+                            x.Description.ToUpper().Contains(searchQuery.ToUpper()))
+                .ToListAsync();
+        }
     }
 }

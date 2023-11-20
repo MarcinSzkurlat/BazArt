@@ -1,4 +1,5 @@
-﻿using Application.Dtos.User;
+﻿using Application.Dtos.Search;
+using Application.Dtos.User;
 using AutoMapper;
 using Domain.Models.User;
 
@@ -19,6 +20,9 @@ namespace Application.Mappings
                 .ForPath(dest => dest.Address.Street, opt => opt.MapFrom(src => src.Street))
                 .ForPath(dest => dest.Address.HouseNumber, opt => opt.MapFrom(src => src.HouseNumber))
                 .ForPath(dest => dest.Address.PostalCode, opt => opt.MapFrom(src => src.PostalCode));
+
+            CreateMap<User, SearchItemDto>()
+                .ConstructUsing(src => new SearchItemDto(src.Id, src.StageName!, src.Description!, null, $"/User/{src.Id}"));
         }
     }
 }

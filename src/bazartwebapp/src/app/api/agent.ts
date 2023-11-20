@@ -14,6 +14,7 @@ import { ManipulateProduct } from "../models/Product/manipulateProduct";
 import { ManipulateEvent } from "../models/Event/manupulateEvent";
 import { AccountChangePassword } from "../models/Account/accountChangePassword";
 import { EditUser } from "../models/User/editUser";
+import { Searching } from "../models/Search/Searching";
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -60,13 +61,13 @@ axios.interceptors.response.use(async respone => {
     }
 })
 
-const responeBody = <T>(respone: AxiosResponse<T>) => respone.data;
+const responseBody = <T>(respone: AxiosResponse<T>) => respone.data;
 
 const requests = {
-    get: <T>(url: string) => axios.get<T>(url).then(responeBody),
-    post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responeBody),
-    put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responeBody),
-    delete: <T>(url: string) => axios.delete<T>(url).then(responeBody)
+    get: <T>(url: string) => axios.get<T>(url).then(responseBody),
+    post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
+    put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
+    delete: <T>(url: string) => axios.delete<T>(url).then(responseBody)
 }
 
 const Events = {
@@ -107,12 +108,17 @@ const Users = {
     deleteUser: (id: string) => requests.delete<void>(`/user/${id}`)
 }
 
+const Search = {
+    search: (searchQuery: string) => requests.get<Searching>(`/search?searchQuery=${searchQuery}`)
+}
+
 const agent = {
     Events,
     Products,
     Categories,
     Account,
-    Users
+    Users,
+    Search
 }
 
 export default agent;
