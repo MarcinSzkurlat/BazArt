@@ -1,5 +1,7 @@
 ﻿using Application.Dtos.Product;
+using Application.Dtos.Search;
 using AutoMapper;
+using Domain.Models;
 
 namespace Application.Mappings
 {
@@ -19,6 +21,9 @@ namespace Application.Mappings
 
             CreateMap<EditProductDto, Domain.Models.Product>()
                 .ForMember(dest => dest.Category, opt => opt.Ignore());
+            
+            CreateMap<Product, SearchItemDto>()
+                .ConstructUsing(src => new SearchItemDto(src.Id, src.Name, src.Description, src.ImageUrl, $"/Product/{src.Id}"));
         }
     }
 }

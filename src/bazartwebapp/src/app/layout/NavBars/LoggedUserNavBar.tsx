@@ -7,19 +7,25 @@ import EventForm from "../../../features/event/EventForm";
 import ProductForm from "../../../features/product/ProductForm";
 import { ActionTypes } from "../../models/actionTypes";
 import { useStore } from "../../stores/store";
+import SearchBar from "../SearchBar";
 
 export default observer(function LoggedUserNavBar() {
     const { accountStore: { user, logout }, modalStore } = useStore();
-    const [visible, setVisible] = useState(false);
+    const [visibleMenu, setVisibleMenu] = useState(false);
+    const [visibleSearch, setVisibleSearch] = useState(false);
 
     const handleMenuButton = () => {
-        setVisible(!visible);
+        setVisibleMenu(!visibleMenu);
+    }
+
+    const handleSearchButton = () => {
+        setVisibleSearch(!visibleSearch);
     }
 
     return (
         <>
             <Menu borderless compact secondary icon='labeled' widths='4' >
-                <Menu.Item as={Link} to='/' name='search'>
+                <Menu.Item as='a' onClick={handleSearchButton}>
                     <Icon name='search' />
                     Search
                 </Menu.Item>
@@ -36,15 +42,18 @@ export default observer(function LoggedUserNavBar() {
                     Menu
                 </Menu.Item>
             </Menu>
+            <div hidden={!visibleSearch}>
+                <SearchBar />
+            </div>
             <Sidebar as={Menu}
-                onHide={() => setVisible(false)}
+                onHide={() => setVisibleMenu(false)}
                 animation='push'
                 direction='right'
                 vertical
                 icon='labeled'
                 compact
                 width='thin'
-                visible={visible}
+                visible={visibleMenu}
                 className='background-color-gold'>
                 <Menu.Item as={Link} to={`/user/${user?.id}`}>
                     <Icon name='user' />

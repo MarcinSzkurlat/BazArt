@@ -1,5 +1,7 @@
 ﻿using Application.Dtos.Event;
+using Application.Dtos.Search;
 using AutoMapper;
+using Domain.Models.Event;
 
 namespace Application.Mappings
 {
@@ -35,6 +37,9 @@ namespace Application.Mappings
                 .ForPath(dest => dest.EventDetail.PostalCode, opt => opt.MapFrom(src => src.PostalCode))
                 .ForPath(dest => dest.EventDetail.StartingDate, opt => opt.MapFrom(src => src.StartingDate))
                 .ForPath(dest => dest.EventDetail.EndingDate, opt => opt.MapFrom(src => src.EndingDate));
+
+            CreateMap<Event, SearchItemDto>()
+                .ConstructUsing(src => new SearchItemDto(src.Id, src.Name, src.Description, src.ImageUrl, $"/Event/{src.Id}"));
         }
     }
 }

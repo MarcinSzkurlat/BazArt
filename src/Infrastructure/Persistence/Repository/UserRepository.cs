@@ -30,5 +30,13 @@ namespace Infrastructure.Persistence.Repository
         {
             _dbContext.Users.Remove(user);
         }
+
+        public async Task<IEnumerable<User>> GetUsersBySearchQueryAsync(string searchQuery)
+        {
+            return await _dbContext.Users
+                .AsNoTracking()
+                .Where(x => x.StageName.ToUpper().Contains(searchQuery.ToUpper()) || x.Description.ToUpper().Contains(searchQuery.ToUpper()))
+                .ToListAsync();
+        }
     }
 }

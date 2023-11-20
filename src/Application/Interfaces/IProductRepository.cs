@@ -11,5 +11,6 @@ namespace Application.Interfaces
         public void DeleteProduct(Product productToDelete);
         public Task<IEnumerable<Product>> GetProductsByCreatedDate(int amount);
         public Task<IEnumerable<Product>> GetProductsByUserIdAsync(Guid id);
+        public Task<IEnumerable<Product>> GetProductsBySearchQueryAsync(string searchQuery);
     }
 }

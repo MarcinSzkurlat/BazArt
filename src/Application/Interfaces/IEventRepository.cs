@@ -11,5 +11,6 @@ namespace Application.Interfaces
         public void DeleteEvent(Event eventToDelete);
         public Task<IEnumerable<Event>> GetEventsByCreatedDate(int amount);
         public Task<IEnumerable<Event>> GetEventsByUserIdAsync(Guid id);
+        public Task<IEnumerable<Event>> GetEventsBySearchQueryAsync(string searchQuery);
     }
 }
