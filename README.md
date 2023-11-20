@@ -14,12 +14,12 @@ The application will be developed using C# and ASP.NET Core, employing Clean Arc
 - Integrated database
 - Seeder with fake data
 - Login and registration system with JWT
+- Searching products, events and users
 - Dockerized app
 
 ### In progress
 - User favorite products and items
 - User cart
-- Searching products, events and users
 - Picture upload for products, events and users avatars
 
 ## Used technologies
