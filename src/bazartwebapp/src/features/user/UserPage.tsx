@@ -7,13 +7,17 @@ import { Button, Confirm, Container, Divider, Grid, Header, Icon, Image, Popup, 
 import ProductCarousel from "../../app/layout/Carousels/Product/ProductCarousel";
 import EventCarousel from "../../app/layout/Carousels/Event/EventCarousel";
 import { PageTypes } from "../../app/layout/Carousels/pageTypes";
+import ProductGridItems from "../../app/layout/GridItems/Product/ProductGridItems";
+import EventGridItems from "../../app/layout/GridItems/Event/EventGridItems";
 
 export default observer(function UserPage() {
     const { id } = useParams();
-    const { userStore, accountStore } = useStore();
+    const { userStore, accountStore, productStore, eventStore } = useStore();
     const { userDetails } = userStore;
 
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [visibleEventsGrid, setVisibleEventsGrid] = useState(false);
+    const [visibleProductsGrid, setVisibleProductsGrid] = useState(false);
 
     const handleDeleteUser = () => {
         if (userDetails) accountStore.deleteAccount(userDetails?.id);
@@ -63,11 +67,25 @@ export default observer(function UserPage() {
             <Divider horizontal>
                 <Header as='h1'>Products</Header>
             </Divider>
-            <ProductCarousel page={PageTypes.User} userId={id} />
+            {visibleProductsGrid
+                ? <ProductGridItems page={PageTypes.User} userId={id} />
+                : <ProductCarousel page={PageTypes.User} userId={id} />}
+            {productStore.totalPages > 1 && visibleProductsGrid === false
+                ? <div style={{ textAlign: 'center', marginTop: '30px' }}>
+                    <Button onClick={() => setVisibleProductsGrid(true)}>Show more</Button>
+                </div>
+                : <></>}
             <Divider horizontal>
                 <Header as='h1'>Events</Header>
             </Divider>
-            <EventCarousel page={PageTypes.User} userId={id} />
+            {visibleEventsGrid
+                ? <EventGridItems page={PageTypes.User} userId={id} />
+                : <EventCarousel page={PageTypes.User} userId={id} />}
+            {eventStore.totalPages > 1 && visibleEventsGrid === false
+                ? <div style={{ textAlign: 'center', marginTop: '30px' }}>
+                    <Button onClick={() => setVisibleEventsGrid(true)}>Show more</Button>
+                </div>
+                : <></>}
             <Divider horizontal />
             <Grid columns={2}>
                 <Grid.Column>

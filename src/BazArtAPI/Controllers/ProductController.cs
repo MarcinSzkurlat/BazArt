@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Product;
+﻿using Application.Dtos;
+using Application.Dtos.Product;
 using Application.Features.Product.Command;
 using Application.Features.Product.Queries;
 using MediatR;
@@ -10,10 +11,12 @@ namespace BazArtAPI.Controllers
     public class ProductController : BaseApiController
     {
         private readonly IMediator _mediator;
+        private readonly IConfiguration _config;
 
-        public ProductController(IMediator mediator)
+        public ProductController(IMediator mediator, IConfiguration config)
         {
             _mediator = mediator;
+            _config = config;
         }
 
         [AllowAnonymous]
@@ -27,12 +30,17 @@ namespace BazArtAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<List<ProductDto>>> GetProductsByCategoryAsync(
-            [FromQuery]string categoryName)
+        public async Task<ActionResult<PaginatedItems<IEnumerable<ProductDto>>>> GetProductsByCategoryAsync(
+            [FromQuery]string categoryName, [FromQuery]int pageNumber)
         {
-            var productsDto = await _mediator.Send(new GetProductsByCategoryAsync.Query { CategoryName = categoryName });
+            var results = await _mediator.Send(new GetProductsByCategoryAsync.Query
+            {
+                CategoryName = categoryName,
+                PageNumber = pageNumber,
+                PageSize = int.Parse(_config["PageSize"]!)
+            });
 
-            return Ok(productsDto);
+            return Ok(results);
         }
 
         [HttpPost]
@@ -61,7 +69,7 @@ namespace BazArtAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("latest")]
-        public async Task<ActionResult<List<ProductDto>>> GetProductsByCreatedDate()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCreatedDate()
         {
             var products = await _mediator.Send(new GetProductsByCreatedDate.Query());
             

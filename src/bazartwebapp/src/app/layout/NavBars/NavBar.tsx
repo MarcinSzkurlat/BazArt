@@ -1,5 +1,4 @@
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
 import { HashLink } from "react-router-hash-link";
 import { Icon, Menu } from "semantic-ui-react";
 import AccountContainer from "../../../features/account/AccountContainer";
@@ -7,12 +6,11 @@ import { useStore } from "../../stores/store";
 import SearchBar from "../SearchBar";
 
 export default observer(function NavBar() {
-    const { modalStore } = useStore();
-
-    const [visibleSearch, setVisibleSearch] = useState(false);
+    const { modalStore, searchStore } = useStore();
+    const { visibleSearchBar, setVisibleSearchBar } = searchStore;
 
     const handleSearchButton = () => {
-        setVisibleSearch(!visibleSearch);
+        setVisibleSearchBar(!visibleSearchBar);
     }
 
     return (
@@ -31,7 +29,7 @@ export default observer(function NavBar() {
                     Search
                 </Menu.Item>
             </Menu>
-            <div hidden={!visibleSearch}>
+            <div hidden={!visibleSearchBar}>
                 <SearchBar />
             </div>
         </>

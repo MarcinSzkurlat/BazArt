@@ -10,6 +10,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ConnectionString=Server=db,1433;Database=BazArtDB;User Id=SA;Password=Password123?;Trusted_Connection=false;Encrypt=False;
       - DaysExpireToken=5
+      - SeederRecordsAmount=15
     ports:
      - 5000:80
   bazart_ui:

@@ -10,16 +10,17 @@ import { useStore } from "../../stores/store";
 import SearchBar from "../SearchBar";
 
 export default observer(function LoggedUserNavBar() {
-    const { accountStore: { user, logout }, modalStore } = useStore();
+    const { accountStore: { user, logout }, modalStore, searchStore } = useStore();
+    const { visibleSearchBar, setVisibleSearchBar } = searchStore;
+
     const [visibleMenu, setVisibleMenu] = useState(false);
-    const [visibleSearch, setVisibleSearch] = useState(false);
 
     const handleMenuButton = () => {
         setVisibleMenu(!visibleMenu);
     }
 
     const handleSearchButton = () => {
-        setVisibleSearch(!visibleSearch);
+        setVisibleSearchBar(!visibleSearchBar);
     }
 
     return (
@@ -42,7 +43,7 @@ export default observer(function LoggedUserNavBar() {
                     Menu
                 </Menu.Item>
             </Menu>
-            <div hidden={!visibleSearch}>
+            <div hidden={!visibleSearchBar}>
                 <SearchBar />
             </div>
             <Sidebar as={Menu}

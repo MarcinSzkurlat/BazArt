@@ -41,7 +41,7 @@ if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("ASPNE
     {
         var scope = app.Services.CreateScope();
         var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
-        await seeder.SeedAsync();
+        await seeder.SeedAsync(int.Parse(builder.Configuration["SeederRecordsAmount"]!));
     }
     catch (Exception exception)
     {

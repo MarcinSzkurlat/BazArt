@@ -9,7 +9,6 @@ namespace Infrastructure.Persistence
 {
     public class Seeder
     {
-        private const int RecordsAmount = 15;
         private readonly BazArtDbContext _dbContext;
         private readonly UserManager<User> _userManager;
         private readonly int _minCategoryValue = (int)Enum.GetValues(typeof(Categories)).Cast<Categories>().Min();
@@ -21,15 +20,15 @@ namespace Infrastructure.Persistence
             _userManager = userManager;
         }
 
-        public async Task SeedAsync()
+        public async Task SeedAsync(int recordsAmount)
         {
             await _dbContext.Database.MigrateAsync();
 
             if (_dbContext.Events.Any()) return;
             
-            var fakeUsers = GetFakeUsers();
-            var events = GetEvents();
-            var products = GetProducts();
+            var fakeUsers = GetFakeUsers(recordsAmount);
+            var events = GetEvents(recordsAmount);
+            var products = GetProducts(recordsAmount);
 
             for (int i = 0; i < fakeUsers.Count; i++)
             {
@@ -43,7 +42,7 @@ namespace Infrastructure.Persistence
             await _dbContext.SaveChangesAsync();
         }
 
-        private List<User> GetFakeUsers()
+        private List<User> GetFakeUsers(int recordsAmount)
         {
             var userAddressFaker = new Faker<UserAddress>()
                 .RuleFor(p => p.Country, f => f.Address.Country())
@@ -52,7 +51,7 @@ namespace Infrastructure.Persistence
                 .RuleFor(p => p.HouseNumber, f => f.Random.Int(1, 200))
                 .RuleFor(p => p.PostalCode, f => f.Address.ZipCode());
 
-            var usersAddresses = userAddressFaker.Generate(RecordsAmount);
+            var usersAddresses = userAddressFaker.Generate(recordsAmount);
 
             var userFaker = new Faker<User>()
                 .RuleFor(p => p.Email, f => f.Internet.Email())
@@ -60,7 +59,7 @@ namespace Infrastructure.Persistence
                 .RuleFor(p => p.Description, f => f.Lorem.Sentences(4))
                 .RuleFor(p => p.CategoryId, f => f.Random.Int(_minCategoryValue, _maxCategoryValue));
 
-            var users = userFaker.Generate(RecordsAmount);
+            var users = userFaker.Generate(recordsAmount);
 
             for (int i = 0; i < users.Count; i++)
             {
@@ -70,7 +69,7 @@ namespace Infrastructure.Persistence
             return users;
         }
 
-        private List<Event> GetEvents()
+        private List<Event> GetEvents(int recordsAmount)
         {
             var eventDetailFaker = new Faker<EventDetail>()
                 .RuleFor(p => p.Country, f => f.Address.Country())
@@ -81,7 +80,7 @@ namespace Infrastructure.Persistence
                 .RuleFor(p => p.StartingDate, f => f.Date.Soon(10))
                 .RuleFor(p => p.EndingDate, f => f.Date.Soon(20, DateTime.Today).AddDays(10));
 
-            var eventsDetail = eventDetailFaker.Generate(RecordsAmount);
+            var eventsDetail = eventDetailFaker.Generate(recordsAmount);
 
 
             var eventsFaker = new Faker<Event>()
@@ -90,7 +89,7 @@ namespace Infrastructure.Persistence
                 .RuleFor(p => p.ImageUrl, f => f.Image.PicsumUrl())
                 .RuleFor(p => p.CategoryId, f => f.Random.Int(_minCategoryValue, _maxCategoryValue));
 
-            var events = eventsFaker.Generate(RecordsAmount);
+            var events = eventsFaker.Generate(recordsAmount);
 
             for (int i = 0; i < events.Count; i++)
             {
@@ -100,7 +99,7 @@ namespace Infrastructure.Persistence
             return events;
         }
 
-        private List<Product> GetProducts()
+        private List<Product> GetProducts(int recordsAmount)
         {
             var productFaker = new Faker<Product>()
                 .RuleFor(p => p.Name, f => f.Commerce.ProductName())
@@ -110,7 +109,7 @@ namespace Infrastructure.Persistence
                 .RuleFor(p => p.ImageUrl, f => f.Image.PicsumUrl())
                 .RuleFor(p => p.CategoryId, f => f.Random.Int(_minCategoryValue, _maxCategoryValue));
 
-            var products = productFaker.Generate(RecordsAmount);
+            var products = productFaker.Generate(recordsAmount);
 
             return products;
         }
@@ -135,7 +134,7 @@ namespace Infrastructure.Persistence
                 Email = "user@test.com"
             };
 
-            await _userManager.CreateAsync(user, "BA_User123,");
+            await _userManager.CreateAsync(user, "BA_User123");
             await _userManager.AddToRoleAsync(user, "User");
         }
     }

@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Product;
+﻿using Application.Dtos;
+using Application.Dtos.Product;
 using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
@@ -9,12 +10,14 @@ namespace Application.Features.Product.Queries
 {
     public class GetProductsByCategoryAsync
     {
-        public class Query : IRequest<IEnumerable<ProductDto>>
+        public class Query : IRequest<PaginatedItems<IEnumerable<ProductDto>>>
         {
             public string CategoryName { get; set; }
+            public int PageNumber { get; set; }
+            public int PageSize { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, IEnumerable<ProductDto>>
+        public class Handler : IRequestHandler<Query, PaginatedItems<IEnumerable<ProductDto>>>
         {
             private readonly IProductRepository _productRepository;
             private readonly IMapper _mapper;
@@ -25,22 +28,25 @@ namespace Application.Features.Product.Queries
                 _mapper = mapper;
             }
 
-            public async Task<IEnumerable<ProductDto>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<PaginatedItems<IEnumerable<ProductDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 IEnumerable<Domain.Models.Product>? products;
 
                 if (Enum.TryParse<Categories>(request.CategoryName, true, out _))
                 {
-                    products = await _productRepository.GetProductsByCategoryAsync(request.CategoryName);
+                    products = await _productRepository.GetProductsByCategoryAsync(request.CategoryName, request.PageNumber, request.PageSize);
                 }
                 else
                 {
                     throw new NotFoundException("This category not exist");
                 }
 
+                var productsQuantity =
+                    await _productRepository.GetProductsQuantityByCategoryAsync(request.CategoryName);
+
                 var productsDto = _mapper.Map<IEnumerable<ProductDto>>(products);
 
-                return productsDto;
+                return new PaginatedItems<IEnumerable<ProductDto>>(productsDto, request.PageNumber, (int)Math.Ceiling(productsQuantity / (double)request.PageSize));
             }
         }
     }

@@ -15,8 +15,8 @@ interface Props {
 }
 
 export default observer(function EventCarousel({ page, categoryName, userId }: Props) {
-    const { eventStore, userStore, accountStore } = useStore();
-    const { loadingInitial, latestEventsRegistry, loadLatestEvents, loadEvents, eventsRegistry } = eventStore;
+    const { eventStore, accountStore } = useStore();
+    const { loadingInitial, latestEventsRegistry, loadLatestEvents, loadEvents, eventsRegistry, loadUserEvents } = eventStore;
 
     const [activeSliderIndex, setActiveSliderIndex] = useState(0);
     const [eventItems, setEventItems] = useState<Event[]>();
@@ -35,8 +35,8 @@ export default observer(function EventCarousel({ page, categoryName, userId }: P
                 break;
             case PageTypes.User:
                 if (accountStore.isLoggedIn) {
-                    userStore.loadUserEvents(userId!).then(() => {
-                        setEventItems(Array.from(userStore.userEventsRegistry.values()));
+                    loadUserEvents(userId!).then(() => {
+                        setEventItems(Array.from(eventsRegistry.values()));
                     })
                 }
                 break;

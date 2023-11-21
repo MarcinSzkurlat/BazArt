@@ -17,6 +17,7 @@ export default observer(function SearchBar() {
 
     const handleResultSelect = (e: React.MouseEvent<HTMLElement>, { result }: { result: SearchItem }) => {
         router.navigate(result.link);
+        searchStore.setVisibleSearchBar(false);
     }
 
     const handleSearchChange = async (e: React.MouseEvent<HTMLElement>, { value }: { value?: string }) => {

@@ -15,6 +15,7 @@ import { ManipulateEvent } from "../models/Event/manupulateEvent";
 import { AccountChangePassword } from "../models/Account/accountChangePassword";
 import { EditUser } from "../models/User/editUser";
 import { Searching } from "../models/Search/Searching";
+import { PaginatedItems } from "../models/paginatedItems";
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -71,21 +72,23 @@ const requests = {
 }
 
 const Events = {
-    list: (category: string) => requests.get<Event[]>(`/event?categoryName=${category}`),
+    list: (category: string, pageNumber: number) => requests.get<PaginatedItems<Event>>(`/event?categoryName=${category}&pageNumber=${pageNumber}`),
     details: (id: string) => requests.get<EventDetails>(`/event/${id}`),
     create: (event: ManipulateEvent) => requests.post<EventDetails>('/event', event),
     update: (event: ManipulateEvent, id: string) => requests.put<EventDetails>(`/event/${id}`, event),
     delete: (id: string) => requests.delete<void>(`/event/${id}`),
-    latest: () => requests.get<Event[]>('/event/latest')
+    latest: () => requests.get<Event[]>('/event/latest'),
+    userEvents: (id: string, pageNumber: number) => requests.get<PaginatedItems<Event>>(`/user/${id}/events?pageNumber=${pageNumber}`)
 }
 
 const Products = {
-    list: (category: string) => requests.get<Product[]>(`/product?categoryName=${category}`),
+    list: (category: string, pageNumber: number) => requests.get<PaginatedItems<Product>>(`/product?categoryName=${category}&pageNumber=${pageNumber}`),
     details: (id: string) => requests.get<ProductDetails>(`/product/${id}`),
     create: (product: ManipulateProduct) => requests.post<ProductDetails>('/product', product),
     update: (product: ManipulateProduct, id: string) => requests.put<ProductDetails>(`/product/${id}`, product),
     delete: (id: string) => requests.delete<void>(`/product/${id}`),
-    latest: () => requests.get<Product[]>('/product/latest')
+    latest: () => requests.get<Product[]>('/product/latest'),
+    userProducts: (id: string, pageNumber: number) => requests.get<PaginatedItems<Product>>(`/user/${id}/products?pageNumber=${pageNumber}`)
 }
 
 const Categories = {
@@ -102,8 +105,6 @@ const Account = {
 
 const Users = {
     details: (id: string) => requests.get<UserDetails>(`/user/${id}`),
-    userProducts: (id: string) => requests.get<Product[]>(`/user/${id}/products`),
-    userEvents: (id: string) => requests.get<Event[]>(`/user/${id}/events`),
     editUser: (data: EditUser) => requests.put<UserDetails>('/user', data),
     deleteUser: (id: string) => requests.delete<void>(`/user/${id}`)
 }

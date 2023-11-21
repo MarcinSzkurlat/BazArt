@@ -16,7 +16,7 @@ export default function ProductItem({ product }: Props) {
                     <Label as={Link} to={`category/${product.categoryName}`} ribbon='right' color='black'>{product.categoryName}</Label>
                 </div>
                 : <></>}
-            <Image as={Link} to={`/product/${product.id}`} src={product.imageUrl} alt={product.name} size='medium' style={{ zIndex: '0' }} />
+            <Image centered as={Link} to={`/product/${product.id}`} src={product.imageUrl} alt={product.name} size='medium' style={{ zIndex: '0' }} />
             <Card.Header as='h3' textAlign='center' style={{ margin: '10px' }}><b>{product.name}</b></Card.Header>
             <Card.Description style={{ height: '70px' }}>
                 <p><i>{product.description.length > 100
