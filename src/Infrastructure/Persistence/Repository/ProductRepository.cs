@@ -26,12 +26,15 @@ namespace Infrastructure.Persistence.Repository
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(string categoryName)
+        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(string categoryName, int pageNumber, int pageSize)
         {
             return await _dbContext.Products
                 .AsNoTracking()
                 .Include(x => x.Category)
                 .Where(x => x.Category.Name.ToLower() == categoryName.ToLower())
+                .OrderBy(x => x.Created)
+                .Skip(pageSize * (pageNumber - 1))
+                .Take(pageSize)
                 .ToListAsync();
         }
 
@@ -58,12 +61,15 @@ namespace Infrastructure.Persistence.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsByUserIdAsync(Guid id)
+        public async Task<IEnumerable<Product>> GetProductsByUserIdAsync(Guid id, int pageNumber, int pageSize)
         {
             return await _dbContext.Products
                 .AsNoTracking()
                 .Include(x => x.Category)
                 .Where(x => x.CreatedById == id)
+                .OrderBy(x => x.Created)
+                .Skip(pageSize * (pageNumber - 1))
+                .Take(pageSize)
                 .ToListAsync();
         }
 
@@ -73,6 +79,18 @@ namespace Infrastructure.Persistence.Repository
                 .AsNoTracking()
                 .Where(x => x.Name.ToUpper().Contains(searchQuery.ToUpper()) || x.Description.ToUpper().Contains(searchQuery.ToUpper()))
                 .ToListAsync();
+        }
+
+        public async Task<int> GetProductsQuantityByCategoryAsync(string categoryName)
+        {
+            return await _dbContext.Products
+                .CountAsync(x => x.Category.Name.ToUpper() == categoryName.ToUpper());
+        }
+
+        public async Task<int> GetProductsQuantityByUserIdAsync(Guid id)
+        {
+            return await _dbContext.Products
+                .CountAsync(x => x.CreatedById == id);
         }
     }
 }

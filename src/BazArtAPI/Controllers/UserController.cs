@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Event;
+﻿using Application.Dtos;
+using Application.Dtos.Event;
 using Application.Dtos.Product;
 using Application.Dtos.User;
 using Application.Features.Event.Queries;
@@ -13,10 +14,12 @@ namespace BazArtAPI.Controllers
     public class UserController : BaseApiController
     {
         private readonly IMediator _mediator;
+        private readonly IConfiguration _config;
 
-        public UserController(IMediator mediator)
+        public UserController(IMediator mediator, IConfiguration config)
         {
             _mediator = mediator;
+            _config = config;
         }
 
         [HttpGet("{id:guid}")]
@@ -28,19 +31,29 @@ namespace BazArtAPI.Controllers
         }
 
         [HttpGet("{id:guid}/products")]
-        public async Task<ActionResult<List<ProductDto>>> GetUserProductsAsync([FromRoute] Guid id)
+        public async Task<ActionResult<PaginatedItems<IEnumerable<ProductDto>>>> GetUserProductsAsync([FromRoute] Guid id, [FromQuery]int pageNumber)
         {
-            var products = await _mediator.Send(new GetProductsByUserIdAsync.Query{Id = id});
+            var results = await _mediator.Send(new GetProductsByUserIdAsync.Query
+            {
+                Id = id, 
+                PageNumber = pageNumber,
+                PageSize = int.Parse(_config["PageSize"]!)
+            });
 
-            return Ok(products);
+            return Ok(results);
         }
 
         [HttpGet("{id:guid}/events")]
-        public async Task<ActionResult<List<EventDto>>> GetUserEventsAsync([FromRoute] Guid id)
+        public async Task<ActionResult<PaginatedItems<IEnumerable<EventDto>>>> GetUserEventsAsync([FromRoute] Guid id, [FromQuery]int pageNumber)
         {
-            var events = await _mediator.Send(new GetEventsByUserIdAsync.Query{Id = id});
+            var results = await _mediator.Send(new GetEventsByUserIdAsync.Query
+            {
+                Id = id, 
+                PageNumber = pageNumber,
+                PageSize = int.Parse(_config["PageSize"]!)
+            });
 
-            return Ok(events);
+            return Ok(results);
         }
 
         [HttpPut]

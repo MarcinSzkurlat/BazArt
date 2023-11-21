@@ -15,8 +15,8 @@ interface Props {
 }
 
 export default observer(function ProductCarousel({ page, categoryName, userId }: Props) {
-    const { productStore, userStore, accountStore } = useStore();
-    const { loadingInitial, latestProductRegistry, loadLatestProducts, loadProducts, productsRegistry } = productStore;
+    const { productStore, accountStore } = useStore();
+    const { loadingInitial, latestProductRegistry, loadLatestProducts, loadProducts, productsRegistry, loadUserProducts } = productStore;
 
     const [activeSliderIndex, setActiveSliderIndex] = useState(0);
     const [productItems, setProductItems] = useState<Product[]>();
@@ -35,8 +35,8 @@ export default observer(function ProductCarousel({ page, categoryName, userId }:
                 break;
             case PageTypes.User:
                 if (accountStore.isLoggedIn) {
-                    userStore.loadUserProducts(userId!).then(() => {
-                        setProductItems(Array.from(userStore.userProductsRegistry.values()));
+                    loadUserProducts(userId!).then(() => {
+                        setProductItems(Array.from(productsRegistry.values()));
                     })
                 }
                 break;

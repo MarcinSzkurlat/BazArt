@@ -13,18 +13,24 @@ export default class ProductStore {
     latestProductRegistry = new Map<string, Product>();
     loadingInitial: boolean = false;
     selectedProduct?: ProductDetails = undefined;
+    pageNumber: number = 1;
+    totalPages: number = 0;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    loadProducts = async (category: string) => {
+    loadProducts = async (category: string, pageNumber: number = 1) => {
         this.setLoadingInitial(true);
         try {
-            const products = await agent.Products.list(category);
-            this.productsRegistry.clear();
-            products.forEach(product => {
-                this.productsRegistry.set(product.id, product);
+            const products = await agent.Products.list(category, pageNumber);
+            runInAction(() => {
+                this.productsRegistry.clear();
+                products.items.forEach(product => {
+                    this.productsRegistry.set(product.id, product);
+                })
+                this.pageNumber = products.pageNumber;
+                this.totalPages = products.totalPages;
             })
             this.setLoadingInitial(false);
         } catch (error) {
@@ -52,6 +58,25 @@ export default class ProductStore {
             this.latestProductRegistry.clear();
             products.forEach(product => {
                 this.latestProductRegistry.set(product.id, product);
+            })
+            this.setLoadingInitial(false);
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    loadUserProducts = async (id: string, pageNumber: number = 1) => {
+        this.setLoadingInitial(true);
+        try {
+            const products = await agent.Products.userProducts(id, pageNumber);
+            runInAction(() => {
+                this.productsRegistry.clear();
+                products.items.forEach(product => {
+                    this.productsRegistry.set(product.id, product);
+                })
+                this.pageNumber = products.pageNumber;
+                this.totalPages = products.totalPages;
             })
             this.setLoadingInitial(false);
         } catch (error) {

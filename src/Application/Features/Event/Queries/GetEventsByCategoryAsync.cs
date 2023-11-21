@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Event;
+﻿using Application.Dtos;
+using Application.Dtos.Event;
 using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
@@ -9,12 +10,14 @@ namespace Application.Features.Event.Queries
 {
     public class GetEventsByCategoryAsync
     {
-        public class Query : IRequest<IEnumerable<EventDto>>
+        public class Query : IRequest<PaginatedItems<IEnumerable<EventDto>>>
         {
             public string CategoryName { get; set; }
+            public int PageNumber { get; set; }
+            public int PageSize { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, IEnumerable<EventDto>>
+        public class Handler : IRequestHandler<Query, PaginatedItems<IEnumerable<EventDto>>>
         {
             private readonly IEventRepository _eventRepository;
             private readonly IMapper _mapper;
@@ -25,22 +28,24 @@ namespace Application.Features.Event.Queries
                 _mapper = mapper;
             }
 
-            public async Task<IEnumerable<EventDto>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<PaginatedItems<IEnumerable<EventDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 IEnumerable<Domain.Models.Event.Event>? events;
 
                 if (Enum.TryParse<Categories>(request.CategoryName, true, out _))
                 {
-                    events = await _eventRepository.GetEventsByCategoryAsync(request.CategoryName);
+                    events = await _eventRepository.GetEventsByCategoryAsync(request.CategoryName, request.PageNumber, request.PageSize);
                 }
                 else
                 {
                     throw new NotFoundException("This category not exist");
                 }
 
-                var eventsDto = _mapper.Map<List<EventDto>>(events);
+                var eventsQuantity = await _eventRepository.GetEventsQuantityByCategoryAsync(request.CategoryName);
 
-                return eventsDto;
+                var eventsDto = _mapper.Map<IEnumerable<EventDto>>(events);
+
+                return new PaginatedItems<IEnumerable<EventDto>>(eventsDto, request.PageNumber, (int)Math.Ceiling(eventsQuantity / (double)request.PageSize));
             }
         }
     }

@@ -27,12 +27,15 @@ namespace Infrastructure.Persistence.Repository
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
         
-        public async Task<List<Event>> GetEventsByCategoryAsync(string categoryName)
+        public async Task<IEnumerable<Event>> GetEventsByCategoryAsync(string categoryName, int pageNumber, int pageSize)
         {
             return await _dbContext.Events
                 .AsNoTracking()
                 .Include(e => e.Category)
                 .Where(e => e.Category.Name.ToLower() == categoryName.ToLower())
+                .OrderBy(x => x.EventDetail.Created)
+                .Skip(pageSize * (pageNumber - 1))
+                .Take(pageSize)
                 .ToListAsync();
         }
 
@@ -59,12 +62,15 @@ namespace Infrastructure.Persistence.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Event>> GetEventsByUserIdAsync(Guid id)
+        public async Task<IEnumerable<Event>> GetEventsByUserIdAsync(Guid id, int pageNumber, int pageSize)
         {
             return await _dbContext.Events
                 .AsNoTracking()
                 .Include(x => x.Category)
                 .Where(x => x.CreatedById == id)
+                .OrderBy(x => x.EventDetail.Created)
+                .Skip(pageSize * (pageNumber - 1))
+                .Take(pageSize)
                 .ToListAsync();
         }
 
@@ -75,6 +81,18 @@ namespace Infrastructure.Persistence.Repository
                 .Where(x => x.Name.ToUpper().Contains(searchQuery.ToUpper()) ||
                             x.Description.ToUpper().Contains(searchQuery.ToUpper()))
                 .ToListAsync();
+        }
+
+        public async Task<int> GetEventsQuantityByCategoryAsync(string categoryName)
+        {
+            return await _dbContext.Events
+                .CountAsync(x => x.Category.Name.ToUpper() == categoryName.ToUpper());
+        }
+
+        public async Task<int> GetEventsQuantityByUserIdAsync(Guid id)
+        {
+            return await _dbContext.Events
+                .CountAsync(x => x.CreatedById == id);
         }
     }
 }

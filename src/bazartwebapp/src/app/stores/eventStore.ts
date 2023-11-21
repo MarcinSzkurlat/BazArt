@@ -13,18 +13,24 @@ export default class EventStore {
     latestEventsRegistry = new Map<string, Event>();
     loadingInitial: boolean = false;
     selectedEvent?: EventDetails = undefined;
+    pageNumber: number = 1;
+    totalPages: number = 0;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    loadEvents = async (category: string) => {
+    loadEvents = async (category: string, pageNumber: number = 1) => {
         this.setLoadingInitial(true);
         try {
-            const events = await agent.Events.list(category);
-            this.eventsRegistry.clear();
-            events.forEach(event => {
-                this.eventsRegistry.set(event.id, event);
+            const events = await agent.Events.list(category, pageNumber);
+            runInAction(() => {
+                this.eventsRegistry.clear();
+                events.items.forEach(event => {
+                    this.eventsRegistry.set(event.id, event);
+                })
+                this.pageNumber = events.pageNumber;
+                this.totalPages = events.totalPages;
             })
             this.setLoadingInitial(false);
         } catch (error) {
@@ -52,6 +58,25 @@ export default class EventStore {
             this.latestEventsRegistry.clear();
             events.forEach(event => {
                 this.latestEventsRegistry.set(event.id, event);
+            })
+            this.setLoadingInitial(false);
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    loadUserEvents = async (id: string, pageNumber: number = 1) => {
+        this.setLoadingInitial(true);
+        try {
+            const events = await agent.Events.userEvents(id, pageNumber);
+            runInAction(() => {
+                this.eventsRegistry.clear();
+                events.items.forEach(event => {
+                    this.eventsRegistry.set(event.id, event);
+                })
+                this.pageNumber = events.pageNumber;
+                this.totalPages = events.totalPages;
             })
             this.setLoadingInitial(false);
         } catch (error) {

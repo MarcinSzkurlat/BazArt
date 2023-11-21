@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Event;
+﻿using Application.Dtos;
+using Application.Dtos.Event;
 using Application.Features.Event.Commands;
 using Application.Features.Event.Queries;
 using MediatR;
@@ -10,10 +11,12 @@ namespace BazArtAPI.Controllers
     public class EventController : BaseApiController
     {
         private readonly IMediator _mediator;
+        private readonly IConfiguration _config;
 
-        public EventController(IMediator mediator)
+        public EventController(IMediator mediator, IConfiguration config)
         {
             _mediator = mediator;
+            _config = config;
         }
 
         [AllowAnonymous]
@@ -27,11 +30,16 @@ namespace BazArtAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<List<EventDto>>> GetEventsByCategoryAsync([FromQuery]string categoryName)
+        public async Task<ActionResult<PaginatedItems<IEnumerable<EventDto>>>> GetEventsByCategoryAsync([FromQuery]string categoryName, [FromQuery]int pageNumber = 1)
         {
-            var events = await _mediator.Send(new GetEventsByCategoryAsync.Query { CategoryName = categoryName });
+            var results = await _mediator.Send(new GetEventsByCategoryAsync.Query
+            {
+                CategoryName = categoryName, 
+                PageNumber = pageNumber, 
+                PageSize = int.Parse(_config["PageSize"]!)
+            });
 
-            return Ok(events);
+            return Ok(results);
         }
 
         [HttpPost]

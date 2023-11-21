@@ -1,7 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
-import { Product } from "../models/Product/product";
-import { Event } from "../models/Event/event";
 import { UserDetails } from "../models/User/userDetails";
 import { store } from "./store";
 import { EditUser } from "../models/User/editUser";
@@ -11,8 +9,6 @@ export default class UserStore {
     userDetails: UserDetails | null = null;
     currentUserDetails: UserDetails | null = null;
     loadingInitial: boolean = false;
-    userProductsRegistry = new Map<string, Product>();
-    userEventsRegistry = new Map<string, Event>();
 
     constructor() {
         makeAutoObservable(this);
@@ -37,32 +33,6 @@ export default class UserStore {
             runInAction(() => this.currentUserDetails = userDetails);
         } catch (error) {
             console.log(error);
-        }
-    }
-
-    loadUserProducts = async (id: string) => {
-        try {
-            const products = await agent.Users.userProducts(id);
-            this.userProductsRegistry.clear();
-            products.forEach(product => {
-                this.userProductsRegistry.set(product.id, product);
-            })
-        } catch (error) {
-            console.log(error);
-            this.setLoadingInitial(false);
-        }
-    }
-
-    loadUserEvents = async (id: string) => {
-        try {
-            const events = await agent.Users.userEvents(id);
-            this.userEventsRegistry.clear();
-            events.forEach(event => {
-                this.userEventsRegistry.set(event.id, event);
-            })
-        } catch (error) {
-            console.log(error);
-            this.setLoadingInitial(false);
         }
     }
 
