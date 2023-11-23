@@ -3,9 +3,12 @@ using Application.Dtos.Event;
 using Application.Dtos.Product;
 using Application.Dtos.User;
 using Application.Features.Event.Queries;
+using Application.Features.Favorites.Command;
+using Application.Features.Favorites.Queries;
 using Application.Features.Product.Queries;
 using Application.Features.User.Command;
 using Application.Features.User.Queries;
+using BazArtAPI.Dtos.User;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,6 +73,63 @@ namespace BazArtAPI.Controllers
         {
             await _mediator.Send(new DeleteUserByIdAsync.Command
                 { Id = id });
+
+            return Ok();
+        }
+
+        [HttpGet("favorites/product")]
+        public async Task<ActionResult<PaginatedItems<IEnumerable<ProductDto>>>> GetUserFavoriteProductsAsync([FromQuery]int pageNumber)
+        {
+            var results = await _mediator.Send(new GetFavoritesProductsAsync.Query
+            {
+                PageNumber = pageNumber,
+                PageSize = int.Parse(_config["PageSize"]!)
+            });
+
+            return Ok(results);
+        }
+
+        [HttpPost("favorites/product/{id:guid}")]
+        public async Task<ActionResult> AddProductToUserFavoriteProductsAsync([FromRoute] Guid id)
+        {
+            await _mediator.Send(new AddProductToFavoriteProductsAsync.Command { ProductId = id });
+
+            return Ok();
+        }
+
+        [HttpDelete("favorites/product/{id:guid}")]
+        public async Task<ActionResult> DeleteProductFromFavoriteProductsAsync([FromRoute] Guid id)
+        {
+            await _mediator.Send(new DeleteProductFromFavoriteProductsAsync.Command { ProductId = id });
+
+            return Ok();
+        }
+
+        [HttpGet("favorites/user")]
+        public async Task<ActionResult<PaginatedItems<IEnumerable<UserDto>>>> GetUserFavoriteUsersAsync(
+            [FromQuery] int pageNumber)
+        {
+            var results = await _mediator.Send(new GetFavoritesUsersAsync.Query
+            {
+                PageNumber = pageNumber,
+                PageSize = int.Parse(_config["PageSize"]!)
+            });
+
+            return Ok(results);
+        }
+
+        [HttpPost("favorites/user/{id:guid}")]
+        public async Task<ActionResult> AddUserToUserFavoriteUserAsync([FromRoute] Guid id)
+        {
+            await _mediator.Send(new AddUserToFavoriteUsersAsync.Command { FavoriteUserId = id });
+
+            return Ok();
+        }
+
+        [HttpDelete("favorites/user/{id:guid}")]
+        public async Task<ActionResult> DeleteUserFromFavoriteUsersAsync([FromRoute] Guid id)
+        {
+            await _mediator.Send(new DeleteUserFromFavoriteUsersAsync.Command { FavoriteUserId = id });
 
             return Ok();
         }

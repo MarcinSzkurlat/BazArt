@@ -13,7 +13,7 @@ import EventGridItems from "../../app/layout/GridItems/Event/EventGridItems";
 export default observer(function UserPage() {
     const { id } = useParams();
     const { userStore, accountStore, productStore, eventStore } = useStore();
-    const { userDetails } = userStore;
+    const { userDetails, addFavoriteUser } = userStore;
 
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [visibleEventsGrid, setVisibleEventsGrid] = useState(false);
@@ -22,6 +22,10 @@ export default observer(function UserPage() {
     const handleDeleteUser = () => {
         if (userDetails) accountStore.deleteAccount(userDetails?.id);
         setConfirmDelete(false);
+    }
+
+    const handleFavoriteButton = () => {
+        addFavoriteUser(id!);
     }
 
     useEffect(() => {
@@ -58,7 +62,7 @@ export default observer(function UserPage() {
                 {accountStore.user?.id === id
                     ? <></>
                     : <Popup pinned trigger={
-                        <Button size='huge' icon floated='right' color='red' circular style={{ position: 'absolute', bottom: '50px', right: '60px' }}>
+                        <Button size='huge' icon floated='right' color='red' circular onClick={handleFavoriteButton} style={{ position: 'absolute', bottom: '50px', right: '60px' }}>
                             <Icon name='heart' />
                         </Button>}>
                         Add user to favorite

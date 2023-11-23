@@ -18,11 +18,15 @@ namespace Application.Features.User.Command
         {
             private readonly IUserRepository _userRepository;
             private readonly IHttpContextAccessor _contextAccessor;
+            private readonly IFavoriteProductsRepository _favoriteProductsRepository;
+            private readonly IFavoriteUsersRepository _favoriteUsersRepository;
 
-            public Handler(IUserRepository userRepository, IHttpContextAccessor contextAccessor)
+            public Handler(IUserRepository userRepository, IHttpContextAccessor contextAccessor, IFavoriteProductsRepository favoriteProductsRepository, IFavoriteUsersRepository favoriteUsersRepository)
             {
                 _userRepository = userRepository;
                 _contextAccessor = contextAccessor;
+                _favoriteProductsRepository = favoriteProductsRepository;
+                _favoriteUsersRepository = favoriteUsersRepository;
             }
 
             public async Task Handle(Command request, CancellationToken cancellationToken)
@@ -36,6 +40,8 @@ namespace Application.Features.User.Command
                     !_contextAccessor.HttpContext.User.IsInRole("Admin"))
                     throw new ForbiddenAccessException("You cannot delete user account");
 
+                await _favoriteProductsRepository.DeleteAllUserFavoritesProductsAsync(userToDelete.Id);
+                await _favoriteUsersRepository.DeleteAllUserFavoritesUsersAsync(userToDelete.Id);
                 _userRepository.DeleteUserById(userToDelete);
 
                 var result = await _userRepository.SaveChangesAsync();

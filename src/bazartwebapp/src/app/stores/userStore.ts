@@ -9,6 +9,9 @@ export default class UserStore {
     userDetails: UserDetails | null = null;
     currentUserDetails: UserDetails | null = null;
     loadingInitial: boolean = false;
+    usersRegistry = new Map<string, UserDetails>();
+    pageNumber: number = 1;
+    totalPages: number = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -52,6 +55,44 @@ export default class UserStore {
             store.modalStore.closeModal();
         } catch (error) {
             throw error;
+        }
+    }
+
+    loadUserFavoriteUsers = async (pageNumber: number = 1) => {
+        this.setLoadingInitial(true);
+        try {
+            const users = await agent.FavoriteUsers.list(pageNumber);
+            runInAction(() => {
+                this.usersRegistry.clear();
+                users.items.forEach(user => {
+                    this.usersRegistry.set(user.id, user);
+                })
+                this.pageNumber = users.pageNumber;
+                this.totalPages = users.totalPages;
+            })
+            this.setLoadingInitial(false);
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    addFavoriteUser = async (id: string) => {
+        try {
+            await agent.FavoriteUsers.add(id);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    deleteFavoriteUser = async (id: string) => {
+        try {
+            await agent.FavoriteUsers.delete(id);
+            runInAction(() => {
+                this.usersRegistry.delete(id);
+            })
+        } catch (error) {
+            console.log(error);
         }
     }
 

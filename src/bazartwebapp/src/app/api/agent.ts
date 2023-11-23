@@ -113,13 +113,27 @@ const Search = {
     search: (searchQuery: string) => requests.get<Searching>(`/search?searchQuery=${searchQuery}`)
 }
 
+const FavoriteProducts = {
+    list: (pageNumber: number) => requests.get<PaginatedItems<Product>>(`/user/favorites/product?pageNumber=${pageNumber}`),
+    add: (id: string) => requests.post<void>(`/user/favorites/product/${id}`, {}),
+    delete: (id: string) => requests.delete<void>(`/user/favorites/product/${id}`)
+}
+
+const FavoriteUsers = {
+    list: (pageNumber: number) => requests.get<PaginatedItems<UserDetails>>(`/user/favorites/user?pageNumber=${pageNumber}`),
+    add: (id: string) => requests.post<void>(`/user/favorites/user/${id}`, {}),
+    delete: (id: string) => requests.delete<void>(`/user/favorites/user/${id}`)
+}
+
 const agent = {
     Events,
     Products,
     Categories,
     Account,
     Users,
-    Search
+    Search,
+    FavoriteProducts,
+    FavoriteUsers
 }
 
 export default agent;

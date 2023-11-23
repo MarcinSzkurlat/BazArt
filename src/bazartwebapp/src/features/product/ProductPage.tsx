@@ -10,11 +10,15 @@ import ProductForm from "./ProductForm"
 export default observer(function ProductPage() {
     const { id } = useParams();
     const { productStore, accountStore, modalStore } = useStore();
-    const { loadingInitial, loadProduct, selectedProduct } = productStore;
+    const { loadingInitial, loadProduct, selectedProduct, addFavoriteProduct } = productStore;
 
 
     const handleDeleteButton = () => {
         productStore.deleteProduct(id!);
+    }
+
+    const handleFavoriteButton = () => {
+        addFavoriteProduct(id!);
     }
 
     useEffect(() => {
@@ -95,7 +99,7 @@ export default observer(function ProductPage() {
                                 Add to cart
                             </Button>
                             <Popup pinned trigger={
-                                <Button size='large' icon floated='right' color='red' circular>
+                                <Button size='large' icon floated='right' color='red' circular onClick={handleFavoriteButton}>
                                     <Icon name='heart' />
                                 </Button>}>
                                 Add product to favorite

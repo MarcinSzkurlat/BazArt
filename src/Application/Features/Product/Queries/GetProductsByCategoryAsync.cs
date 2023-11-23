@@ -14,7 +14,7 @@ namespace Application.Features.Product.Queries
         {
             public string CategoryName { get; set; }
             public int PageNumber { get; set; }
-            public int PageSize { get; set; }
+            public int PageSize { get; set; } = 10;
         }
 
         public class Handler : IRequestHandler<Query, PaginatedItems<IEnumerable<ProductDto>>>
