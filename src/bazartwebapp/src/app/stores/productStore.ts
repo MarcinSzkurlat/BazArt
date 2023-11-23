@@ -117,6 +117,44 @@ export default class ProductStore {
         }
     }
 
+    loadUserFavoriteProducts = async (pageNumber: number = 1) => {
+        this.setLoadingInitial(true);
+        try {
+            const products = await agent.FavoriteProducts.list(pageNumber);
+            runInAction(() => {
+                this.productsRegistry.clear();
+                products.items.forEach(product => {
+                    this.productsRegistry.set(product.id, product);
+                })
+                this.pageNumber = products.pageNumber;
+                this.totalPages = products.totalPages;
+            })
+            this.setLoadingInitial(false);
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    addFavoriteProduct = async (id: string) => {
+        try {
+            await agent.FavoriteProducts.add(id);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    deleteFavoriteProduct = async (id: string) => {
+        try {
+            await agent.FavoriteProducts.delete(id);
+            runInAction(() => {
+                this.productsRegistry.delete(id);
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     setLoadingInitial = (state: boolean) => {
         this.loadingInitial = state;
     }

@@ -30,7 +30,7 @@ export default observer(function LoggedUserNavBar() {
                     <Icon name='search' />
                     Search
                 </Menu.Item>
-                <Menu.Item as={Link} to='/' name='favorites'>
+                <Menu.Item as={Link} to='favorites' name='favorites'>
                     <Icon name='heart' />
                     Favorites
                 </Menu.Item>

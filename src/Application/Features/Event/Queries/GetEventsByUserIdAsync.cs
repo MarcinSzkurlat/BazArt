@@ -12,7 +12,7 @@ namespace Application.Features.Event.Queries
         {
             public Guid Id { get; set; }
             public int PageNumber { get; set; }
-            public int PageSize { get; set; }
+            public int PageSize { get; set; } = 10;
         }
 
         public class Handler : IRequestHandler<Query, PaginatedItems<IEnumerable<EventDto>>>
