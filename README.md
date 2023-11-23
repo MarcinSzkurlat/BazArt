@@ -16,9 +16,9 @@ The application will be developed using C# and ASP.NET Core, employing Clean Arc
 - Login and registration system with JWT
 - Searching products, events and users
 - Dockerized app
+- User favorite products and users
 
 ### In progress
-- User favorite products and items
 - User cart
 - Picture upload for products, events and users avatars
 
