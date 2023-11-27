@@ -14,7 +14,7 @@ namespace Application.Features.Product.Queries
         {
             public string CategoryName { get; set; }
             public int PageNumber { get; set; }
-            public int PageSize { get; set; } = 10;
+            public int PageSize { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, PaginatedItems<IEnumerable<ProductDto>>>
@@ -30,6 +30,8 @@ namespace Application.Features.Product.Queries
 
             public async Task<PaginatedItems<IEnumerable<ProductDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
+                request.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
+
                 IEnumerable<Domain.Models.Product>? products;
 
                 if (Enum.TryParse<Categories>(request.CategoryName, true, out _))

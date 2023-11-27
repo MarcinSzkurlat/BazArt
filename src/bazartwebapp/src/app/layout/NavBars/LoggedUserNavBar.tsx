@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Icon, Menu, Sidebar } from "semantic-ui-react";
+import { Icon, Label, Menu, Sidebar } from "semantic-ui-react";
 import SettingsContainer from "../../../features/account/SettingsContainer";
 import EventForm from "../../../features/event/EventForm";
 import ProductForm from "../../../features/product/ProductForm";
@@ -10,7 +10,7 @@ import { useStore } from "../../stores/store";
 import SearchBar from "../SearchBar";
 
 export default observer(function LoggedUserNavBar() {
-    const { accountStore: { user, logout }, modalStore, searchStore } = useStore();
+    const { accountStore: { user, logout }, modalStore, searchStore, productStore } = useStore();
     const { visibleSearchBar, setVisibleSearchBar } = searchStore;
 
     const [visibleMenu, setVisibleMenu] = useState(false);
@@ -23,6 +23,10 @@ export default observer(function LoggedUserNavBar() {
         setVisibleSearchBar(!visibleSearchBar);
     }
 
+    useEffect(() => {
+        productStore.loadUserCartProducts();
+    }, [])
+
     return (
         <>
             <Menu borderless compact secondary icon='labeled' widths='4' >
@@ -34,8 +38,13 @@ export default observer(function LoggedUserNavBar() {
                     <Icon name='heart' />
                     Favorites
                 </Menu.Item>
-                <Menu.Item as={Link} to='/' name='cart'>
-                    <Icon name='cart' />
+                <Menu.Item as={Link} to='cart' name='cart'>
+                    <div style={{ marginBottom:'7px' }}>
+                        <Icon size='large' name='cart' />
+                        {productStore.userCartQuantity > 0
+                            ? <Label circular color='black' size='tiny'>{productStore.userCartQuantity}</Label>
+                            : <></>}
+                    </div>
                     Cart
                 </Menu.Item>
                 <Menu.Item as='a' onClick={handleMenuButton}>

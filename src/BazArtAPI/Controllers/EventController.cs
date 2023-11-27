@@ -32,11 +32,13 @@ namespace BazArtAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<PaginatedItems<IEnumerable<EventDto>>>> GetEventsByCategoryAsync([FromQuery]string categoryName, [FromQuery]int pageNumber = 1)
         {
+            int.TryParse(_config["PageSize"], out int pageSize);
+
             var results = await _mediator.Send(new GetEventsByCategoryAsync.Query
             {
                 CategoryName = categoryName, 
                 PageNumber = pageNumber, 
-                PageSize = int.Parse(_config["PageSize"]!)
+                PageSize = pageSize
             });
 
             return Ok(results);
