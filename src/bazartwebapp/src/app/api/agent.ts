@@ -16,6 +16,7 @@ import { AccountChangePassword } from "../models/Account/accountChangePassword";
 import { EditUser } from "../models/User/editUser";
 import { Searching } from "../models/Search/Searching";
 import { PaginatedItems } from "../models/paginatedItems";
+import { toast } from "react-toastify";
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -43,10 +44,13 @@ axios.interceptors.response.use(async respone => {
                 }
 
                 throw errors;
+            } else {
+                toast.error(data);
             }
             break;
         case 401:
             router.navigate('/authorize');
+            toast.error('Log in first!');
             break;
         case 403:
             if (data) console.log(data)
@@ -54,7 +58,7 @@ axios.interceptors.response.use(async respone => {
             if (store.modalStore.modal.open) store.modalStore.closeModal()
             break;
         case 404:
-            console.log('not-found')
+            router.navigate('/not-found');
             break;
         case 500:
             console.log('server error');

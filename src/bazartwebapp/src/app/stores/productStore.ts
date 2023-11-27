@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { router } from "../router/Routes";
 import { ManipulateProduct } from "../models/Product/manipulateProduct";
 import { store } from "./store";
+import { toast } from "react-toastify";
 
 export default class ProductStore {
     products: Product[] = [];
@@ -95,6 +96,7 @@ export default class ProductStore {
             runInAction(() => this.selectedProduct = createdProduct);
             router.navigate(`/product/${product.id}`);
             store.modalStore.closeModal();
+            toast.success('Product created successfully!');
         } catch (error) {
             throw error;
         }
@@ -106,6 +108,7 @@ export default class ProductStore {
             runInAction(() => this.selectedProduct = editedProduct);
             router.navigate(`/product/${product.id}`);
             store.modalStore.closeModal();
+            toast.info('Product edited successfully!');
         } catch (error) {
             throw error;
         }
@@ -115,6 +118,7 @@ export default class ProductStore {
         try {
             await agent.Products.delete(id);
             router.navigate('/');
+            toast.info('Product deleted successfully!');
         } catch (error) {
             console.log(error);
         }
@@ -142,6 +146,7 @@ export default class ProductStore {
     addFavoriteProduct = async (id: string) => {
         try {
             await agent.FavoriteProducts.add(id);
+            toast.success('Product added to favorite.');
         } catch (error) {
             console.log(error);
         }
@@ -153,6 +158,7 @@ export default class ProductStore {
             runInAction(() => {
                 this.productsRegistry.delete(id);
             })
+            toast.info('Product removed from favorites.');
         } catch (error) {
             console.log(error);
         }
@@ -184,6 +190,7 @@ export default class ProductStore {
             runInAction(() => {
                 this.loadUserCartProducts();
             })
+            toast.success('Product added to cart.');
         } catch (error) {
             console.log(error);
         }
@@ -195,6 +202,7 @@ export default class ProductStore {
             runInAction(() => {
                 this.userCartProductsRegistry.delete(id);
             })
+            toast.info('Product removed from cart.');
         } catch (error) {
             console.log(error);
         }

@@ -6,6 +6,7 @@ import { router } from "../router/Routes";
 import { AccountRegistration } from "../models/Account/accountRegistration";
 import { store } from "./store";
 import { AccountChangePassword } from "../models/Account/accountChangePassword";
+import { toast } from "react-toastify";
 
 export default class AccountStore {
     user: User | null = null;
@@ -40,6 +41,7 @@ export default class AccountStore {
             })
             router.navigate(`/user/${user.id}`);
             store.modalStore.closeModal();
+            toast.success('Logged in successfully!');
         } catch (error) {
             throw error;
         }
@@ -52,6 +54,7 @@ export default class AccountStore {
             runInAction(() => this.setUser(user));
             router.navigate(`/user/${user.id}`);
             store.modalStore.closeModal();
+            toast.success('Registration successful!');
         } catch (error) {
             throw error;
         }
@@ -61,6 +64,7 @@ export default class AccountStore {
         this.setToken(null);
         this.setUser(null);
         router.navigate('/');
+        toast.info('Logged out successfully!');
     }
 
     getCurrentUser = async () => {
@@ -85,6 +89,7 @@ export default class AccountStore {
             })
             router.navigate(`/user/${user.id}`);
             store.modalStore.closeModal();
+            toast.info('Changed password successfully!')
         } catch (error) {
             throw error;
         }
@@ -98,6 +103,7 @@ export default class AccountStore {
                 store.modalStore.closeModal();
             }
             router.navigate('/');
+            toast.info('Account has been deleted successfully!');
         } catch (error) {
             console.log(error);
         }

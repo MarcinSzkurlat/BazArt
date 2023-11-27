@@ -56,7 +56,7 @@ export default observer(function UserForm() {
                 street: currentUserDetails?.street!,
                 houseNumber: currentUserDetails?.houseNumber!,
                 postalCode: currentUserDetails?.postalCode!,
-                categoryId: currentUserDetails?.categoryId!
+                categoryId: currentUserDetails?.categoryId ?? 0
             })
         } else {
             loadCurrentUserDetails();

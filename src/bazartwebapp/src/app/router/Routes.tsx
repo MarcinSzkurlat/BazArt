@@ -2,6 +2,7 @@ import { createBrowserRouter, RouteObject } from "react-router-dom";
 import AccountContainer from "../../features/account/AccountContainer";
 import CartPage from "../../features/cart/CartPage";
 import CategoryPage from "../../features/category/CategoryPage";
+import NotFound from "../../features/errors/NotFound";
 import EventPage from "../../features/event/EventPage";
 import FavoritesPage from "../../features/favorites/FavoritesPage";
 import ProductPage from "../../features/product/ProductPage";
@@ -19,7 +20,8 @@ export const routes: RouteObject[] = [
             { path: 'user/:id', element: <UserPage /> },
             { path: 'authorize', element: <AccountContainer /> },
             { path: 'favorites', element: <FavoritesPage /> },
-            { path: 'cart', element: <CartPage /> }
+            { path: 'cart', element: <CartPage /> },
+            { path: 'not-found', element: <NotFound /> }
         ]
     }
 ]
