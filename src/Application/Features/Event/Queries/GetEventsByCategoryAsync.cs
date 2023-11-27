@@ -14,7 +14,7 @@ namespace Application.Features.Event.Queries
         {
             public string CategoryName { get; set; }
             public int PageNumber { get; set; }
-            public int PageSize { get; set; } = 10;
+            public int PageSize { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, PaginatedItems<IEnumerable<EventDto>>>
@@ -30,6 +30,8 @@ namespace Application.Features.Event.Queries
 
             public async Task<PaginatedItems<IEnumerable<EventDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
+                request.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
+
                 IEnumerable<Domain.Models.Event.Event>? events;
 
                 if (Enum.TryParse<Categories>(request.CategoryName, true, out _))

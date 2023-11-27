@@ -2,6 +2,8 @@
 using Application.Dtos.Event;
 using Application.Dtos.Product;
 using Application.Dtos.User;
+using Application.Features.Cart.Command;
+using Application.Features.Cart.Queries;
 using Application.Features.Event.Queries;
 using Application.Features.Favorites.Command;
 using Application.Features.Favorites.Queries;
@@ -34,26 +36,30 @@ namespace BazArtAPI.Controllers
         }
 
         [HttpGet("{id:guid}/products")]
-        public async Task<ActionResult<PaginatedItems<IEnumerable<ProductDto>>>> GetUserProductsAsync([FromRoute] Guid id, [FromQuery]int pageNumber)
+        public async Task<ActionResult<PaginatedItems<IEnumerable<ProductDto>>>> GetUserProductsAsync([FromRoute] Guid id, [FromQuery]int pageNumber = 1)
         {
+            int.TryParse(_config["PageSize"], out int pageSize);
+
             var results = await _mediator.Send(new GetProductsByUserIdAsync.Query
             {
                 Id = id, 
                 PageNumber = pageNumber,
-                PageSize = int.Parse(_config["PageSize"]!)
+                PageSize = pageSize
             });
 
             return Ok(results);
         }
 
         [HttpGet("{id:guid}/events")]
-        public async Task<ActionResult<PaginatedItems<IEnumerable<EventDto>>>> GetUserEventsAsync([FromRoute] Guid id, [FromQuery]int pageNumber)
+        public async Task<ActionResult<PaginatedItems<IEnumerable<EventDto>>>> GetUserEventsAsync([FromRoute] Guid id, [FromQuery]int pageNumber = 1)
         {
+            int.TryParse(_config["PageSize"], out int pageSize);
+
             var results = await _mediator.Send(new GetEventsByUserIdAsync.Query
             {
                 Id = id, 
                 PageNumber = pageNumber,
-                PageSize = int.Parse(_config["PageSize"]!)
+                PageSize = pageSize
             });
 
             return Ok(results);
@@ -78,12 +84,14 @@ namespace BazArtAPI.Controllers
         }
 
         [HttpGet("favorites/product")]
-        public async Task<ActionResult<PaginatedItems<IEnumerable<ProductDto>>>> GetUserFavoriteProductsAsync([FromQuery]int pageNumber)
+        public async Task<ActionResult<PaginatedItems<IEnumerable<ProductDto>>>> GetUserFavoriteProductsAsync([FromQuery]int pageNumber = 1)
         {
+            int.TryParse(_config["PageSize"], out int pageSize);
+
             var results = await _mediator.Send(new GetFavoritesProductsAsync.Query
             {
                 PageNumber = pageNumber,
-                PageSize = int.Parse(_config["PageSize"]!)
+                PageSize = pageSize
             });
 
             return Ok(results);
@@ -107,12 +115,14 @@ namespace BazArtAPI.Controllers
 
         [HttpGet("favorites/user")]
         public async Task<ActionResult<PaginatedItems<IEnumerable<UserDto>>>> GetUserFavoriteUsersAsync(
-            [FromQuery] int pageNumber)
+            [FromQuery] int pageNumber = 1)
         {
+            int.TryParse(_config["PageSize"], out int pageSize);
+
             var results = await _mediator.Send(new GetFavoritesUsersAsync.Query
             {
                 PageNumber = pageNumber,
-                PageSize = int.Parse(_config["PageSize"]!)
+                PageSize = pageSize
             });
 
             return Ok(results);
@@ -130,6 +140,30 @@ namespace BazArtAPI.Controllers
         public async Task<ActionResult> DeleteUserFromFavoriteUsersAsync([FromRoute] Guid id)
         {
             await _mediator.Send(new DeleteUserFromFavoriteUsersAsync.Command { FavoriteUserId = id });
+
+            return Ok();
+        }
+
+        [HttpGet("cart")]
+        public async Task<ActionResult<PaginatedItems<IEnumerable<ProductDto>>>> GetUserCartAsync()
+        {
+            var results = await _mediator.Send(new GetUserCartAsync.Query());
+
+            return Ok(results);
+        }
+
+        [HttpPost("cart/{id:guid}")]
+        public async Task<ActionResult> AddProductToCartAsync([FromRoute] Guid id)
+        {
+            await _mediator.Send(new AddProductToCartAsync.Command { ProductId = id });
+
+            return Ok();
+        }
+
+        [HttpDelete("cart/{id:guid}")]
+        public async Task<ActionResult> DeleteProductFromCartAsync([FromRoute] Guid id)
+        {
+            await _mediator.Send(new DeleteProductFromCartAsync.Command { ProductId = id });
 
             return Ok();
         }

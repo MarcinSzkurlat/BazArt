@@ -125,6 +125,12 @@ const FavoriteUsers = {
     delete: (id: string) => requests.delete<void>(`/user/favorites/user/${id}`)
 }
 
+const Cart = {
+    list: () => requests.get<Product[]>('/user/cart'),
+    add: (id: string) => requests.post<void>(`/user/cart/${id}`, {}),
+    delete: (id: string) => requests.delete<void>(`/user/cart/${id}`)
+}
+
 const agent = {
     Events,
     Products,
@@ -133,7 +139,8 @@ const agent = {
     Users,
     Search,
     FavoriteProducts,
-    FavoriteUsers
+    FavoriteUsers,
+    Cart
 }
 
 export default agent;

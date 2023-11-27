@@ -29,6 +29,7 @@ namespace Infrastructure.Extensions
             service.AddScoped<IUserRepository, UserRepository>();
             service.AddScoped<IFavoriteProductsRepository, FavoriteProductsRepository>();
             service.AddScoped<IFavoriteUsersRepository, FavoriteUsersRepository>();
+            service.AddScoped<ICartRepository, CartRepository>();
         }
     }
 }

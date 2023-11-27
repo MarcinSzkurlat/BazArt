@@ -13,7 +13,7 @@ namespace Application.Features.Favorites.Queries
         public class Query : IRequest<PaginatedItems<IEnumerable<UserDetailDto>>>
         {
             public int PageNumber { get; set; }
-            public int PageSize { get; set; } = 10;
+            public int PageSize { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, PaginatedItems<IEnumerable<UserDetailDto>>>
@@ -31,6 +31,8 @@ namespace Application.Features.Favorites.Queries
 
             public async Task<PaginatedItems<IEnumerable<UserDetailDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
+                request.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
+
                 var userId = Guid.Parse(_contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                 var favoriteUsers = await _favoriteUsersRepository.GetUserFavoritesUsersAsync(userId, request.PageNumber, request.PageSize);

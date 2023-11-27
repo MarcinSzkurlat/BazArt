@@ -11,10 +11,13 @@ export default class ProductStore {
     products: Product[] = [];
     productsRegistry = new Map<string, Product>();
     latestProductRegistry = new Map<string, Product>();
+    userCartProductsRegistry = new Map<string, Product>();
     loadingInitial: boolean = false;
     selectedProduct?: ProductDetails = undefined;
     pageNumber: number = 1;
     totalPages: number = 0;
+    cartTotalPrice: number = 0;
+    userCartQuantity: number = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -149,6 +152,48 @@ export default class ProductStore {
             await agent.FavoriteProducts.delete(id);
             runInAction(() => {
                 this.productsRegistry.delete(id);
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    loadUserCartProducts = async () => {
+        this.setLoadingInitial(true);
+        this.cartTotalPrice = 0;
+        try {
+            const products = await agent.Cart.list();
+            runInAction(() => {
+                this.userCartProductsRegistry.clear();
+                this.userCartQuantity = products.length;
+                products.forEach(product => {
+                    this.userCartProductsRegistry.set(product.id, product);
+                    this.cartTotalPrice += product.price;
+                })
+            })
+            this.setLoadingInitial(false);
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    addCartProduct = async (id: string) => {
+        try {
+            await agent.Cart.add(id);
+            runInAction(() => {
+                this.loadUserCartProducts();
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    deleteCartProduct = async (id: string) => {
+        try {
+            await agent.Cart.delete(id);
+            runInAction(() => {
+                this.userCartProductsRegistry.delete(id);
             })
         } catch (error) {
             console.log(error);
