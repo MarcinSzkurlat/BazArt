@@ -17,9 +17,9 @@ The application will be developed using C# and ASP.NET Core, employing Clean Arc
 - Searching products, events and users
 - Dockerized app
 - User favorite products and users
+- User cart
 
 ### In progress
-- User cart
 - Picture upload for products, events and users avatars
 
 ## Used technologies
