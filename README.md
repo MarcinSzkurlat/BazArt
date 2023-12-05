@@ -18,9 +18,7 @@ The application will be developed using C# and ASP.NET Core, employing Clean Arc
 - Dockerized app
 - User favorite products and users
 - User cart
-
-### In progress
-- Picture upload for products, events and users avatars
+- Picture upload via Cloudinary for products, events, users avatars and background images
 
 ## Used technologies
 
