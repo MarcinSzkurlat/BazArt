@@ -8,11 +8,14 @@ using Serilog;
 
 namespace Application.Features.Event.Commands
 {
-    public class DeleteEventAsync
+    public class AddEventPhotoAsync
     {
         public class Command : IRequest
         {
-            public Guid Id { get; set; }
+            public Guid EventId { get; set; }
+            public IFormFile File { get; set; }
+            public int PhotoHeight { get; set; }
+            public int PhotoWidth { get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -30,24 +33,25 @@ namespace Application.Features.Event.Commands
 
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
-                var eventToDelete = await _eventRepository.GetEventByIdAsync(request.Id);
+                request.PhotoHeight = request.PhotoHeight == 0 ? 480 : request.PhotoHeight;
+                request.PhotoWidth = request.PhotoWidth == 0 ? 640 : request.PhotoWidth;
 
-                if (eventToDelete == null) throw new NotFoundException("Event with this ID not exist");
+                var eventFromDb = await _eventRepository.GetEventByIdAsync(request.EventId);
 
-                if (eventToDelete.CreatedById !=
+                if (eventFromDb == null) throw new NotFoundException("Event with this ID not exist");
+
+                if (eventFromDb.CreatedById !=
                     Guid.Parse(_contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!)
                     && !_contextAccessor.HttpContext.User.IsInRole("Admin"))
-                    throw new ForbiddenAccessException("You cannot edit this event");
+                    throw new ForbiddenAccessException("You cannot add photo to this event");
 
-                _eventRepository.DeleteEvent(eventToDelete);
+                await _photoService.DeletePhotoAsync(request.EventId.ToString());
 
-                var result = await _eventRepository.SaveChangesAsync();
+                eventFromDb.ImageUrl = await _photoService.AddPhotoAsync(request.File, request.EventId.ToString(), request.PhotoHeight, request.PhotoWidth, "Images");
 
-                if (result == 0) throw new Exception();
+                await _eventRepository.SaveChangesAsync();
 
-                await _photoService.DeletePhotoAsync(request.Id.ToString());
-
-                Log.Information($"Event ({request.Id}) deleted");
+                Log.Information($"Photo added to event ({request.EventId})");
             }
         }
     }

@@ -82,7 +82,15 @@ const Events = {
     update: (event: ManipulateEvent, id: string) => requests.put<EventDetails>(`/event/${id}`, event),
     delete: (id: string) => requests.delete<void>(`/event/${id}`),
     latest: () => requests.get<Event[]>('/event/latest'),
-    userEvents: (id: string, pageNumber: number) => requests.get<PaginatedItems<Event>>(`/user/${id}/events?pageNumber=${pageNumber}`)
+    userEvents: (id: string, pageNumber: number) => requests.get<PaginatedItems<Event>>(`/user/${id}/events?pageNumber=${pageNumber}`),
+    addPhoto: (id: string, file: File) => {
+        let form = new FormData();
+        form.append('file', file);
+        axios.post<void>(`/event/${id}/photo`, form, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    },
+    deletePhoto: (id: string) => requests.delete<void>(`/event/${id}/photo`)
 }
 
 const Products = {
@@ -92,7 +100,15 @@ const Products = {
     update: (product: ManipulateProduct, id: string) => requests.put<ProductDetails>(`/product/${id}`, product),
     delete: (id: string) => requests.delete<void>(`/product/${id}`),
     latest: () => requests.get<Product[]>('/product/latest'),
-    userProducts: (id: string, pageNumber: number) => requests.get<PaginatedItems<Product>>(`/user/${id}/products?pageNumber=${pageNumber}`)
+    userProducts: (id: string, pageNumber: number) => requests.get<PaginatedItems<Product>>(`/user/${id}/products?pageNumber=${pageNumber}`),
+    addPhoto: (id: string, file: File) => {
+        let form = new FormData();
+        form.append('file', file);
+        axios.post<void>(`/product/${id}/photo`, form, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    },
+    deletePhoto: (id: string) => requests.delete<void>(`/product/${id}/photo`)
 }
 
 const Categories = {
@@ -110,7 +126,23 @@ const Account = {
 const Users = {
     details: (id: string) => requests.get<UserDetails>(`/user/${id}`),
     editUser: (data: EditUser) => requests.put<UserDetails>('/user', data),
-    deleteUser: (id: string) => requests.delete<void>(`/user/${id}`)
+    deleteUser: (id: string) => requests.delete<void>(`/user/${id}`),
+    addAvatar: (id: string, file: File) => {
+        let form = new FormData();
+        form.append('file', file);
+        axios.post<void>(`/user/${id}/photo/avatar`, form, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    },
+    deleteAvatar: (id: string) => requests.delete<void>(`/user/${id}/photo/avatar`),
+    addBackgroundImage: (id: string, file: File) => {
+        let form = new FormData();
+        form.append('file', file);
+        axios.post<void>(`/user/${id}/photo/background`, form, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    },
+    deleteBackgroundImage: (id: string) => requests.delete<void>(`/user/${id}/photo/background`)
 }
 
 const Search = {

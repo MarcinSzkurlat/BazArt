@@ -100,6 +100,46 @@ export default class UserStore {
         }
     }
 
+    addUserAvatar = async (file: File) => {
+        this.setLoadingInitial(true);
+        try {
+            await agent.Users.addAvatar(this.currentUserDetails?.id!, file);
+            this.setLoadingInitial(false);
+            toast.success('Avatar added successfully!');
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    deleteUserAvatar = async () => {
+        try {
+            await agent.Users.deleteAvatar(this.currentUserDetails?.id!);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    addUserBackgroundImage = async (file: File) => {
+        this.setLoadingInitial(true);
+        try {
+            await agent.Users.addBackgroundImage(this.currentUserDetails?.id!, file);
+            this.setLoadingInitial(false);
+            toast.success('Background image added successfully!');
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    deleteUserBackgroundImage = async () => {
+        try {
+            await agent.Users.deleteBackgroundImage(this.currentUserDetails?.id!);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     setLoadingInitial = (state: boolean) => {
         this.loadingInitial = state;
     }

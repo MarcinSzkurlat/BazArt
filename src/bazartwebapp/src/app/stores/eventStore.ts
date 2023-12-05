@@ -126,6 +126,26 @@ export default class EventStore {
         }
     }
 
+    addEventImage = async (id: string, file: File) => {
+        this.setLoadingInitial(true);
+        try {
+            await agent.Events.addPhoto(id, file);
+            this.setLoadingInitial(false);
+            toast.success('Image added successfully!');
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    deleteEventImage = async (id: string) => {
+        try {
+            await agent.Events.deletePhoto(id);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     setLoadingInitial = (state: boolean) => {
         this.loadingInitial = state;
     }

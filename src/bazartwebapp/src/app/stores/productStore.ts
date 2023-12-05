@@ -208,6 +208,26 @@ export default class ProductStore {
         }
     }
 
+    addProductImage = async (id: string, file: File) => {
+        this.setLoadingInitial(true);
+        try {
+            await agent.Products.addPhoto(id, file);
+            this.setLoadingInitial(false);
+            toast.success('Image added successfully!');
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    deleteProductImage = async (id: string) => {
+        try {
+            await agent.Products.deletePhoto(id);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     setLoadingInitial = (state: boolean) => {
         this.loadingInitial = state;
     }

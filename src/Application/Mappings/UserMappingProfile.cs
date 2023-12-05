@@ -12,7 +12,7 @@ namespace Application.Mappings
             CreateMap<User, UserDetailDto>()
                 .ConstructUsing(src => new UserDetailDto(src.Id, src.Email!, src.StageName, src.Description, src.Address.Country,
                     src.Address.City, src.Address.Street,
-                    src.Address.HouseNumber, src.Address.PostalCode, src.CategoryId));
+                    src.Address.HouseNumber, src.Address.PostalCode, src.CategoryId, src.Avatar, src.BackgroundImage));
 
             CreateMap<EditUserDetailsDto, User>()
                 .ForPath(dest => dest.Address.Country, opt => opt.MapFrom(src => src.Country))

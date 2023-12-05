@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Application.Exceptions;
 using Application.Interfaces;
+using Application.Interfaces.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Serilog;
@@ -18,11 +19,13 @@ namespace Application.Features.Product.Command
         {
             private readonly IProductRepository _productRepository;
             private readonly IHttpContextAccessor _contextAccessor;
+            private readonly IPhotoService _photoService;
 
-            public Handler(IProductRepository productRepository, IHttpContextAccessor contextAccessor)
+            public Handler(IProductRepository productRepository, IHttpContextAccessor contextAccessor, IPhotoService photoService)
             {
                 _productRepository = productRepository;
                 _contextAccessor = contextAccessor;
+                _photoService = photoService;
             }
 
             public async Task Handle(Command request, CancellationToken cancellationToken)
@@ -40,6 +43,8 @@ namespace Application.Features.Product.Command
                 var result = await _productRepository.SaveChangesAsync();
 
                 if (result == 0) throw new Exception();
+
+                await _photoService.DeletePhotoAsync(request.Id.ToString());
 
                 Log.Information($"Product ({request.Id}) deleted");
             }

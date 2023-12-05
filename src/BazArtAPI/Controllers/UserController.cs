@@ -167,5 +167,55 @@ namespace BazArtAPI.Controllers
 
             return Ok();
         }
+
+        [HttpPost("{id:guid}/photo/avatar")]
+        public async Task<IActionResult> AddAvatarAsync([FromRoute] Guid id, [FromForm] IFormFile file)
+        {
+            int.TryParse(_config["Images:Settings:User:Avatar:Height"], out int photoHeight);
+            int.TryParse(_config["Images:Settings:User:Avatar:Width"], out int photoWidth);
+
+            await _mediator.Send(new AddAvatarAsync.Command
+            {
+                UserId = id,
+                File = file,
+                PhotoHeight = photoHeight,
+                PhotoWidth = photoWidth
+            });
+
+            return Ok();
+        }
+
+        [HttpDelete("{id:guid}/photo/avatar")]
+        public async Task<IActionResult> DeleteAvatarAsync([FromRoute] Guid id)
+        {
+            await _mediator.Send(new DeleteAvatarAsync.Command{Id = id});
+
+            return Ok();
+        }
+
+        [HttpPost("{id:guid}/photo/background")]
+        public async Task<IActionResult> AddBackgroundImageAsync([FromRoute] Guid id, [FromForm] IFormFile file)
+        {
+            int.TryParse(_config["Images:Settings:User:BackgroundImage:Height"], out int photoHeight);
+            int.TryParse(_config["Images:Settings:User:BackgroundImage:Width"], out int photoWidth);
+
+            await _mediator.Send(new AddBackgroundImageAsync.Command
+            {
+                UserId = id,
+                File = file,
+                PhotoHeight = photoHeight,
+                PhotoWidth = photoWidth
+            });
+
+            return Ok();
+        }
+
+        [HttpDelete("{id:guid}/photo/background")]
+        public async Task<IActionResult> DeleteBackgroundImageAsync([FromRoute] Guid id)
+        {
+            await _mediator.Send(new DeleteBackgroundImageAsync.Command { Id = id });
+
+            return Ok();
+        }
     }
 }

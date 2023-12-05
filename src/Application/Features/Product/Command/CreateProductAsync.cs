@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 
 namespace Application.Features.Product.Command
 {
@@ -50,20 +51,14 @@ namespace Application.Features.Product.Command
             private readonly IProductRepository _productRepository;
             private readonly IMapper _mapper;
             private readonly IHttpContextAccessor _contextAccessor;
+            private readonly IConfiguration _config;
 
-            private const string PlaceHolderPainting =
-                "https://img.freepik.com/free-photo/close-up-oil-paints-brushes-palette_176420-2835.jpg?w=1380&t=st=1695635072~exp=1695635672~hmac=8633b9d82a1b0fc1d69e43572fdd05dc8036594b8ca05999f28264f5367db1c7";
-            private const string PlaceHolderSculpture =
-                "https://img.freepik.com/free-photo/graveyard-background-concept_23-2149585167.jpg?w=1380&t=st=1695635369~exp=1695635969~hmac=22150521383ded7251408335a4064e1afb2ee854130e46b52a924dbaa4107871";
-            private const string PlaceHolderPhotography = "https://img.freepik.com/free-photo/selective-focus-shot-girl-using-professional-camera_181624-60663.jpg?w=740&t=st=1695635713~exp=1695636313~hmac=4e8da269e10e762f5a8a207bc023790f9b1df77a9682f0af3883dcfa8c30392a";
-            private const string PlaceHolderHandMade = "https://img.freepik.com/free-photo/young-woman-using-macrame-technique_23-2149064470.jpg?w=1380&t=st=1695635983~exp=1695636583~hmac=5c6d0be0cf9c8851b78363f60d3b7caf03239c5b2c1a22016eb76645b204129a";
-            private const string PlaceHolderNoCategory = "https://img.freepik.com/free-vector/abstract-watercolor-squared-frame_23-2149090424.jpg?w=826&t=st=1695636939~exp=1695637539~hmac=36515d62294093d9b1def0d3068780cdc06858d00d47ead805d5ceb0ac6dd82f";
-
-            public Handler(IProductRepository productRepository, IMapper mapper, IHttpContextAccessor contextAccessor)
+            public Handler(IProductRepository productRepository, IMapper mapper, IHttpContextAccessor contextAccessor, IConfiguration config)
             {
                 _productRepository = productRepository;
                 _mapper = mapper;
                 _contextAccessor = contextAccessor;
+                _config = config;
             }
 
             public async Task<ProductDetailDto> Handle(Command request, CancellationToken cancellationToken)
@@ -78,11 +73,11 @@ namespace Application.Features.Product.Command
                 {
                     productToCreate.ImageUrl = request.ProductToCreate.Category switch
                     {
-                        Categories.Painting => PlaceHolderPainting,
-                        Categories.Sculpture => PlaceHolderSculpture,
-                        Categories.Photography => PlaceHolderPhotography,
-                        Categories.HandMade => PlaceHolderHandMade,
-                        _ => PlaceHolderNoCategory
+                        Categories.Painting => _config["Images:PlaceHolders:Product:Painting"],
+                        Categories.Sculpture => _config["Images:PlaceHolders:Product:Sculpture"],
+                        Categories.Photography => _config["Images:PlaceHolders:Product:Photography"],
+                        Categories.HandMade => _config["Images:PlaceHolders:Product:HandMade"],
+                        _ => _config["Images:PlaceHolders:Product:NoCategory"]
                     };
                 }
 

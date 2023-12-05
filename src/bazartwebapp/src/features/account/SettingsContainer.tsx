@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { Accordion, Button, Header, Segment } from "semantic-ui-react";
 import UserForm from "../user/UserForm";
+import UserImagesForm from "../user/UserImagesForm";
 import AccountSettingsForm from "./AccountSettingsForm";
 
 export default observer(function SettingsContainer() {
@@ -21,11 +22,18 @@ export default observer(function SettingsContainer() {
                 <Accordion.Content active={activeIndex === 0}>
                     <UserForm />
                 </Accordion.Content>
-                <br/>
+                <br />
                 <Accordion.Title as={Button} fluid active={activeIndex === 1} onClick={() => handleAccordionClick(1)}>
-                    Account settings
+                    User images settings
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 1}>
+                    <UserImagesForm />
+                </Accordion.Content>
+                <br/>
+                <Accordion.Title as={Button} fluid active={activeIndex === 2} onClick={() => handleAccordionClick(2)}>
+                    Account settings
+                </Accordion.Title>
+                <Accordion.Content active={activeIndex === 2}>
                     <AccountSettingsForm />
                 </Accordion.Content>
             </Accordion>
