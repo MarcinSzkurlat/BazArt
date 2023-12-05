@@ -4,6 +4,7 @@ import { UserDetails } from "../models/User/userDetails";
 import { store } from "./store";
 import { EditUser } from "../models/User/editUser";
 import { router } from "../router/Routes";
+import { toast } from "react-toastify";
 
 export default class UserStore {
     userDetails: UserDetails | null = null;
@@ -53,6 +54,7 @@ export default class UserStore {
             runInAction(() => this.currentUserDetails = userDetails);
             router.navigate(`/user/${store.accountStore.user?.id}`);
             store.modalStore.closeModal();
+            toast.info('Details informations updated successfully!');
         } catch (error) {
             throw error;
         }
@@ -80,6 +82,7 @@ export default class UserStore {
     addFavoriteUser = async (id: string) => {
         try {
             await agent.FavoriteUsers.add(id);
+            toast.success('User added to favorite.');
         } catch (error) {
             console.log(error);
         }
@@ -91,6 +94,47 @@ export default class UserStore {
             runInAction(() => {
                 this.usersRegistry.delete(id);
             })
+            toast.info('User removed from favorite.');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    addUserAvatar = async (file: File) => {
+        this.setLoadingInitial(true);
+        try {
+            await agent.Users.addAvatar(this.currentUserDetails?.id!, file);
+            this.setLoadingInitial(false);
+            toast.success('Avatar added successfully!');
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    deleteUserAvatar = async () => {
+        try {
+            await agent.Users.deleteAvatar(this.currentUserDetails?.id!);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    addUserBackgroundImage = async (file: File) => {
+        this.setLoadingInitial(true);
+        try {
+            await agent.Users.addBackgroundImage(this.currentUserDetails?.id!, file);
+            this.setLoadingInitial(false);
+            toast.success('Background image added successfully!');
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    deleteUserBackgroundImage = async () => {
+        try {
+            await agent.Users.deleteBackgroundImage(this.currentUserDetails?.id!);
         } catch (error) {
             console.log(error);
         }

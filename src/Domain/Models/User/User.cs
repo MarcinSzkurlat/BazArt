@@ -6,6 +6,8 @@ namespace Domain.Models.User
     {
         public string? StageName { get; set; }
         public string? Description { get; set; }
+        public string Avatar { get; set; }
+        public string BackgroundImage { get; set; }
 
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }

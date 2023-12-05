@@ -8,6 +8,7 @@ using MediatR;
 using Serilog;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Application.Features.Event.Commands
 {
@@ -61,13 +62,14 @@ namespace Application.Features.Event.Commands
             private readonly IEventRepository _eventRepository;
             private readonly IMapper _mapper;
             private readonly IHttpContextAccessor _contextAccessor;
-            private const string EventImagePlaceHolder = "https://upload.wikimedia.org/wikipedia/commons/9/9b/Exposition_Richard_Prince%2C_American_Prayer_-_sc%C3%A9nographie_21.jpg";
+            private readonly IConfiguration _config;
 
-            public Handler(IEventRepository eventRepository, IMapper mapper, IHttpContextAccessor contextAccessor)
+            public Handler(IEventRepository eventRepository, IMapper mapper, IHttpContextAccessor contextAccessor, IConfiguration config)
             {
                 _eventRepository = eventRepository;
                 _mapper = mapper;
                 _contextAccessor = contextAccessor;
+                _config = config;
             }
 
             public async Task<EventDetailsDto> Handle(Command request, CancellationToken cancellationToken)
@@ -78,7 +80,7 @@ namespace Application.Features.Event.Commands
 
                 var eventToCreate = _mapper.Map<Domain.Models.Event.Event>(request.CreateEventDto);
 
-                if (string.IsNullOrWhiteSpace(eventToCreate.ImageUrl)) eventToCreate.ImageUrl = EventImagePlaceHolder;
+                if (string.IsNullOrWhiteSpace(eventToCreate.ImageUrl)) eventToCreate.ImageUrl = _config["Images:PlaceHolders:Event"];
 
                 eventToCreate.CategoryId = (int)request.CreateEventDto.Category;
 

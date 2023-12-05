@@ -4,15 +4,16 @@ using Application.Interfaces;
 using Application.Interfaces.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace Application.Features.Event.Commands
 {
-    public class DeleteEventAsync
+    public class DeleteEventPhotoAsync
     {
         public class Command : IRequest
         {
-            public Guid Id { get; set; }
+            public Guid EventId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -20,34 +21,34 @@ namespace Application.Features.Event.Commands
             private readonly IEventRepository _eventRepository;
             private readonly IHttpContextAccessor _contextAccessor;
             private readonly IPhotoService _photoService;
+            private readonly IConfiguration _config;
 
-            public Handler(IEventRepository eventRepository, IHttpContextAccessor contextAccessor, IPhotoService photoService)
+            public Handler(IEventRepository eventRepository, IHttpContextAccessor contextAccessor, IPhotoService photoService, IConfiguration config)
             {
                 _eventRepository = eventRepository;
                 _contextAccessor = contextAccessor;
                 _photoService = photoService;
+                _config = config;
             }
 
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
-                var eventToDelete = await _eventRepository.GetEventByIdAsync(request.Id);
+                var eventFromDb = await _eventRepository.GetEventByIdAsync(request.EventId);
 
-                if (eventToDelete == null) throw new NotFoundException("Event with this ID not exist");
+                if (eventFromDb == null) throw new NotFoundException("Event with this ID not exist");
 
-                if (eventToDelete.CreatedById !=
+                if (eventFromDb.CreatedById !=
                     Guid.Parse(_contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!)
                     && !_contextAccessor.HttpContext.User.IsInRole("Admin"))
-                    throw new ForbiddenAccessException("You cannot edit this event");
+                    throw new ForbiddenAccessException("You cannot delete photo from this event");
 
-                _eventRepository.DeleteEvent(eventToDelete);
+                await _photoService.DeletePhotoAsync(request.EventId.ToString());
 
-                var result = await _eventRepository.SaveChangesAsync();
+                eventFromDb.ImageUrl = _config["Images:PlaceHolders:Event"];
 
-                if (result == 0) throw new Exception();
+                await _eventRepository.SaveChangesAsync();
 
-                await _photoService.DeletePhotoAsync(request.Id.ToString());
-
-                Log.Information($"Event ({request.Id}) deleted");
+                Log.Information($"Photo deleted from event (${request.EventId})");
             }
         }
     }

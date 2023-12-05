@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { router } from "../router/Routes";
 import { ManipulateEvent } from "../models/Event/manupulateEvent";
 import { store } from "./store";
+import { toast } from "react-toastify";
 
 export default class EventStore {
     events: Event[] = [];
@@ -92,6 +93,7 @@ export default class EventStore {
             runInAction(() => this.selectedEvent = createdEvent);
             router.navigate(`/event/${event.id}`);
             store.modalStore.closeModal();
+            toast.success('Event created successfully!');
         } catch (error) {
             throw error;
         }
@@ -108,6 +110,7 @@ export default class EventStore {
             runInAction(() => this.selectedEvent = editedEvent);
             router.navigate(`/event/${event.id}`);
             store.modalStore.closeModal();
+            toast.info('Event edited successfully!');
         } catch (error) {
             throw error;
         }
@@ -117,6 +120,27 @@ export default class EventStore {
         try {
             await agent.Events.delete(id);
             router.navigate('/');
+            toast.info('Event deleted successfully!');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    addEventImage = async (id: string, file: File) => {
+        this.setLoadingInitial(true);
+        try {
+            await agent.Events.addPhoto(id, file);
+            this.setLoadingInitial(false);
+            toast.success('Image added successfully!');
+        } catch (error) {
+            console.log(error);
+            this.setLoadingInitial(false);
+        }
+    }
+
+    deleteEventImage = async (id: string) => {
+        try {
+            await agent.Events.deletePhoto(id);
         } catch (error) {
             console.log(error);
         }

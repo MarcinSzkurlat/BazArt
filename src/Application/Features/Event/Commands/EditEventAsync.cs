@@ -76,7 +76,7 @@ namespace Application.Features.Event.Commands
                 if (eventToEdit.CreatedById !=
                     Guid.Parse(_contextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!)
                     && !_contextAccessor.HttpContext.User.IsInRole("Admin"))
-                    throw new ForbiddenAccessException("You cannot edit this product");
+                    throw new ForbiddenAccessException("You cannot edit this event");
 
                 if (!string.IsNullOrWhiteSpace(request.EditEventDto.Category.ToString()))
                 {

@@ -39,10 +39,9 @@ export default observer(function UserPage() {
     return (
         <>
             <Segment basic style={{ height: '400px', position:'relative' }}>
-                <Image rounded className='image-fit-container' src="/assets/home-page-2.jpg" style={{ zIndex: '0' }}>
-                </Image>
+                <Image rounded className='image-fit-container' src={userDetails?.backgroundImage} style={{ zIndex: '0' }}/>
                 <div className='center-element-to-its-container' style={{ zIndex: '1' }}>
-                    <Image avatar src="/assets/user-image-placeholder.png" size='small' />
+                    <Image avatar src={userDetails?.avatar} size='small' />
                     <Header className='background-color-creme' block size='huge' style={{border:'none'} }>{userDetails?.stageName ?? userDetails?.email.split('@')[0]}</Header>
                 </div>
                 {accountStore.user?.role === "Admin" && accountStore.user.id !== userDetails?.id

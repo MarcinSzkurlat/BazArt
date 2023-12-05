@@ -9,6 +9,7 @@ import Footer from "./Footer";
 import ModalContainer from "./Modals/ModalContainer";
 import NavBar from "./NavBars/NavBar";
 import 'react-datepicker/dist/react-datepicker.css'
+import { ToastContainer } from "react-toastify";
 
 function App() {
     const { accountStore } = useStore();
@@ -23,6 +24,7 @@ function App() {
     return (
         <div className="app">
             <ModalContainer />
+            <ToastContainer position='bottom-right' theme='colored' hideProgressBar />
             {location.pathname === '/'
                 ? <HomePage />
                 : <>

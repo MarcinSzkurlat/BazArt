@@ -1,11 +1,12 @@
 import { observer } from "mobx-react-lite";
 import { ChangeEvent, useEffect, useState } from "react";
-import { Accordion, Form, Header, Icon, Segment } from "semantic-ui-react";
+import { Accordion, Button, Form, Header, Icon, Popup, Segment } from "semantic-ui-react";
 import { ActionTypes } from "../../app/models/actionTypes";
 import { useStore } from "../../app/stores/store";
 import ErrorMessageBox from "../errors/ErrorMessageBox";
 import DatePicker from 'react-datepicker';
 import { ManipulateEvent } from "../../app/models/Event/manupulateEvent";
+import { toast } from "react-toastify";
 
 interface Props {
     id?: string;
@@ -14,12 +15,13 @@ interface Props {
 
 export default observer(function EventForm({ id, action }: Props) {
     const { categoryStore, eventStore } = useStore();
-    const { selectedEvent } = eventStore;
+    const { selectedEvent, addEventImage, deleteEventImage } = eventStore;
 
     const [accordionVisible, setAccordionVisible] = useState(false);
     const [errors, setErrors] = useState<Map<string, string[]>>();
     const [startingDate, setStartingDate] = useState<Date | null>(null);
     const [endingDate, setEndingDate] = useState<Date | null>(null);
+    const [image, setImage] = useState<File>();
 
     const isDataDisabled = (date: Date) => date > new Date();
     const isTimeDisabled = (date: Date) => date > startingDate!;
@@ -71,6 +73,27 @@ export default observer(function EventForm({ id, action }: Props) {
         setFormData({ ...formData, ['endingDate']: date })
     }
 
+    const handleImageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files?.length > 0) {
+            const selectedFile = e.target.files[0];
+            const maxFileSize = 1024 * 1024;
+
+            if (selectedFile.size <= maxFileSize) {
+                if (selectedFile.type === 'image/jpeg' || selectedFile.type === 'image/png') {
+                    setImage(selectedFile);
+                }
+            } else {
+                toast.error('File size is too large!');
+            }
+        } else {
+            setImage(undefined);
+        }
+    }
+
+    const handleResetImageButton = () => {
+        deleteEventImage(formData.id);
+    }
+
     const handleButton = () => {
         switch (action) {
             case ActionTypes.Create:
@@ -78,6 +101,7 @@ export default observer(function EventForm({ id, action }: Props) {
                 break;
             case ActionTypes.Edit:
                 eventStore.editEvent(formData).catch(errors => setErrors(errors));
+                if (image) addEventImage(formData.id, image);
                 break;
         }
     }
@@ -219,6 +243,25 @@ export default observer(function EventForm({ id, action }: Props) {
                                 placeholder='Postal code'
                                 minLength={2} maxLength={10} />
                         </Form.Field>
+                        {action === ActionTypes.Edit
+                            ? <>
+                                < Form.Field >
+                                    <label>Event image</label>
+                                    <input
+                                        type='file'
+                                        accept='.jpg, .png'
+                                        onChange={handleImageInput}
+                                        style={{ width: '40%' }} />
+                                    <Popup pinned position='top center' trigger={
+                                        <Button size='large' icon floated='right' color='red' circular onClick={handleResetImageButton} >
+                                            <Icon name='x' />
+                                        </Button>}>
+                                        Reset event image
+                                    </Popup>
+                                </Form.Field>
+                                <Header color='red' size='tiny' style={{ marginLeft: '20px', marginTop: '0' }}>* maximum file size is 1MB</Header>
+                            </>
+                            : <></>}
                     </Accordion.Content>
                 </Accordion>
                 <Form.Field required>

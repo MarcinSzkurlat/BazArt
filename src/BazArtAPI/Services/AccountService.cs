@@ -11,11 +11,13 @@ namespace BazArtAPI.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly TokenService _tokenService;
+        private readonly IConfiguration _config;
 
-        public AccountService(UserManager<User> userManager, TokenService tokenService)
+        public AccountService(UserManager<User> userManager, TokenService tokenService, IConfiguration config)
         {
             _userManager = userManager;
             _tokenService = tokenService;
+            _config = config;
         }
 
         public async Task<UserDto> LoginAsync(LoginDto loginDto)
@@ -43,7 +45,9 @@ namespace BazArtAPI.Services
                 Email = registrationDto.Email,
                 StageName = registrationDto.StageName,
                 Description = registrationDto.Description,
-                UserName = registrationDto.Email.Split('@')[0]
+                UserName = registrationDto.Email.Split('@')[0],
+                Avatar = _config["Images:PlaceHolders:User:Avatar"],
+                BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]
             };
 
             if (registrationDto.Category != null)

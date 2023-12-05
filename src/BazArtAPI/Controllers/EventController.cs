@@ -68,6 +68,31 @@ namespace BazArtAPI.Controllers
             return Ok();
         }
 
+        [HttpPost("{id:guid}/photo")]
+        public async Task<IActionResult> AddPhotoAsync([FromRoute] Guid id, [FromForm] IFormFile file)
+        {
+            int.TryParse(_config["Images:Settings:Image:Height"], out int photoHeight);
+            int.TryParse(_config["Images:Settings:Image:Width"], out int photoWidth);
+
+            await _mediator.Send(new AddEventPhotoAsync.Command
+            {
+                EventId = id,
+                File = file,
+                PhotoHeight = photoHeight,
+                PhotoWidth = photoWidth
+            });
+
+            return Ok();
+        }
+
+        [HttpDelete("{id:guid}/photo")]
+        public async Task<IActionResult> DeletePhotoAsync([FromRoute] Guid id)
+        {
+            await _mediator.Send(new DeleteEventPhotoAsync.Command{EventId = id});
+
+            return Ok();
+        }
+
         [AllowAnonymous]
         [HttpGet("latest")]
         public async Task<ActionResult<IEnumerable<EventDto>>> GetEventsByCreatedDate()

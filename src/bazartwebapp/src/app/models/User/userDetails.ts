@@ -9,4 +9,6 @@ export interface UserDetails {
     houseNumber: number;
     postalCode: string;
     categoryId: number;
+    avatar: string;
+    backgroundImage: string;
 }

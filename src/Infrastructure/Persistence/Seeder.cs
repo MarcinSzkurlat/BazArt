@@ -4,6 +4,7 @@ using Domain.Models.Event;
 using Domain.Models.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Persistence
 {
@@ -11,13 +12,15 @@ namespace Infrastructure.Persistence
     {
         private readonly BazArtDbContext _dbContext;
         private readonly UserManager<User> _userManager;
+        private readonly IConfiguration _config;
         private readonly int _minCategoryValue = (int)Enum.GetValues(typeof(Categories)).Cast<Categories>().Min();
         private readonly int _maxCategoryValue = (int)Enum.GetValues(typeof(Categories)).Cast<Categories>().Max();
 
-        public Seeder(BazArtDbContext dbContext, UserManager<User> userManager)
+        public Seeder(BazArtDbContext dbContext, UserManager<User> userManager, IConfiguration config)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _config = config;
         }
 
         public async Task SeedAsync(int recordsAmount)
@@ -34,6 +37,8 @@ namespace Infrastructure.Persistence
             {
                 fakeUsers[i].CreatedEvents.Add(events[i]);
                 fakeUsers[i].OwnedProducts.Add(products[i]);
+                fakeUsers[i].Avatar = _config["Images:PlaceHolders:User:Avatar"];
+                fakeUsers[i].BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"];
             }
 
             await CreateAdmin();
@@ -119,7 +124,9 @@ namespace Infrastructure.Persistence
             var admin = new User()
             {
                 UserName = "Admin",
-                Email = "admin@test.com"
+                Email = "admin@test.com",
+                Avatar = _config["Images:PlaceHolders:User:Avatar"],
+                BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]
             };
 
             await _userManager.CreateAsync(admin, "BA_Admin123");
@@ -131,7 +138,9 @@ namespace Infrastructure.Persistence
             var user = new User()
             {
                 UserName = "TestUser",
-                Email = "user@test.com"
+                Email = "user@test.com",
+                Avatar = _config["Images:PlaceHolders:User:Avatar"],
+                BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]
             };
 
             await _userManager.CreateAsync(user, "BA_User123");

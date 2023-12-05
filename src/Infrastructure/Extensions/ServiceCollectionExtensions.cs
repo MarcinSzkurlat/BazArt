@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.Services;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repository;
+using Infrastructure.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +32,7 @@ namespace Infrastructure.Extensions
             service.AddScoped<IFavoriteProductsRepository, FavoriteProductsRepository>();
             service.AddScoped<IFavoriteUsersRepository, FavoriteUsersRepository>();
             service.AddScoped<ICartRepository, CartRepository>();
+            service.AddScoped<IPhotoService, CloudinaryPhotoService>();
         }
     }
 }

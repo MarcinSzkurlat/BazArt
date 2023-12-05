@@ -10,6 +10,8 @@
         string? Street,
         int? HouseNumber,
         string? PostalCode,
-        int? CategoryId
+        int? CategoryId,
+        string Avatar,
+        string BackgroundImage
     );
 }
