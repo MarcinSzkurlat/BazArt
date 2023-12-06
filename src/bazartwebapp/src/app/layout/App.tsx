@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 import { Grid, Image } from "semantic-ui-react";
 import HomePage from "../../features/home/HomePage";
 import LoggedUserNavBar from "./NavBars/LoggedUserNavBar";
@@ -23,6 +23,7 @@ function App() {
 
     return (
         <div className="app">
+            <ScrollRestoration />
             <ModalContainer />
             <ToastContainer position='bottom-right' theme='colored' hideProgressBar />
             {location.pathname === '/'
