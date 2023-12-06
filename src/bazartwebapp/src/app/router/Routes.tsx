@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouteObject } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom";
 import AccountContainer from "../../features/account/AccountContainer";
 import CartPage from "../../features/cart/CartPage";
 import CategoryPage from "../../features/category/CategoryPage";
@@ -21,7 +21,8 @@ export const routes: RouteObject[] = [
             { path: 'authorize', element: <AccountContainer /> },
             { path: 'favorites', element: <FavoritesPage /> },
             { path: 'cart', element: <CartPage /> },
-            { path: 'not-found', element: <NotFound /> }
+            { path: 'not-found', element: <NotFound /> },
+            { path: '*', element: <Navigate replace to='/not-found' /> }
         ]
     }
 ]
