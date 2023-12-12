@@ -23,9 +23,9 @@ namespace Infrastructure.Service
             {
                 _cloudinary = new Cloudinary(new Account()
                 {
-                    Cloud = _config["Cloudinary:CloudName"],
-                    ApiSecret = _config["Cloudinary:ApiSecret"],
-                    ApiKey = _config["Cloudinary:ApiKey"]
+                    Cloud = _config["CloudinaryCloudName"],
+                    ApiSecret = _config["CloudinaryApiSecret"],
+                    ApiKey = _config["CloudinaryApiKey"]
                 });
             }
         }

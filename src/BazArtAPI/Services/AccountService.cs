@@ -45,9 +45,9 @@ namespace BazArtAPI.Services
                 Email = registrationDto.Email,
                 StageName = registrationDto.StageName,
                 Description = registrationDto.Description,
-                UserName = registrationDto.Email.Split('@')[0],
-                Avatar = _config["Images:PlaceHolders:User:Avatar"],
-                BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]
+                UserName = registrationDto.Email,
+                Avatar = _config["Images:PlaceHolders:User:Avatar"]!,
+                BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]!
             };
 
             if (registrationDto.Category != null)

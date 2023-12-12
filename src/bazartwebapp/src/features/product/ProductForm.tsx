@@ -42,7 +42,7 @@ export default observer(function ProductForm({ id, action }: Props) {
         setFormData((previousData) => ({ ...previousData, [name]: number }));
     };
 
-    const handleIsForSellCheckbox = (e: React.FormEvent<HTMLInputElement>, data: CheckboxProps) => {
+    const handleIsForSellCheckbox = (_e: React.FormEvent<HTMLInputElement>, data: CheckboxProps) => {
         if (data.checked !== undefined) {
             const isForSell = data.checked;
             setIsForSell(isForSell);

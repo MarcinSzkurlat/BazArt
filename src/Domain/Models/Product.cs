@@ -9,7 +9,7 @@
         public bool IsForSell { get; set; }
         public int Quantity { get; set; } = 1;
         public string? ImageUrl { get; set; }
-        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public int CategoryId { get; set; }
         public Category Category { get; set; }

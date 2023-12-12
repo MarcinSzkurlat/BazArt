@@ -13,7 +13,7 @@ export default observer(function FavoritesProducts() {
     const [productItems, setProductItems] = useState<Product[]>();
     const [activePage, setActivePage] = useState(pageNumber);
 
-    const onChanged = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pageInfo: PaginationProps) => {
+    const onChanged = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pageInfo: PaginationProps) => {
         setActivePage(pageInfo.activePage as number);
     }
 

@@ -19,7 +19,7 @@ export default observer(function EventGridItems({ page, categoryName, userId }: 
     const [eventItems, setEventItems] = useState<Event[]>();
     const [activePage, setActivePage] = useState(pageNumber + 1);
 
-    const onChanged = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pageInfo: PaginationProps) => {
+    const onChanged = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pageInfo: PaginationProps) => {
         setActivePage(pageInfo.activePage as number);
     }
 

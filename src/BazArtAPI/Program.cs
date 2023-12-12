@@ -8,6 +8,15 @@ using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Necessary secret environments for production version:
+//AdminEmail
+//AdminPassword
+//BazArtDb_PostgreSQL
+//CloudinaryApiKey
+//CloudinaryApiSecret
+//CloudinaryCloudName
+//TokenKey (minimum 64 characters)
+
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Logger(lc =>
     {
@@ -37,25 +46,29 @@ if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("ASPNE
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    try
-    {
-        var scope = app.Services.CreateScope();
-        var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
-        await seeder.SeedAsync(int.Parse(builder.Configuration["SeederRecordsAmount"]!));
-    }
-    catch (Exception exception)
-    {
-        Log.Fatal($"Error while creating database | {exception}");
-    }
+    app.UseCors("FrontendClient");
 }
 
-app.UseCors("FrontendClient");
+try
+{
+    var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
+    await seeder.SeedAsync(app.Environment);
+}
+catch (Exception exception)
+{
+    Log.Fatal($"Error while creating database | {exception}");
+}
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
+app.MapFallbackToController("Index", "Fallback");
 
 app.Run();

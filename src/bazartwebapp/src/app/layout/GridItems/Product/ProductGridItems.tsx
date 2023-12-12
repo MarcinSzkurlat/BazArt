@@ -19,7 +19,7 @@ export default observer(function ProductGridItems({ page, categoryName, userId }
     const [productItems, setProductItems] = useState<Product[]>();
     const [activePage, setActivePage] = useState(pageNumber + 1);
 
-    const onChanged = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pageInfo: PaginationProps) => {
+    const onChanged = (_event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pageInfo: PaginationProps) => {
         setActivePage(pageInfo.activePage as number);
     }
 

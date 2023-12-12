@@ -13,16 +13,8 @@ namespace Infrastructure.Extensions
     {
         public static void AddInfrastructure(this IServiceCollection service, IConfiguration configuration)
         {
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-            {
-                service.AddDbContext<BazArtDbContext>(options =>
-                    options.UseSqlServer(configuration.GetConnectionString("BazArtDb")));
-            }
-            else if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Docker")
-            {
-                service.AddDbContext<BazArtDbContext>(options =>
-                    options.UseSqlServer(Environment.GetEnvironmentVariable("ConnectionString")));
-            }
+            service.AddDbContext<BazArtDbContext>(options =>
+                options.UseNpgsql(configuration["BazArtDb_PostgreSQL"]));
 
             service.AddScoped<Seeder>();
             service.AddScoped<IEventRepository, EventRepository>();

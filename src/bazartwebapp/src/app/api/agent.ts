@@ -18,7 +18,7 @@ import { Searching } from "../models/Search/Searching";
 import { PaginatedItems } from "../models/paginatedItems";
 import { toast } from "react-toastify";
 
-axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 axios.interceptors.request.use(config => {
     const token = store.accountStore.token;

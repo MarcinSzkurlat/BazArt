@@ -19,15 +19,19 @@ namespace BazArtAPI.Extensions
         {
             services.AddScoped<ErrorHandlingMiddleware>();
 
-            services.AddCors(opt =>
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ||
+                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Docker")
             {
-                opt.AddPolicy("FrontendClient", policy =>
+                services.AddCors(opt =>
                 {
-                    policy.AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .WithOrigins(configuration["AllowedOrigin"]!);
+                    opt.AddPolicy("FrontendClient", policy =>
+                    {
+                        policy.AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .WithOrigins(configuration["AllowedOrigin"]!);
+                    });
                 });
-            });
+            }
 
             AddIdentity(services, configuration);
 
@@ -52,9 +56,9 @@ namespace BazArtAPI.Extensions
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<BazArtDbContext>();
 
-            var tokenKey = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
-                ? configuration["TokenKey"]
-                : "super_extra_long_sample_sixty_four_character_token_key_for_docker";
+            var tokenKey = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Docker"
+                ? "super_extra_long_sample_sixty_four_character_token_key_for_docker"
+                : configuration["TokenKey"];
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 

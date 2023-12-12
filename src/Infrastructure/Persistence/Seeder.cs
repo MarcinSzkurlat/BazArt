@@ -5,6 +5,7 @@ using Domain.Models.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure.Persistence
 {
@@ -23,12 +24,19 @@ namespace Infrastructure.Persistence
             _config = config;
         }
 
-        public async Task SeedAsync(int recordsAmount)
+        public async Task SeedAsync(IHostEnvironment environment)
         {
             await _dbContext.Database.MigrateAsync();
 
-            if (_dbContext.Events.Any()) return;
-            
+            if (!await _dbContext.Users.AnyAsync(x => x.UserName == "Admin")
+                && environment.IsProduction())
+            {
+                await CreateAdmin(_config["AdminEmail"]!, _config["AdminPassword"]!);
+            }
+
+            if (_dbContext.Events.Any() || environment.IsProduction()) return;
+
+            int recordsAmount = int.Parse(_config["SeederRecordsAmount"]!);
             var fakeUsers = GetFakeUsers(recordsAmount);
             var events = GetEvents(recordsAmount);
             var products = GetProducts(recordsAmount);
@@ -37,11 +45,11 @@ namespace Infrastructure.Persistence
             {
                 fakeUsers[i].CreatedEvents.Add(events[i]);
                 fakeUsers[i].OwnedProducts.Add(products[i]);
-                fakeUsers[i].Avatar = _config["Images:PlaceHolders:User:Avatar"];
-                fakeUsers[i].BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"];
+                fakeUsers[i].Avatar = _config["Images:PlaceHolders:User:Avatar"]!;
+                fakeUsers[i].BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]!;
             }
 
-            await CreateAdmin();
+            await CreateAdmin("admin@test.com", "BA_Admin123");
             await CreateUser();
             await _dbContext.AddRangeAsync(fakeUsers);
             await _dbContext.SaveChangesAsync();
@@ -82,8 +90,8 @@ namespace Infrastructure.Persistence
                 .RuleFor(p => p.Street, f => f.Address.StreetName())
                 .RuleFor(p => p.HouseNumber, f => f.Random.Int(1, 200))
                 .RuleFor(p => p.PostalCode, f => f.Address.ZipCode())
-                .RuleFor(p => p.StartingDate, f => f.Date.Soon(10))
-                .RuleFor(p => p.EndingDate, f => f.Date.Soon(20, DateTime.Today).AddDays(10));
+                .RuleFor(p => p.StartingDate, f => f.Date.Soon(10).ToUniversalTime())
+                .RuleFor(p => p.EndingDate, f => f.Date.Soon(20, DateTime.Today).ToUniversalTime().AddDays(10));
 
             var eventsDetail = eventDetailFaker.Generate(recordsAmount);
 
@@ -119,17 +127,17 @@ namespace Infrastructure.Persistence
             return products;
         }
 
-        private async Task CreateAdmin()
+        private async Task CreateAdmin(string email, string password)
         {
             var admin = new User()
             {
                 UserName = "Admin",
-                Email = "admin@test.com",
-                Avatar = _config["Images:PlaceHolders:User:Avatar"],
-                BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]
+                Email = email,
+                Avatar = _config["Images:PlaceHolders:User:Avatar"]!,
+                BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]!
             };
 
-            await _userManager.CreateAsync(admin, "BA_Admin123");
+            await _userManager.CreateAsync(admin, password);
             await _userManager.AddToRoleAsync(admin, "Admin");
         }
 
@@ -137,10 +145,10 @@ namespace Infrastructure.Persistence
         {
             var user = new User()
             {
-                UserName = "TestUser",
+                UserName = "user@test.com",
                 Email = "user@test.com",
-                Avatar = _config["Images:PlaceHolders:User:Avatar"],
-                BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]
+                Avatar = _config["Images:PlaceHolders:User:Avatar"]!,
+                BackgroundImage = _config["Images:PlaceHolders:User:BackgroundImage"]!
             };
 
             await _userManager.CreateAsync(user, "BA_User123");

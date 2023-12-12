@@ -25,9 +25,9 @@ namespace BazArtAPI.Services
                 new(ClaimTypes.Role, role)
             };
 
-            var tokenKey = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
-                ? _config["TokenKey"]
-                : "super_extra_long_sample_sixty_four_character_token_key_for_docker";
+            var tokenKey = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Docker"
+                ? "super_extra_long_sample_sixty_four_character_token_key_for_docker"
+                : _config["TokenKey"];
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
